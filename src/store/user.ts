@@ -1,11 +1,13 @@
 // initial state
 import { StoreOptions } from "vuex";
+
 export default {
   namespaced: true,
   //存储登录用户信息
   state: () => ({
     loginUser: {
       userName: "未登录",
+      userRole: "notLogin",
     },
   }),
   getters: {},

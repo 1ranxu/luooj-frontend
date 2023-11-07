@@ -1,8 +1,8 @@
 <template>
   <div id="globalHeader">
-    <a-row class="grid-demo" style="margin-bottom: 16px" align="center">
+    <a-row class="grid-demo" align="center">
       <a-col flex="auto">
-        <a-menu2
+        <a-menu
           mode="horizontal"
           :selected-keys="selectedKeys"
           @menu-item-click="doMenuClick"
@@ -20,7 +20,7 @@
           <a-menu-item v-for="item in routes" :key="item.path">
             {{ item.name }}
           </a-menu-item>
-        </a-menu2>
+        </a-menu>
       </a-col>
       <a-col flex="100px">
         <div>{{ store.state.user.loginUser.userName }}</div>
@@ -52,6 +52,7 @@ router.afterEach((to, from, failure) => {
 setTimeout(() => {
   store.dispatch("user/getLoginUser", {
     userName: "luoying",
+    userRole: "admin",
   });
 }, 3000);
 </script>
