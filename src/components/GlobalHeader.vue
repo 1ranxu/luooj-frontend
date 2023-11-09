@@ -13,7 +13,9 @@
             disabled
           >
             <div class="title-bar">
-              <img class="logo" src="../assets/oj-logo.png" />
+              <a-link :hoverable="false" href="/">
+                <img class="logo" src="../assets/oj-logo.png" />
+              </a-link>
               <div class="title">落 OJ</div>
             </div>
           </a-menu-item>

@@ -3,8 +3,10 @@
     <a-layout style="min-height: 100vh">
       <a-layout-header class="header">
         <a-space>
-          <img src="../assets/oj-logo.png" class="logo" />
-          <div class="title">落 OJ</div>
+          <a-link :hoverable="false" href="/">
+            <img src="../assets/oj-logo.png" class="logo" />
+            <div class="title">落 OJ</div>
+          </a-link>
         </a-space>
       </a-layout-header>
       <a-layout-content class="content">
