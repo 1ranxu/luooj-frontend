@@ -64,12 +64,12 @@ router.afterEach((to, from, failure) => {
   selectedKeys.value = [to.path];
 });
 
-setTimeout(() => {
+/*setTimeout(() => {
   store.dispatch("user/getLoginUser", {
     userName: "luoying",
     userRole: AccessEnum.ADMIN,
   });
-}, 3000);
+}, 3000);*/
 </script>
 
 <style scoped>
