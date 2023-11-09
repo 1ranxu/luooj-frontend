@@ -14,7 +14,11 @@ router.beforeEach(async (to, from, next) => {
   //目标页面需要登录
   if (requireAccess !== AccessEnum.NOT_LOGIN) {
     // 如果没登录，跳转到登录页面
-    if (!loginUser || !loginUser.userRole) {
+    if (
+      !loginUser ||
+      !loginUser.userRole ||
+      loginUser.userRole === AccessEnum.NOT_LOGIN
+    ) {
       next(`/user/login?redirect=${to.fullPath}`);
       return;
     }
