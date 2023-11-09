@@ -7,7 +7,7 @@
           <div class="title">落 OJ</div>
         </a-space>
       </a-layout-header>
-      <a-layout-content class="content">3
+      <a-layout-content class="content">
         <router-view />
       </a-layout-content>
       <a-layout-footer class="footer">

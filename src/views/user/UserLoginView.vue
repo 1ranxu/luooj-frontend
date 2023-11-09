@@ -18,6 +18,9 @@
         />
       </a-form-item>
       <a-form-item>
+        <a-link href="/user/register"> 注册</a-link>
+      </a-form-item>
+      <a-form-item>
         <a-button type="primary" html-type="submit" style="width: 120px"
           >登录
         </a-button>
@@ -48,11 +51,11 @@ const handleSubmit = async () => {
   const res = await UserControllerService.userLoginUsingPost(form);
   if (res.code === 0) {
     message.success("登录成功");
-    console.log(route.query.redirect);
+    // console.log(route.query.redirect);
     await store.dispatch("user/getLoginUser");
     // 重定向到用户之前访问的页面
     await router.push({
-      path: `${route.query.redirect}`,
+      path: `${route.query.redirect ?? "/"}`,
       //不会占用浏览器历史记录的堆栈，不能在通过后退箭头返回登录页面
       replace: true,
     });
