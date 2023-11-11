@@ -29,7 +29,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const searchParams = ref({
-  pageSize: 2,
+  pageSize: 10,
   current: 1,
 });
 
