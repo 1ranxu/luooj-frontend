@@ -53,6 +53,7 @@ const routes: Array<RouteRecordRaw> = [
     component: AddQuestionView,
     meta: {
       access: AccessEnum.ADMIN,
+      hideInMenu: true,
     },
   },
   {
@@ -60,14 +61,14 @@ const routes: Array<RouteRecordRaw> = [
     name: "浏览题目",
     component: HomeView,
   },
-  {
-    path: "/admin",
-    name: "仅管理员可见",
-    component: AdminView,
-    meta: {
-      access: AccessEnum.ADMIN,
-    },
-  },
+  // {
+  //   path: "/admin",
+  //   name: "仅管理员可见",
+  //   component: AdminView,
+  //   meta: {
+  //     access: AccessEnum.ADMIN,
+  //   },
+  // },
   {
     path: "/noAuth",
     name: "无权限",
@@ -76,11 +77,11 @@ const routes: Array<RouteRecordRaw> = [
       hideInMenu: true,
     },
   },
-  {
-    path: "/about",
-    name: "关于我的",
-    component: AboutView,
-  },
+  // {
+  //   path: "/about",
+  //   name: "关于我的",
+  //   component: AboutView,
+  // },
 ];
 
 export default routes;
