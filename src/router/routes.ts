@@ -7,6 +7,7 @@ import AccessEnum from "@/access/AccessEnum";
 import UserLayout from "@/layouts/UserLayout.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import UserRegisterView from "@/views/user/UserRegisterView.vue";
+import AddQuestionView from "@/views/question/AddQuestionView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -27,6 +28,14 @@ const routes: Array<RouteRecordRaw> = [
     ],
     meta: {
       hideInMenu: true,
+    },
+  },
+  {
+    path: "/add/question",
+    name: "创建题目",
+    component: AddQuestionView,
+    meta: {
+      access: AccessEnum.ADMIN,
     },
   },
   {

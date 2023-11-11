@@ -2,6 +2,7 @@
   <Editor
     :value="props.value"
     :plugins="plugins"
+    :mode="mode"
     @change="props.hanndleChange"
   />
 </template>
@@ -18,11 +19,13 @@ import { defineProps, withDefaults } from "vue";
 interface Props {
   value: string;
   hanndleChange: (v: string) => void;
+  mode?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   value: () => "",
   hanndleChange: (v: string) => console.log(v),
+  mode: () => "split",
 });
 const plugins = [
   gfm(),
