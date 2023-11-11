@@ -70,8 +70,8 @@
             </a-form-item>
 
             <a-button @click="handleDelete(index)" status="danger"
-              >删除</a-button
-            >
+              >删除
+            </a-button>
           </a-space>
         </a-form-item>
         <div style="margin-top: 32px">
@@ -91,14 +91,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import MDEditor from "@/components/MDEditor.vue";
 import {
   QuestionAddRequest,
   QuestionControllerService,
 } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
+//如果页面url包含update，视为更新页面
+const update = route.fullPath.includes("update");
+//根据题目id获取题目信息
+const loadData = async () => {
+  const id = route.query.id;
+  if (!id) {
+    return;
+  }
+  const res = await QuestionControllerService.getQuestionByIdUsingGet(
+    id as any
+  );
+  if (res.code === 0) {
+    form.value = res.data as any;
+    form.value.tags = JSON.parse((res.data?.tags as string) ?? "[]");
+    form.value.judgeCaseList = JSON.parse(
+      (res.data?.judgeCase as string) ?? "[]"
+    );
+    form.value.judgeConfig = JSON.parse(
+      (res.data?.judgeConfig as string) ?? "{}"
+    );
+  } else {
+    message.error("加载失败，" + res.message);
+  }
+};
+onMounted(() => {
+  if (update) {
+    loadData();
+  }
+});
 const form = ref({
   answer: "",
   content: "",
@@ -118,11 +149,24 @@ const form = ref({
 } as QuestionAddRequest);
 const handleSubmit = async () => {
   console.log(form.value);
-  const res = await QuestionControllerService.addQuestionUsingPost(form.value);
-  if (res.code === 0) {
-    message.success("创建成功");
+  if (!update) {
+    const res = await QuestionControllerService.addQuestionUsingPost(
+      form.value
+    );
+    if (res.code === 0) {
+      message.success("创建成功");
+    } else {
+      message.error("创建失败，" + res.message);
+    }
   } else {
-    message.error("创建失败，" + res.message);
+    const res = await QuestionControllerService.updateQuestionUsingPost(
+      form.value
+    );
+    if (res.code === 0) {
+      message.success("更新成功");
+    } else {
+      message.error("更新失败，" + res.message);
+    }
   }
 };
 /**
