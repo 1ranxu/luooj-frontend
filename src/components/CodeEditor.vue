@@ -35,21 +35,12 @@ watch(
     if (!codeEditorRef.value) {
       return;
     }
-    codeEditor.value = monaco.editor.create(codeEditorRef.value, {
-      value: props.value,
-      language: props.language,
-      automaticLayout: true,
-      colorDecorators: true,
-      minimap: {
-        enabled: true,
-      },
-      readOnly: false,
-      lineNumbers: "on",
-      theme: "vs-dark",
-    });
-    codeEditor.value.onDidChangeModelContent(() => {
-      props.hanndleChange(toRaw(codeEditor.value).getValue());
-    });
+    if (codeEditor.value) {
+      monaco.editor.setModelLanguage(
+        toRaw(codeEditor.value).getModel(),
+        props.language
+      );
+    }
   }
 );
 
