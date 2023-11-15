@@ -1,5 +1,8 @@
 # luooj-frontend
-
+## 根据后端接口文档生成代码
+~~~ shell
+openapi --input "http://localhost:8085/api/v2/api-docs" --output ./generated --client axios
+~~~
 ## Project setup
 ```
 yarn install
