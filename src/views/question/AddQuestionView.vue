@@ -6,7 +6,7 @@
         <a-input v-model="form.title" placeholder="请输入题目标题" />
       </a-form-item>
       <a-form-item field="tags" label="标签">
-        <a-input-tag v-model="form.tags" placeholder="请选择标签" allow-clear />
+        <a-input-tag v-model="form.tags" placeholder="请输入标签" allow-clear />
       </a-form-item>
 
       <a-form-item field="answer" tooltip="请输入答案" label="题目答案">
