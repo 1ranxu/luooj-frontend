@@ -1,4 +1,14 @@
 import axios from "axios";
+import { OpenAPI } from "../../generated";
+
+// 携带凭证
+OpenAPI.WITH_CREDENTIALS = true;
+// 区分多环境
+const baseUrl =
+  process.env.NODE_ENV === "development" ? "http://localhost:8504" : "线上域名";
+
+OpenAPI.BASE = baseUrl;
+console.log("当前环境：", process.env.NODE_ENV, "请求地址", baseUrl);
 // 添加请求拦截器
 axios.interceptors.request.use(
   function (config) {
