@@ -45,6 +45,9 @@ const routes: Array<RouteRecordRaw> = [
     path: "/question_submit",
     name: "提交记录",
     component: QuestionSubmitView,
+    meta: {
+      access: AccessEnum.USER,
+    },
   },
   {
     path: "/view/question/:id",
