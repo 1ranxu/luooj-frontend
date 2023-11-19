@@ -9,13 +9,13 @@
         <a-input-tag v-model="form.tags" placeholder="请输入标签" allow-clear />
       </a-form-item>
 
-      <a-form-item field="answer" tooltip="请输入答案" label="题目答案">
-        <MDEditor :value="form.answer" :hanndle-change="onAnswerChange" />
-      </a-form-item>
       <a-form-item field="content" tooltip="请输入内容" label="题目内容">
         <MDEditor :value="form.content" :hanndle-change="onContentChange" />
       </a-form-item>
 
+      <a-form-item field="answer" tooltip="请输入答案" label="题目答案">
+        <MDEditor :value="form.answer" :hanndle-change="onAnswerChange" />
+      </a-form-item>
       <a-form-item label="判题配置" :content-flex="false" :merge-props="false">
         <a-space direction="vertical" style="min-width: 480px">
           <a-form-item field="judgeConfig.timeLimit" label="时间限制">
