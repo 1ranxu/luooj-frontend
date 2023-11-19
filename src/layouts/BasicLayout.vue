@@ -32,7 +32,6 @@
 }
 
 #basiclayout .footer {
-  background: #efefef;
   padding: 16px;
   position: sticky;
   bottom: 0;
