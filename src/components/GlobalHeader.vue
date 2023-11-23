@@ -25,7 +25,10 @@
         </a-menu>
       </a-col>
       <a-col flex="100px">
-        <div>{{ store.state.user?.loginUser.userName }}</div>
+        <div v-if="store.state.user?.loginUser.userName === '未登录'">
+          <a-link href="/user/login">登录</a-link>
+        </div>
+        <div v-else>{{ store.state.user?.loginUser.userName }}</div>
       </a-col>
     </a-row>
   </div>
