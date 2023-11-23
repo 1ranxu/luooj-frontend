@@ -8,16 +8,38 @@
       auto-label-width
       style="max-width: 480px; margin: 0 auto"
     >
-      <a-form-item field="userAccount" tooltip="请输入账号" label="账号">
+      <a-form-item
+        :rules="[
+          { required: true, message: '账号不能为空' },
+          { minLength: 4, message: '账号长度不能低于四位' },
+        ]"
+        field="userAccount"
+        tooltip="请输入账号"
+        label="账号"
+      >
         <a-input v-model="form.userAccount" placeholder="请输入账号" />
       </a-form-item>
-      <a-form-item field="userPassword" label="密码">
+      <a-form-item
+        :rules="[
+          { required: true, message: '密码不能为空' },
+          { minLength: 6, message: '密码长度不能低于六位' },
+        ]"
+        field="userPassword"
+        label="密码"
+      >
         <a-input-password
           v-model="form.userPassword"
           placeholder="请输入密码"
         />
       </a-form-item>
-      <a-form-item field="checkPassword" label="二次密码">
+      <a-form-item
+        :rules="[
+          { required: true, message: '密码不能为空' },
+          { minLength: 6, message: '密码长度不能低于六位' },
+        ]"
+        field="checkPassword"
+        label="二次密码"
+      >
         <a-input-password
           v-model="form.checkPassword"
           placeholder="请输入二次密码"
@@ -51,6 +73,16 @@ const form = reactive({
 } as UserRegisterRequest);
 
 const handleSubmit = async () => {
+  if (form.userAccount.length < 4 || form.userPassword.length < 6) {
+    return;
+  }
+  if (
+    form.checkPassword?.length !== form.userPassword?.length ||
+    form.checkPassword !== form.userPassword
+  ) {
+    message.error("两次输入密码不一致");
+    return;
+  }
   const res = await UserControllerService.userRegisterUsingPost(form);
   if (res.code === 0) {
     message.success("注册成功");
