@@ -174,4 +174,11 @@ const logout = async () => {
   height: 48px;
   border-radius: 50%;
 }
+
+.userAvatar {
+  height: 160px;
+  width: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 </style>
