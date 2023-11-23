@@ -25,10 +25,78 @@
         </a-menu>
       </a-col>
       <a-col flex="100px">
-        <div v-if="store.state.user?.loginUser.userName === '未登录'">
+        <!--<div v-if="store.state.user?.loginUser.userName === '未登录'">
           <a-link href="/user/login">登录</a-link>
         </div>
-        <div v-else>{{ store.state.user?.loginUser.userName }}</div>
+        <div v-else>{{ store.state.user?.loginUser.userName }}</div>-->
+        <a-dropdown trigger="hover">
+          <!--头像-->
+          <a-avatar shape="circle">
+            <template
+              v-if="loginUser && loginUser.userRole != AccessEnum.NOT_LOGIN"
+            >
+              <template v-if="loginUser.userAvatar">
+                <img
+                  alt="avatar"
+                  class="userAvatar"
+                  :src="loginUser.userAvatar"
+                />
+              </template>
+              <!--默认头像-->
+              <template v-else>
+                <a-avatar>
+                  <IconUser />
+                </a-avatar>
+              </template>
+            </template>
+            <template v-else>
+              <a-avatar>未登录</a-avatar>
+            </template>
+          </a-avatar>
+          <!--下拉框-->
+          <template #content>
+            <!--登录后-->
+            <template
+              v-if="loginUser && loginUser.userRole != AccessEnum.NOT_LOGIN"
+            >
+              <a-doption>
+                <template #icon>
+                  <icon-user />
+                </template>
+                <template #default>
+                  <a-anchor-link>个人信息</a-anchor-link>
+                </template>
+              </a-doption>
+              <a-doption>
+                <template #icon>
+                  <icon-poweroff />
+                </template>
+                <template #default>
+                  <a-anchor-link @click="logout">退出登录</a-anchor-link>
+                </template>
+              </a-doption>
+            </template>
+            <!--登录前-->
+            <template v-else>
+              <a-doption>
+                <template #icon>
+                  <icon-import />
+                </template>
+                <template #default>
+                  <a-anchor-link href="/user/login">登录</a-anchor-link>
+                </template>
+              </a-doption>
+              <a-doption>
+                <template #icon>
+                  <icon-user />
+                </template>
+                <template #default>
+                  <a-anchor-link href="/user/register">注册</a-anchor-link>
+                </template>
+              </a-doption>
+            </template>
+          </template>
+        </a-dropdown>
       </a-col>
     </a-row>
   </div>
@@ -36,14 +104,19 @@
 
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { computed, ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import routes from "@/router/routes";
 import checkAccess from "@/access/CheckAccess";
 import AccessEnum from "@/access/AccessEnum";
+import { LoginUserVO, UserControllerService } from "../../generated";
+import message from "@arco-design/web-vue/es/message";
 
 const store = useStore();
-
+const loginUser = ref<LoginUserVO>();
+watchEffect(() => {
+  loginUser.value = store.state.user?.loginUser;
+});
 const router = useRouter();
 
 // 需要展示的路由
@@ -75,6 +148,15 @@ router.afterEach((to, from, failure) => {
     userRole: AccessEnum.ADMIN,
   });
 }, 3000);*/
+const logout = async () => {
+  const res = await UserControllerService.userLogoutUsingPost();
+  if (res.code === 0) {
+    location.reload();
+    message.success("退出成功");
+  } else {
+    message.error("退出失败，", res.message);
+  }
+};
 </script>
 
 <style scoped>
