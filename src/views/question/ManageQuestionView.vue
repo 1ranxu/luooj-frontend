@@ -10,6 +10,19 @@
       }"
       @page-change="onPageChange"
     >
+      <template #tags="{ record }">
+        <a-space wrap>
+          <a-tag
+            v-for="(tag, index) of JSON.parse(record.tags)"
+            :key="index"
+            color="green"
+            >{{ tag }}
+          </a-tag>
+        </a-space>
+      </template>
+      <template #createTime="{ record }">
+        {{ moment(record.createTime).format("YYYY-MM-DD") }}
+      </template>
       <template #optional="{ record }">
         <a-space>
           <a-button type="primary" @click="doUpdate(record)">修改</a-button>
@@ -25,6 +38,7 @@ import { onMounted, ref, watchEffect } from "vue";
 import { Question, QuestionControllerService } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
+import moment from "moment/moment";
 
 const router = useRouter();
 
@@ -41,6 +55,13 @@ const loadData = async () => {
     ...searchParams.value,
   });
   if (res.code === 0) {
+    res.data.records.map(async (record: any) => {
+      const judgeConfig = JSON.parse(record.judgeConfig);
+      record["timeLimit"] = judgeConfig.timeLimit;
+      record["memoryLimit"] = judgeConfig.memoryLimit;
+      record["stackLimit"] = judgeConfig.stackLimit;
+      return record;
+    });
     dataList.value = res.data.records;
     total.value = res.data.total;
   } else {
@@ -62,58 +83,70 @@ const columns = [
   {
     title: "id",
     dataIndex: "id",
+    width: 190,
   },
   {
     title: "标题",
     dataIndex: "title",
+    width: 180,
   },
-  {
-    title: "内容",
-    dataIndex: "content",
-  },
+  /*  {
+      title: "内容",
+      dataIndex: "content",
+    },*/
   {
     title: "标签",
-    dataIndex: "tags",
+    slotName: "tags",
+    width: 240,
   },
-  {
-    title: "答案",
-    dataIndex: "answer",
-  },
+  /*  {
+      title: "答案",
+      dataIndex: "answer",
+    },*/
   {
     title: "提交数",
     dataIndex: "submitNum",
+    width: 90,
   },
   {
     title: "通过数",
     dataIndex: "acceptedNum",
+    width: 90,
   },
   {
     title: "判题配置",
     dataIndex: "judgeConfig",
+    children: [
+      {
+        title: "时间限制",
+        dataIndex: "timeLimit",
+        width: 100,
+      },
+      {
+        title: "内存限制",
+        dataIndex: "memoryLimit",
+        width: 100,
+      },
+      {
+        title: "堆栈限制",
+        dataIndex: "stackLimit",
+        width: 100,
+      },
+    ],
+    width: 300,
   },
-  {
-    title: "判题用例",
-    dataIndex: "judgeCase",
-  },
-  {
-    title: "点赞数",
-    dataIndex: "thumbNum",
-  },
-  {
-    title: "收藏数",
-    dataIndex: "favourNum",
-  },
+  /*  {
+      title: "判题用例",
+      dataIndex: "judgeCase",
+    },*/
   {
     title: "创建者",
     dataIndex: "userId",
   },
   {
     title: "创建时间",
-    dataIndex: "createTime",
-  },
-  {
-    title: "修改时间",
-    dataIndex: "updateTime",
+    slotName: "createTime",
+    width: 110,
   },
   {
     title: "操作",
