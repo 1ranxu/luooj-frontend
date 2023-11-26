@@ -46,9 +46,9 @@
               :style="{ width: '320px' }"
               placeholder="请选择语言"
             >
-              <a-option>java</a-option>
-              <a-option>cpp</a-option>
-              <a-option>go</a-option>
+              <a-option v-for="language in languages" :key="language">{{
+                language
+              }}</a-option>
             </a-select>
           </a-form-item>
         </a-form>
@@ -91,6 +91,13 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const question = ref<QuestionVO>();
+
+const form = ref<QuestionSubmitAddRequest>({
+  language: "java",
+  code: "",
+  questionId: -1,
+});
+const languages = ref<string[]>();
 const loadData = async () => {
   const res = await QuestionControllerService.getQuestionVoByIdUsingGet(
     props.id as any
@@ -102,14 +109,13 @@ const loadData = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   loadData();
-});
-
-const form = ref<QuestionSubmitAddRequest>({
-  language: "java",
-  code: "",
-  questionId: -1,
+  const res = await QuestionControllerService.getCodeLanguageUsingGet();
+  if (res.code === 0) {
+    languages.value = res.data;
+  }
+  // console.log(res);
 });
 
 /**

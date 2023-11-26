@@ -20,6 +20,7 @@ import type { QuestionUpdateRequest } from '../models/QuestionUpdateRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+import { BaseResponse_Language_ } from "../models/BaseResponse_Language_";
 
 export class QuestionControllerService {
 
@@ -259,6 +260,22 @@ questionUpdateRequest: QuestionUpdateRequest,
             method: 'POST',
             url: '/api/question/update',
             body: questionUpdateRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * getCodeLanguageUsingGet
+     * @returns BaseResponse_Language_ OK
+     * @throws ApiError
+     */
+    public static getCodeLanguageUsingGet(): CancelablePromise<BaseResponse_Language_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/question/get/language',
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
