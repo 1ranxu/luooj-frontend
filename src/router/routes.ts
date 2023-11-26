@@ -9,6 +9,7 @@ import ManageQuestionView from "@/views/question/ManageQuestionView.vue";
 import QuestionsView from "@/views/question/QuestionsView.vue";
 import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
 import QuestionSubmitView from "@/views/question/QuestionSubmitView.vue";
+import UserInfoView from "@/views/user/UserInfoView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -28,6 +29,15 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
     meta: {
+      hideInMenu: true,
+    },
+  },
+  {
+    path: "/_userInfo",
+    name: "个人信息",
+    component: UserInfoView,
+    meta: {
+      access: AccessEnum.USER,
       hideInMenu: true,
     },
   },
