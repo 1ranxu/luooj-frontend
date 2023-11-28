@@ -53,6 +53,8 @@ const handleSubmit = async () => {
     message.success("登录成功");
     // console.log(route.query.redirect);
     await store.dispatch("user/getLoginUser");
+    // 将token保存在localStorage中
+    localStorage.setItem("token", res.data.token);
     // 重定向到用户之前访问的页面
     await router.push({
       path: `${route.query.redirect ?? "/"}`,

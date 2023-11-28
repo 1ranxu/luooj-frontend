@@ -13,6 +13,12 @@ console.log("当前环境：", process.env.NODE_ENV, "请求地址", baseUrl);
 axios.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
+    // 假设token存在localStorage中
+    const token = localStorage.getItem("token");
+    console.log("token:", token);
+    if (token) {
+      config.headers.Authorization = token;
+    }
     return config;
   },
   function (error) {
