@@ -16,11 +16,15 @@
         >
           <a-option>java</a-option>
           <a-option>cpp</a-option>
-          <a-option>go</a-option>
         </a-select>
       </a-form-item>
       <a-form-item>
         <a-button type="primary" @click="doSearch">搜索</a-button>
+      </a-form-item>
+      <a-form-item>
+        <a-button type="primary" status="success" @click="loadData"
+          >刷新
+        </a-button>
       </a-form-item>
     </a-form>
     <a-divider size="0" />
