@@ -1,6 +1,8 @@
 <template>
   <div id="addQuestionView">
-    <h2>创建题目</h2>
+    <h2 v-if="route.path.startsWith('/update/question')">修改题目</h2>
+    <h2 v-else>创建题目</h2>
+
     <a-form :model="form" label-align="left">
       <a-form-item field="title" label="题目标题">
         <a-input v-model="form.title" placeholder="请输入题目标题" />
