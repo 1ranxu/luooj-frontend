@@ -1,14 +1,18 @@
 <template>
   <div id="questionSubmitView">
-    <a-form :model="searchParams" layout="inline">
-      <a-form-item field="questionId" label="题号">
+    <a-form
+      :model="searchParams"
+      layout="inline"
+      style="justify-content: center; align-content: center; margin: 25px"
+    >
+      <a-form-item field="questionId" label="题号" tooltip="请输入题号">
         <a-input
           v-model="searchParams.questionId"
           placeholder="请输入题号"
           style="min-width: 280px"
         />
       </a-form-item>
-      <a-form-item field="language" label="编程语言">
+      <a-form-item field="language" label="编程语言" tooltip="请选择编程语言">
         <a-select
           v-model="searchParams.language"
           :style="{ width: '320px' }"
@@ -19,10 +23,12 @@
         </a-select>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" @click="doSearch">搜索</a-button>
+        <a-button type="outline" shape="round" status="normal" @click="doSearch"
+          >搜索
+        </a-button>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" status="success" @click="loadData"
+        <a-button type="outline" shape="round" status="normal" @click="loadData"
           >刷新
         </a-button>
       </a-form-item>

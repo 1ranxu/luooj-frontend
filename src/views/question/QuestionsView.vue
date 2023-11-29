@@ -1,14 +1,18 @@
 <template>
   <div id="questionsView">
-    <a-form :model="searchParams" layout="inline">
-      <a-form-item field="title" label="题目名称">
+    <a-form
+      :model="searchParams"
+      layout="inline"
+      style="justify-content: center; align-content: center; margin: 25px"
+    >
+      <a-form-item field="title" label="题目名称" tooltip="请输入题目名称">
         <a-input
           v-model="searchParams.title"
           placeholder="请输入题目名称"
           style="min-width: 280px"
         />
       </a-form-item>
-      <a-form-item field="tags" label="标签">
+      <a-form-item field="tags" label="标签" tooltip="请输入题目标签">
         <a-input-tag
           v-model="searchParams.tags"
           placeholder="请输入标签"
@@ -16,7 +20,9 @@
         />
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" @click="doSearch">搜索</a-button>
+        <a-button type="outline" shape="round" status="normal" @click="doSearch"
+          >搜索
+        </a-button>
       </a-form-item>
     </a-form>
     <a-divider size="0" />
