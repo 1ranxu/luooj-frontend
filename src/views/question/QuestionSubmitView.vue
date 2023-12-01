@@ -45,12 +45,47 @@
       }"
       @page-change="onPageChange"
     >
-      <template #judgeInfo="{ record }">
-        {{ JSON.stringify(record.judgeInfo) }}
+      <template #message="{ record }">
+        <a-tag
+          v-if="record.judgeInfo.message === JudgeInfoMessageEnum.ACCEPTED"
+          color="blue"
+          bordered
+        >
+          {{ record.judgeInfo.message }}
+        </a-tag>
+        <a-tag
+          v-else-if="record.judgeInfo.message === JudgeInfoMessageEnum.WAITING"
+          color="green"
+          bordered
+        >
+          {{ record.judgeInfo.message }}
+        </a-tag>
+        <a-tag v-else color="red" bordered>
+          {{ record.judgeInfo.message }}
+        </a-tag>
+      </template>
+      <template #memory="{ record }">
+        {{ record.judgeInfo.memory ? record.judgeInfo.memory : 0 }} K
+      </template>
+
+      <template #time="{ record }">
+        {{ record.judgeInfo.time ? record.judgeInfo.time : 0 }} ms
+      </template>
+
+      <template #status="{ record }">
+        <!-- 0-待判题、1-判题中、2-已判题、3-失败 -->
+        <a-tag v-if="record.status === 0" color="gray">待判题</a-tag>
+        <a-tag v-if="record.status === 1" color="arcoblue">判题中</a-tag>
+        <a-tag v-if="record.status === 2" color="green">已判题</a-tag>
+        <a-tag v-if="record.status === 3" color="red">失败</a-tag>
+      </template>
+
+      <template #userName="{ record }">
+        {{ record.userVO?.userName ? record.userVO?.userName : "无名者" }}
       </template>
 
       <template #createTime="{ record }">
-        {{ moment(record.createTime).format("YYYY-MM-DD") }}
+        {{ moment(record.createTime).format("YYYY-MM-DD hh:mm:ss") }}
       </template>
     </a-table>
   </div>
@@ -66,6 +101,7 @@ import {
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import moment from "moment";
+import JudgeInfoMessageEnum from "@/enums/JudgeInfoMessageEnum";
 
 const router = useRouter();
 
@@ -116,22 +152,38 @@ const columns = [
   },
   {
     title: "判题信息",
-    slotName: "judgeInfo",
+    children: [
+      {
+        title: "判题结果",
+        slotName: "message",
+        width: 100,
+      },
+      {
+        title: "内存消耗",
+        slotName: "memory",
+        width: 100,
+      },
+      {
+        title: "时间消耗",
+        slotName: "time",
+        width: 100,
+      },
+    ],
   },
   {
     title: "提交状态",
-    dataIndex: "status",
+    slotName: "status",
   },
   {
     title: "题号",
     dataIndex: "questionId",
   },
   {
-    title: "提交者 id",
-    dataIndex: "status",
+    title: "提交者",
+    slotName: "userName",
   },
   {
-    title: "创建时间",
+    title: "提交时间",
     slotName: "createTime",
   },
 ];
