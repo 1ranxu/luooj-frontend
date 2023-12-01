@@ -42,8 +42,11 @@
         current: searchParams.current,
         pageSize: searchParams.pageSize,
         total,
+        showJumper: true,
+        showPageSize: true,
       }"
       @page-change="onPageChange"
+      @pageSizeChange="onPageSizeChange"
     >
       <template #message="{ record }">
         <a-tag
@@ -202,7 +205,16 @@ const onPageChange = (page: number) => {
     current: page,
   };
 };
-
+/**
+ * 页面大小切换
+ * @param size
+ */
+const onPageSizeChange = (size: number) => {
+  searchParams.value = {
+    ...searchParams.value,
+    pageSize: size,
+  };
+};
 const doSearch = () => {
   searchParams.value = {
     ...searchParams.value,
