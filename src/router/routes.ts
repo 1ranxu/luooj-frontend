@@ -49,7 +49,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/questions",
-    name: "浏览题目",
+    name: "题库",
     component: QuestionsView,
   },
   {

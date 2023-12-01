@@ -1,14 +1,43 @@
 <template>
   <div id="manageQuestionView">
+    <a-form
+      :model="searchParams"
+      layout="inline"
+      style="justify-content: center; align-content: center; margin: 25px"
+    >
+      <a-form-item field="title" label="题目名称：" tooltip="请输入题目名称">
+        <a-input
+          v-model="searchParams.title"
+          placeholder="请输入题目名称"
+          style="min-width: 280px"
+        />
+      </a-form-item>
+      <a-form-item field="tags" label="标签" tooltip="请输入题目标签">
+        <a-input-tag
+          v-model="searchParams.tags"
+          placeholder="请输入标签"
+          style="min-width: 280px"
+        />
+      </a-form-item>
+      <a-form-item>
+        <a-button type="outline" shape="round" status="normal" @click="doSearch"
+          >搜 索
+        </a-button>
+      </a-form-item>
+    </a-form>
     <a-table
       :columns="columns"
       :data="dataList"
       :pagination="{
         showTotal: true,
-        ...searchParams,
+        current: searchParams.current,
+        pageSize: searchParams.pageSize,
         total,
+        showJumper: true,
+        showPageSize: true,
       }"
       @page-change="onPageChange"
+      @pageSizeChange="onPageSizeChange"
     >
       <template #tags="{ record }">
         <a-space wrap>
@@ -25,8 +54,26 @@
       </template>
       <template #optional="{ record }">
         <a-space>
-          <a-button type="primary" @click="doUpdate(record)">修改</a-button>
-          <a-button status="danger" @click="doDelete(record)">删除</a-button>
+          <a-button type="outline" shape="round" @click="doUpdate(record)"
+            >修改
+          </a-button>
+          <a-popconfirm
+            content="确定要删除此题目吗?"
+            style="width: 180px"
+            type="error"
+            okText="是"
+            cancelText="否"
+            @cancel="
+              () => {
+                message.warning(`已取消`);
+              }
+            "
+            @ok="doDelete(record)"
+          >
+            <a-button shape="round" type="outline" status="danger"
+              >删除
+            </a-button>
+          </a-popconfirm>
         </a-space>
       </template>
     </a-table>
@@ -43,6 +90,8 @@ import moment from "moment/moment";
 const router = useRouter();
 
 const searchParams = ref({
+  title: "",
+  tags: [],
   pageSize: 10,
   current: 1,
 });
@@ -86,7 +135,7 @@ const columns = [
     width: 190,
   },
   {
-    title: "标题",
+    title: "题目",
     dataIndex: "title",
     width: 180,
   },
@@ -97,7 +146,7 @@ const columns = [
   {
     title: "标签",
     slotName: "tags",
-    width: 240,
+    width: 20,
   },
   /*  {
       title: "答案",
@@ -133,14 +182,13 @@ const columns = [
         width: 100,
       },
     ],
-    width: 300,
   },
   /*  {
       title: "判题用例",
       dataIndex: "judgeCase",
     },*/
   {
-    title: "创建者",
+    title: "创建者id",
     dataIndex: "userId",
   },
   {
@@ -151,6 +199,7 @@ const columns = [
   {
     title: "操作",
     slotName: "optional",
+    width: 80,
   },
 ];
 
@@ -174,11 +223,32 @@ const doDelete = async (question: Question) => {
     message.error("删除失败，", res.message);
   }
 };
+/**
+ * 页面切换
+ * @param page
+ */
 const onPageChange = (page: number) => {
   searchParams.value = {
     ...searchParams.value,
     current: page,
   };
+};
+/**
+ * 页面大小切换
+ * @param size
+ */
+const onPageSizeChange = (size: number) => {
+  searchParams.value = {
+    ...searchParams.value,
+    pageSize: size,
+  };
+};
+const doSearch = () => {
+  searchParams.value = {
+    ...searchParams.value,
+    current: 1,
+  };
+  // loadData();
 };
 </script>
 

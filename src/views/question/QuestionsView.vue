@@ -59,7 +59,9 @@
 
       <template #optional="{ record }">
         <a-space>
-          <a-button type="primary" @click="toDoQuestion(record)">做题</a-button>
+          <a-button type="outline" shape="round" @click="toDoQuestion(record)"
+            >做题
+          </a-button>
         </a-space>
       </template>
     </a-table>
