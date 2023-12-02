@@ -8,9 +8,10 @@
         <router-view />
       </a-layout-content>
       <a-layout-footer class="footer">
-        <a href="https://github.com/1ranxu" target="_blank"
-          >LUOYINGDEHUIHEN出品
-        </a>
+        <a-link href="https://github.com/1ranxu" target="_blank">
+          <icon-github />
+        </a-link>
+        LUOYINGDEHUIHEN出品
       </a-layout-footer>
     </a-layout>
   </div>
