@@ -64,7 +64,7 @@
           {{ record.judgeInfo.message }}
         </a-tag>
         <a-tag v-else color="red" bordered>
-          {{ record.judgeInfo.message }}
+          {{ "Error" }}
         </a-tag>
       </template>
       <template #memory="{ record }">
@@ -81,6 +81,12 @@
         <a-tag v-if="record.status === 1" color="arcoblue">判题中</a-tag>
         <a-tag v-if="record.status === 2" color="green">已判题</a-tag>
         <a-tag v-if="record.status === 3" color="red">失败</a-tag>
+      </template>
+
+      <template #questionTitle="{ record }">
+        <a-button type="text" @click="toDoQuestion(record.questionVO)"
+          >{{ record.questionVO.title }}
+        </a-button>
       </template>
 
       <template #userName="{ record }">
@@ -178,8 +184,8 @@ const columns = [
     slotName: "status",
   },
   {
-    title: "题号",
-    dataIndex: "questionId",
+    title: "题目",
+    slotName: "questionTitle",
   },
   {
     title: "提交者",
