@@ -64,7 +64,7 @@
           {{ record.judgeInfo.message }}
         </a-tag>
         <a-tag v-else color="red" bordered>
-          {{ "Error" }}
+          {{ record.judgeInfo.message }}
         </a-tag>
       </template>
       <template #memory="{ record }">
