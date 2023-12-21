@@ -40,6 +40,21 @@
       @page-change="onPageChange"
       @pageSizeChange="onPageSizeChange"
     >
+      <template #isAccepted="{ record }">
+        <a-tooltip v-if="record.isAccepted == 0" content="已解答">
+          <icon-check-circle
+            :style="{ fontSize: '32px', color: 'green' }"
+            :stroke-width="2"
+          />
+        </a-tooltip>
+      </template>
+
+      <template #title="{ record }">
+        <a-button type="text" @click="toDoQuestion(record)"
+          >{{ record.title }}
+        </a-button>
+      </template>
+
       <template #tags="{ record }">
         <a-space wrap>
           <a-tag v-for="(tag, index) of record.tags" :key="index" color="green"
@@ -47,25 +62,19 @@
           </a-tag>
         </a-space>
       </template>
+
       <template #acceptedRate="{ record }">
         {{
           `${
             record.submitNum
-              ? (record.acceptedNum / record.submitNum) * 100
+              ? (record.acceptedNum / record.submitNum).toFixed(4) * 100
               : "0"
           }%(${record.acceptedNum}/${record.submitNum})`
         }}
       </template>
+
       <template #createTime="{ record }">
         {{ moment(record.createTime).format("YYYY-MM-DD") }}
-      </template>
-
-      <template #optional="{ record }">
-        <a-space>
-          <a-button type="outline" shape="round" @click="toDoQuestion(record)"
-            >做题
-          </a-button>
-        </a-space>
       </template>
     </a-table>
   </div>
@@ -114,12 +123,12 @@ onMounted(() => {
 
 const columns = [
   {
-    title: "题号",
-    dataIndex: "id",
+    title: "状态",
+    slotName: "isAccepted",
   },
   {
     title: "题目",
-    dataIndex: "title",
+    slotName: "title",
   },
   {
     title: "标签",
@@ -132,9 +141,6 @@ const columns = [
   {
     title: "创建时间",
     slotName: "createTime",
-  },
-  {
-    slotName: "optional",
   },
 ];
 /**

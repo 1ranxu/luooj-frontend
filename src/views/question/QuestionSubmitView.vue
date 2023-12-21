@@ -5,13 +5,6 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="questionId" label="题号" tooltip="请输入题号">
-        <a-input
-          v-model="searchParams.questionId"
-          placeholder="请输入题号"
-          style="min-width: 280px"
-        />
-      </a-form-item>
       <a-form-item field="language" label="编程语言" tooltip="请选择编程语言">
         <a-select
           v-model="searchParams.language"
