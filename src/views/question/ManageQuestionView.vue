@@ -39,6 +39,12 @@
       @page-change="onPageChange"
       @pageSizeChange="onPageSizeChange"
     >
+      <template #title="{ record }">
+        <a-button type="text" @click="toDoQuestion(record)"
+          >{{ record.title }}
+        </a-button>
+      </template>
+
       <template #tags="{ record }">
         <a-space wrap>
           <a-tag
@@ -50,7 +56,7 @@
         </a-space>
       </template>
       <template #createTime="{ record }">
-        {{ moment(record.createTime).format("YYYY-MM-DD") }}
+        {{ moment(record.createTime).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
       <template #optional="{ record }">
         <a-space>
@@ -132,11 +138,13 @@ const columns = [
   {
     title: "id",
     dataIndex: "id",
+    align: "center",
     width: 190,
   },
   {
     title: "题目",
-    dataIndex: "title",
+    slotName: "title",
+    align: "center",
     width: 180,
   },
   /*  {
@@ -146,6 +154,7 @@ const columns = [
   {
     title: "标签",
     slotName: "tags",
+    align: "center",
     width: 20,
   },
   /*  {
@@ -155,11 +164,13 @@ const columns = [
   {
     title: "提交数",
     dataIndex: "submitNum",
+    align: "center",
     width: 90,
   },
   {
     title: "通过数",
     dataIndex: "acceptedNum",
+    align: "center",
     width: 90,
   },
   {
@@ -169,16 +180,19 @@ const columns = [
       {
         title: "时间限制",
         dataIndex: "timeLimit",
+        align: "center",
         width: 100,
       },
       {
         title: "内存限制",
         dataIndex: "memoryLimit",
+        align: "center",
         width: 100,
       },
       {
         title: "堆栈限制",
         dataIndex: "stackLimit",
+        align: "center",
         width: 100,
       },
     ],
@@ -190,15 +204,18 @@ const columns = [
   {
     title: "创建者id",
     dataIndex: "userId",
+    align: "center",
   },
   {
     title: "创建时间",
     slotName: "createTime",
+    align: "center",
     width: 110,
   },
   {
     title: "操作",
     slotName: "optional",
+    align: "center",
     width: 80,
   },
 ];
@@ -223,6 +240,17 @@ const doDelete = async (question: Question) => {
     message.error("删除失败，", res.message);
   }
 };
+
+/**
+ * 跳转到做题页面
+ * @param question
+ */
+const toDoQuestion = (question: Question) => {
+  router.push({
+    path: `/view/question/${question.id}`,
+  });
+};
+
 /**
  * 页面切换
  * @param page

@@ -87,7 +87,7 @@
       </template>
 
       <template #createTime="{ record }">
-        {{ moment(record.createTime).format("YYYY-MM-DD hh:mm:ss") }}
+        {{ moment(record.createTime).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
     </a-table>
   </div>
@@ -147,10 +147,12 @@ const columns = [
   {
     title: "提交号",
     dataIndex: "id",
+    align: "center",
   },
   {
     title: "编程语言",
     dataIndex: "language",
+    align: "center",
   },
   {
     title: "判题信息",
@@ -158,16 +160,19 @@ const columns = [
       {
         title: "判题结果",
         slotName: "message",
+        align: "center",
         width: 100,
       },
       {
         title: "内存消耗",
         slotName: "memory",
+        align: "center",
         width: 100,
       },
       {
         title: "时间消耗",
         slotName: "time",
+        align: "center",
         width: 100,
       },
     ],
@@ -175,18 +180,22 @@ const columns = [
   {
     title: "提交状态",
     slotName: "status",
+    align: "center",
   },
   {
     title: "题目",
     slotName: "questionTitle",
+    align: "center",
   },
   {
     title: "提交者",
     slotName: "userName",
+    align: "center",
   },
   {
     title: "提交时间",
     slotName: "createTime",
+    align: "center",
   },
 ];
 /**

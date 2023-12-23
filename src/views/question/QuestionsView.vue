@@ -125,22 +125,27 @@ const columns = [
   {
     title: "状态",
     slotName: "isAccepted",
+    align: "center",
   },
   {
     title: "题目",
     slotName: "title",
+    align: "center",
   },
   {
     title: "标签",
     slotName: "tags",
+    align: "center",
   },
   {
     title: "通过率",
     slotName: "acceptedRate",
+    align: "center",
   },
   {
     title: "创建时间",
     slotName: "createTime",
+    align: "center",
   },
 ];
 /**
