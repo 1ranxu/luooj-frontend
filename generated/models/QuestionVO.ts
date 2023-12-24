@@ -3,21 +3,22 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { QuestionJudgeCconfig } from './QuestionJudgeCconfig';
-import type { UserVO } from './UserVO';
+import type { QuestionJudgeCconfig } from "./QuestionJudgeCconfig";
+import type { UserVO } from "./UserVO";
 
 export type QuestionVO = {
-    acceptedNum?: number;
-    content?: string;
-    createTime?: string;
-    favourNum?: number;
-    id?: number;
-    judgeConfig?: QuestionJudgeCconfig;
-    submitNum?: number;
-    tags?: Array<string>;
-    thumbNum?: number;
-    title?: string;
-    updateTime?: string;
-    userId?: number;
-    userVO?: UserVO;
+  acceptedNum?: number;
+  content?: string;
+  createTime?: string;
+  favourNum?: number;
+  id?: number;
+  judgeConfig?: QuestionJudgeCconfig;
+  submitNum?: number;
+  tags?: Array<string>;
+  answer: string;
+  thumbNum?: number;
+  title?: string;
+  updateTime?: string;
+  userId?: number;
+  userVO?: UserVO;
 };

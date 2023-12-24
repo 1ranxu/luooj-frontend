@@ -21,6 +21,8 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 import { BaseResponse_Language_ } from "../models/BaseResponse_Language_";
+import { RunCodeRequest } from "../models/RunCodeRequest";
+import { RunCodeResponse } from "../models/RunCodeResponse";
 
 export class QuestionControllerService {
 
@@ -246,6 +248,29 @@ questionSubmitQueryRequest: QuestionSubmitQueryRequest,
         });
     }
 
+
+    /**
+     * listMyQuestionSubmitByPageUsingPost
+     * @param questionSubmitQueryRequest questionSubmitQueryRequest
+     * @returns BaseResponse_Page_QuestionSubmitVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static listMyQuestionSubmitByPageUsingPost(
+      questionSubmitQueryRequest: QuestionSubmitQueryRequest,
+    ): CancelablePromise<BaseResponse_Page_QuestionSubmitVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/question/question_submit/my/list/page',
+            body: questionSubmitQueryRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
     /**
      * updateQuestion
      * @param questionUpdateRequest questionUpdateRequest
@@ -269,7 +294,7 @@ questionUpdateRequest: QuestionUpdateRequest,
     }
     /**
      * getCodeLanguageUsingGet
-     * @returns BaseResponse_Language_ OK
+     * @returns any OK
      * @throws ApiError
      */
     public static getCodeLanguageUsingGet(): CancelablePromise<BaseResponse_Language_> {
@@ -283,5 +308,27 @@ questionUpdateRequest: QuestionUpdateRequest,
             },
         });
     }
+    /**
+     * runQuestionOnlineUsingPost
+     * @param executeCodeRequest executeCodeRequest
+     * @returns BaseResponse_long_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static runQuestionOnlineUsingPost(
+      runCodeRequest: RunCodeRequest,
+    ): CancelablePromise<RunCodeResponse | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/question/question/run/online',
+            body: runCodeRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
 
 }

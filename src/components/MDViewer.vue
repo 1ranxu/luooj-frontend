@@ -5,6 +5,8 @@
 <script setup lang="ts">
 import gfm from "@bytemd/plugin-gfm";
 import highlight from "@bytemd/plugin-highlight";
+import "highlight.js/styles/default.css";
+import "bytemd/dist/index.css";
 import { Viewer } from "@bytemd/vue-next";
 import { defineProps, withDefaults } from "vue";
 
