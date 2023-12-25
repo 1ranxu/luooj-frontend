@@ -6,10 +6,10 @@
         <h2 v-else>创建题目</h2>
       </template>
       <a-form :model="form" label-align="left">
-        <a-form-item field="title" label="题目标题">
+        <a-form-item field="title" label="题目标题" tooltip="请输入标题">
           <a-input v-model="form.title" placeholder="请输入题目标题" />
         </a-form-item>
-        <a-form-item field="tags" label="标签">
+        <a-form-item field="tags" label="标签" tooltip="请输入标签">
           <a-input-tag
             v-model="form.tags"
             placeholder="请输入标签"
@@ -25,6 +25,7 @@
           <MDEditor :value="form.answer" :hanndle-change="onAnswerChange" />
         </a-form-item>
         <a-form-item
+          tooltip="请设置配置"
           label="判题配置"
           :content-flex="false"
           :merge-props="false"
@@ -63,6 +64,7 @@
           </a-space>
         </a-form-item>
         <a-form-item
+          tooltip="请设置用例"
           label="判题用例"
           :content-flex="false"
           :merge-props="false"
@@ -132,9 +134,13 @@ import message from "@arco-design/web-vue/es/message";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
+
 //如果页面url包含update，视为更新页面
 const update = route.fullPath.includes("update");
-//根据题目id获取题目信息
+
+/**
+ * 根据题目id获取题目信息，用于更新题目
+ */
 const loadData = async () => {
   const id = route.query.id;
   if (!id) {
@@ -156,11 +162,19 @@ const loadData = async () => {
     message.error("加载失败，" + res.message);
   }
 };
+
+/**
+ * 更新时才加载
+ */
 onMounted(() => {
   if (update) {
     loadData();
   }
 });
+
+/**
+ * 题目信息
+ */
 const form = ref({
   answer: "",
   content: "",
@@ -178,6 +192,10 @@ const form = ref({
   tags: [],
   title: "",
 } as QuestionAddRequest);
+
+/**
+ * 创建或者更新题目
+ */
 const handleSubmit = async () => {
   console.log(form.value);
   if (!update) {
@@ -200,6 +218,7 @@ const handleSubmit = async () => {
     }
   }
 };
+
 /**
  * 新增判题用例
  */
@@ -211,6 +230,7 @@ const handleAdd = () => {
     });
   }
 };
+
 /**
  * 删除判题用例
  * @param index
@@ -221,9 +241,18 @@ const handleDelete = (index: number) => {
   }
 };
 
+/**
+ * 题目答案改变函数
+ * @param value
+ */
 const onAnswerChange = (value: string) => {
   form.value.answer = value;
 };
+
+/**
+ * 题目内容改变函数
+ * @param value
+ */
 const onContentChange = (value: string) => {
   form.value.content = value;
 };

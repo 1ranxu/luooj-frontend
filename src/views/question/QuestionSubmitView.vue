@@ -107,6 +107,7 @@ import JudgeInfoMessageEnum from "@/enums/JudgeInfoMessageEnum";
 
 const router = useRouter();
 
+// 搜索参数
 const searchParams = ref<QuestionSubmitQueryRequest>({
   language: undefined,
   questionId: undefined,
@@ -116,9 +117,15 @@ const searchParams = ref<QuestionSubmitQueryRequest>({
   sortOrder: "descend",
 });
 
+// 提交记录总数
 const total = ref(0);
 
+// 提交记录
 const dataList = ref([]);
+
+/**
+ * 获取提交记录
+ */
 const loadData = async () => {
   const res = await QuestionControllerService.listQuestionSubmitByPageUsingPost(
     {
@@ -132,6 +139,7 @@ const loadData = async () => {
     message.error("加载失败，" + res.message);
   }
 };
+
 /**
  * 监听loadData函数所使用的变量的变化，改变时触发页面的重新加载
  */
@@ -198,6 +206,7 @@ const columns = [
     align: "center",
   },
 ];
+
 /**
  * 跳转到做题页面
  * @param question
@@ -207,12 +216,18 @@ const toDoQuestion = (question: Question) => {
     path: `/view/question/${question.id}`,
   });
 };
+
+/**
+ * 页面切换
+ * @param page
+ */
 const onPageChange = (page: number) => {
   searchParams.value = {
     ...searchParams.value,
     current: page,
   };
 };
+
 /**
  * 页面大小切换
  * @param size
@@ -223,6 +238,10 @@ const onPageSizeChange = (size: number) => {
     pageSize: size,
   };
 };
+
+/**
+ * 搜索函数
+ */
 const doSearch = () => {
   searchParams.value = {
     ...searchParams.value,

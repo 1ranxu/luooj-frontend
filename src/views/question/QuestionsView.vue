@@ -89,6 +89,7 @@ import moment from "moment";
 
 const router = useRouter();
 
+// 搜索参数
 const searchParams = ref({
   title: "",
   tags: [],
@@ -96,9 +97,15 @@ const searchParams = ref({
   current: 1,
 });
 
+// 题目总数
 const total = ref(0);
 
+// 题目数据
 const dataList = ref([]);
+
+/**
+ * 获取题目数据
+ */
 const loadData = async () => {
   const res = await QuestionControllerService.listQuestionVoByPageUsingPost({
     ...searchParams.value,
@@ -110,6 +117,7 @@ const loadData = async () => {
     message.error("加载失败，" + res.message);
   }
 };
+
 /**
  * 监听loadData函数所使用的变量的变化，改变时触发页面的重新加载
  */
@@ -157,12 +165,18 @@ const toDoQuestion = (question: Question) => {
     path: `/view/question/${question.id}`,
   });
 };
+
+/**
+ * 页面切换
+ * @param page
+ */
 const onPageChange = (page: number) => {
   searchParams.value = {
     ...searchParams.value,
     current: page,
   };
 };
+
 /**
  * 页面大小切换
  * @param size
@@ -173,6 +187,10 @@ const onPageSizeChange = (size: number) => {
     pageSize: size,
   };
 };
+
+/**
+ * 搜索函数
+ */
 const doSearch = () => {
   searchParams.value = {
     ...searchParams.value,
