@@ -31,15 +31,15 @@
         <div v-else>{{ store.state.user?.loginUser.userName }}</div>-->
         <a-dropdown trigger="hover">
           <!--头像-->
-          <a-avatar shape="circle">
+          <a-avatar shape="circle" class="userAvatar">
             <template
               v-if="loginUser && loginUser.userRole != AccessEnum.NOT_LOGIN"
             >
               <template v-if="loginUser.userAvatar">
                 <img
                   alt="avatar"
-                  class="userAvatar"
                   :src="loginUser.userAvatar"
+                  style="border-radius: 50%"
                 />
               </template>
               <!--默认头像-->
@@ -176,8 +176,8 @@ const logout = async () => {
 }
 
 .userAvatar {
-  height: 160px;
-  width: 160px;
+  height: 40px;
+  width: 40px;
   border-radius: 50%;
   object-fit: cover;
 }

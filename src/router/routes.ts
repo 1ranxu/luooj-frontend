@@ -11,6 +11,7 @@ import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
 import QuestionSubmitView from "@/views/question/QuestionSubmitView.vue";
 import UserInfoView from "@/views/user/UserInfoView.vue";
 import UserManageView from "@/views/user/UserManageView.vue";
+import QuestionLayout from "@/layouts/QuestionLayout.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -61,10 +62,17 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/view/question/:id",
-    name: "在线做题",
-    component: ViewQuestionView,
-    props: true,
+    path: "/view",
+    name: "题目",
+    component: QuestionLayout,
+    children: [
+      {
+        path: "/view/question/:id",
+        name: "在线做题",
+        component: ViewQuestionView,
+        props: true,
+      },
+    ],
     meta: {
       access: AccessEnum.USER,
       hideInMenu: true,

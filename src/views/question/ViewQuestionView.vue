@@ -1,201 +1,216 @@
 <template>
   <div id="viewQuestionView">
-    <a-row :gutter="[24, 24]">
+    <a-resize-box :directions="['right']" v-model:width="resizeBoxWidth">
       <!--左栏-->
-      <a-col :md="12" xs="24">
-        <a-tabs default-active-key="question">
-          <!--题目详情-->
-          <a-tab-pane key="question" title="题目详情">
-            <a-scrollbar style="height: 580px; overflow: auto">
-              <a-card v-if="question" :title="question.title">
-                <a-space direction="vertical" size="large" fill>
-                  <a-descriptions
-                    title="判题条件"
-                    :column="{ xs: 1, md: 2, lg: 3 }"
-                  >
-                    <a-descriptions-item label="时间限制">
-                      {{ question.judgeConfig.timeLimit }}
-                    </a-descriptions-item>
-                    <a-descriptions-item label="内存限制">
-                      {{ question.judgeConfig.timeLimit }}
-                    </a-descriptions-item>
-                    <a-descriptions-item label="堆栈限制">
-                      {{ question.judgeConfig.timeLimit }}
-                    </a-descriptions-item>
-                  </a-descriptions>
-                </a-space>
-
-                <MDViewer :value="question.content || ''" />
-
-                <template #extra>
-                  <a-space wrap>
-                    <a-tag
-                      v-for="(tag, index) of question.tags"
-                      :key="index"
-                      color="green"
-                      >{{ tag }}
-                    </a-tag>
+      <div id="leftPart">
+        <a-card style="height: 695px">
+          <a-scrollbar style="height: calc(100vh - 110px); overflow: auto">
+            <a-tabs default-active-key="question" size="mini">
+              <!--题目详情-->
+              <a-tab-pane key="question" title="题目详情">
+                <a-card v-if="question" :title="question.title">
+                  <a-space direction="vertical" size="large" fill>
+                    <a-descriptions
+                      title="判题条件"
+                      :column="{ xs: 1, md: 2, lg: 3 }"
+                    >
+                      <a-descriptions-item label="时间限制">
+                        {{ question.judgeConfig.timeLimit }}
+                      </a-descriptions-item>
+                      <a-descriptions-item label="内存限制">
+                        {{ question.judgeConfig.timeLimit }}
+                      </a-descriptions-item>
+                      <a-descriptions-item label="堆栈限制">
+                        {{ question.judgeConfig.timeLimit }}
+                      </a-descriptions-item>
+                    </a-descriptions>
                   </a-space>
-                </template>
-              </a-card>
-            </a-scrollbar>
-          </a-tab-pane>
-          <!--评论区-->
-          <a-tab-pane key="comment" title="评论" disabled> 评论区</a-tab-pane>
-          <!--题解-->
-          <a-tab-pane key="answers" title="题解">
-            <a-card v-if="question">
-              <MDViewer :value="question.answer || ''" />
-            </a-card>
-          </a-tab-pane>
-          <!--提交记录-->
-          <a-tab-pane key="history" title="提交记录">
-            <a-table
-              :columns="columns"
-              :data="dataList"
-              :pagination="{
-                showTotal: true,
-                current: searchParams.current,
-                pageSize: searchParams.pageSize,
-                total,
-                showPageSize: true,
-              }"
-              @page-change="onPageChange"
-              @pageSizeChange="onPageSizeChange"
-              @row-click="handleHistoryRecordClick"
-            >
-              <template #message="{ record }">
-                <a-tag
-                  v-if="
-                    record.judgeInfo.message === JudgeInfoMessageEnum.ACCEPTED
-                  "
-                  color="blue"
-                  bordered
-                >
-                  {{ record.judgeInfo.message }}
-                </a-tag>
-                <a-tag
-                  v-else-if="
-                    record.judgeInfo.message === JudgeInfoMessageEnum.WAITING
-                  "
-                  color="green"
-                  bordered
-                >
-                  {{ record.judgeInfo.message }}
-                </a-tag>
-                <a-tag v-else color="red" bordered>
-                  {{ record.judgeInfo.message }}
-                </a-tag>
-              </template>
-              <template #memory="{ record }">
-                {{ record.judgeInfo.memory ? record.judgeInfo.memory : 0 }}
-                K
-              </template>
+                  <MDViewer :value="question.content || ''" />
 
-              <template #time="{ record }">
-                {{ record.judgeInfo.time ? record.judgeInfo.time : 0 }} ms
-              </template>
+                  <template #extra>
+                    <a-space wrap>
+                      <a-tag
+                        v-for="(tag, index) of question.tags"
+                        :key="index"
+                        color="green"
+                        >{{ tag }}
+                      </a-tag>
+                    </a-space>
+                  </template>
+                </a-card>
+              </a-tab-pane>
+              <!--评论区-->
+              <a-tab-pane key="comment" title="评论" disabled>
+                评论区
+              </a-tab-pane>
+              <!--题解-->
+              <a-tab-pane key="answers" title="题解">
+                <a-card v-if="question">
+                  <MDViewer :value="question.answer || ''" />
+                </a-card>
+              </a-tab-pane>
+              <!--提交记录-->
+              <a-tab-pane key="history" title="提交记录">
+                <a-table
+                  :columns="columns"
+                  :data="dataList"
+                  :pagination="{
+                    showTotal: true,
+                    current: searchParams.current,
+                    pageSize: searchParams.pageSize,
+                    total,
+                    showPageSize: true,
+                  }"
+                  @page-change="onPageChange"
+                  @pageSizeChange="onPageSizeChange"
+                  @row-click="handleHistoryRecordClick"
+                >
+                  <template #message="{ record }">
+                    <a-tag
+                      v-if="
+                        record.judgeInfo.message ===
+                        JudgeInfoMessageEnum.ACCEPTED
+                      "
+                      color="blue"
+                      bordered
+                    >
+                      {{ record.judgeInfo.message }}
+                    </a-tag>
+                    <a-tag
+                      v-else-if="
+                        record.judgeInfo.message ===
+                        JudgeInfoMessageEnum.WAITING
+                      "
+                      color="green"
+                      bordered
+                    >
+                      {{ record.judgeInfo.message }}
+                    </a-tag>
+                    <a-tag v-else color="red" bordered>
+                      {{ record.judgeInfo.message }}
+                    </a-tag>
+                  </template>
+                  <template #memory="{ record }">
+                    {{ record.judgeInfo.memory ? record.judgeInfo.memory : 0 }}
+                    K
+                  </template>
 
-              <template #createTime="{ record }">
-                {{ moment(record.createTime).format("YYYY-MM-DD HH:mm:ss") }}
-              </template>
-            </a-table>
-          </a-tab-pane>
-        </a-tabs>
-      </a-col>
-      <!--代码编辑-->
-      <a-col :md="12" xs="24" v-if="!historyVisible" style="margin-top: 38px">
-        <a-card>
-          <a-form :model="form" layout="inline">
-            <!--语言选择-->
-            <a-form-item field="language">
-              <a-space>
-                <a-select
-                  v-model="form.language"
-                  :style="{ width: '150px' }"
-                  placeholder="请选择语言"
-                >
-                  <a-option v-for="language in languages" :key="language"
-                    >{{ language }}
-                  </a-option>
-                </a-select>
-                <!--控制台按钮，用于打开控制台自测代码-->
-                <a-button @click="handleConsoleClick">控制台</a-button>
-                <!--提交按钮-->
-                <a-button
-                  type="primary"
-                  status="success"
-                  style="min-width: 80px"
-                  @click="doQuestionSubmit"
-                >
-                  提交
-                </a-button>
-              </a-space>
-            </a-form-item>
-          </a-form>
-          <!--代码编辑器-->
-          <CodeEditor
-            :value="form.code as string"
-            :language="form.language as string"
-            :hanndle-change="onCodeChange"
-          />
+                  <template #time="{ record }">
+                    {{ record.judgeInfo.time ? record.judgeInfo.time : 0 }}
+                    ms
+                  </template>
+
+                  <template #createTime="{ record }">
+                    {{
+                      moment(record.createTime).format("YYYY-MM-DD HH:mm:ss")
+                    }}
+                  </template>
+                </a-table>
+              </a-tab-pane>
+            </a-tabs>
+          </a-scrollbar>
         </a-card>
-      </a-col>
-      <!--提交记录详情-->
-      <a-col :md="12" xs="24" v-if="historyVisible" style="margin-top: 38px">
-        <a-card>
-          <!--关闭按钮-->
-          <a-button
-            type="text"
-            @click="
-              () => {
-                historyVisible = false;
-              }
-            "
-          >
-            <template #icon>
-              <icon-close />
-            </template>
-          </a-button>
-          <!--提交记录的一些信息-->
-          <a-space direction="vertical" size="large" fill>
-            <a-descriptions :column="{ xs: 1, md: 2, lg: 3 }">
-              <a-descriptions-item label="语言">
-                <a-tag color="arcoblue">
-                  {{ historyRecord.language }}
-                </a-tag>
-              </a-descriptions-item>
-              <a-descriptions-item label="执行时间">
-                {{
-                  historyRecord.judgeInfo.time
-                    ? historyRecord.judgeInfo.time
-                    : 0
-                }}
-                ms
-              </a-descriptions-item>
-              <a-descriptions-item label="消耗内存">
-                {{
-                  historyRecord.judgeInfo.memory
-                    ? historyRecord.judgeInfo.memory
-                    : 0
-                }}
-                K
-              </a-descriptions-item>
-            </a-descriptions>
-          </a-space>
-          <!--展示提交代码-->
-          <Codemirror
-            v-model="historyRecord.code"
-            :style="{ height: '500px' }"
-            :autofocus="false"
-            :indent-with-tab="true"
-            :tab-size="2"
-            :extensions="extensions"
-            disabled
-          />
-        </a-card>
-      </a-col>
-    </a-row>
+      </div>
+    </a-resize-box>
+    <!--右栏-->
+    <div
+      id="rightPart"
+      v-if="!historyVisible"
+      :style="{ width: codeWidth + 'px' }"
+    >
+      <a-card>
+        <a-form :model="form" layout="inline" size="mini">
+          <!--语言选择-->
+          <a-form-item field="language" style="min-width: 240px">
+            <a-space>
+              <a-select
+                v-model="form.language"
+                :style="{ width: '150px' }"
+                placeholder="请选择语言"
+              >
+                <a-option v-for="language in languages" :key="language"
+                  >{{ language }}
+                </a-option>
+              </a-select>
+              <!--控制台-->
+              <a-button
+                @click="handleConsoleClick"
+                style="width: 66px; height: 28px; border-radius: 5px"
+              >
+                控制台
+              </a-button>
+              <!--提交按钮-->
+              <a-button
+                type="primary"
+                status="success"
+                style="width: 66px; height: 28px; border-radius: 5px"
+                @click="doQuestionSubmit"
+              >
+                提交
+              </a-button>
+            </a-space>
+          </a-form-item>
+        </a-form>
+        <!--代码编辑器-->
+        <CodeEditor
+          :value="form.code as string"
+          :language="form.language as string"
+          :hanndle-change="onCodeChange"
+        />
+      </a-card>
+    </div>
+    <!--提交记录详情-->
+    <div id="history" v-if="historyVisible" :style="{ width: codeWidth }">
+      <a-card>
+        <!--关闭按钮-->
+        <a-button
+          type="text"
+          @click="
+            () => {
+              historyVisible = false;
+            }
+          "
+        >
+          <template #icon>
+            <icon-close />
+          </template>
+        </a-button>
+        <!--提交记录的一些信息-->
+        <a-space direction="vertical" size="large" fill>
+          <a-descriptions :column="{ xs: 1, md: 2, lg: 3 }">
+            <a-descriptions-item label="语言">
+              <a-tag color="arcoblue">
+                {{ historyRecord.language }}
+              </a-tag>
+            </a-descriptions-item>
+            <a-descriptions-item label="执行时间">
+              {{
+                historyRecord.judgeInfo.time ? historyRecord.judgeInfo.time : 0
+              }}
+              ms
+            </a-descriptions-item>
+            <a-descriptions-item label="消耗内存">
+              {{
+                historyRecord.judgeInfo.memory
+                  ? historyRecord.judgeInfo.memory
+                  : 0
+              }}
+              K
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-space>
+        <!--展示提交代码-->
+        <Codemirror
+          v-model="historyRecord.code"
+          :style="{ height: '599px' }"
+          :autofocus="false"
+          :indent-with-tab="true"
+          :tab-size="2"
+          :extensions="extensions"
+          disabled
+        />
+      </a-card>
+    </div>
     <!--控制台-->
     <a-drawer
       :height="500"
@@ -208,7 +223,7 @@
       @cancel="handleConsoleClose"
       esc-to-close
     >
-      <template #title> 自测运行 Esc（关闭）</template>
+      <template #title> 自测运行</template>
 
       <a-space>
         <!--自定义输入-->
@@ -273,6 +288,18 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   id: () => "",
 });
+
+const resizeBoxWidth = ref(755);
+const codeWidth = ref(0);
+
+watchEffect(() => {
+  codeWidth.value = window.innerWidth - resizeBoxWidth.value;
+});
+window.addEventListener("resize", () => {
+  // 窗口大小改变时,手动触发更新
+  codeWidth.value = window.innerWidth - resizeBoxWidth.value;
+});
+
 // 提交记录详情页面是否可见
 const historyVisible = ref(false);
 // 提交记录
@@ -305,11 +332,11 @@ const handleRunClick = async () => {
     language: form.value.language,
   });
   if (res.code === 0) {
-    runLoading.value = false;
     runCodeResponse.value.output = res.data.output
       ? res.data.output
       : res.data.message;
   }
+  runLoading.value = false;
 };
 /**
  * 关闭控制台
@@ -482,9 +509,24 @@ const onPageSizeChange = (size: number) => {
 <style scoped>
 #viewQuestionView {
   margin: 0 auto;
+  width: 100%;
+  display: flex;
 }
 
 #viewQuestionView .arco-space-horizontal .arco-space-item {
   margin-bottom: 0 !important;
+}
+
+#leftPart {
+  flex: 1;
+}
+
+#rightPart {
+  min-width: 385px;
+}
+
+#history {
+  min-width: 385px;
+  flex: 1;
 }
 </style>

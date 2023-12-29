@@ -308,6 +308,7 @@ questionUpdateRequest: QuestionUpdateRequest,
             },
         });
     }
+
     /**
      * runQuestionOnlineUsingPost
      * @param executeCodeRequest executeCodeRequest
@@ -320,7 +321,7 @@ questionUpdateRequest: QuestionUpdateRequest,
     ): CancelablePromise<RunCodeResponse | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/question/question/run/online',
+            url: '/api/question/run/online',
             body: runCodeRequest,
             errors: {
                 401: `Unauthorized`,
@@ -330,5 +331,67 @@ questionUpdateRequest: QuestionUpdateRequest,
         });
     }
 
+    /**
+     * getPreviousQuestion
+     * @param questionId questionId
+     * @returns BaseResponse_QuestionVO_ OK
+     * @throws ApiError
+     */
+    public static getPreviousQuestionUsingGet(
+      questionId?: number,
+    ): CancelablePromise<BaseResponse_long_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/question/get/questionId/previous',
+            query: {
+                'questionId': questionId,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
 
+    /**
+     * getNextQuestion
+     * @param questionId questionId
+     * @returns BaseResponse_QuestionVO_ OK
+     * @throws ApiError
+     */
+    public static getNextQuestionUsingGet(
+      questionId?: number,
+    ): CancelablePromise<BaseResponse_long_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/question/get/questionId/next',
+            query: {
+                'questionId': questionId,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * getRandomQuestion
+     * @returns BaseResponse_QuestionVO_ OK
+     * @throws ApiError
+     */
+    public static getRandomQuestion(
+    ): CancelablePromise<BaseResponse_long_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/question/get/questionId/random',
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
 }
