@@ -1,6 +1,5 @@
 <template>
   <div id="userLogin">
-    <h2>用户登录</h2>
     <a-form
       :model="form"
       @submit="handleSubmit"
@@ -18,12 +17,17 @@
         />
       </a-form-item>
       <a-form-item>
-        <a-link href="/user/register"> 注册</a-link>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" html-type="submit" style="width: 120px"
+        <a-button
+          type="primary"
+          html-type="submit"
+          long
+          style="background-color: rgb(24, 25, 28); border-radius: 6px"
           >登录
         </a-button>
+      </a-form-item>
+      <a-form-item>
+        没有账号？
+        <a-link href="/user/register"> 注册</a-link>
       </a-form-item>
     </a-form>
   </div>
