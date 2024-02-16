@@ -5,7 +5,9 @@ import { OpenAPI } from "../../generated";
 OpenAPI.WITH_CREDENTIALS = true;
 // 区分多环境
 const baseUrl =
-  process.env.NODE_ENV === "development" ? "http://localhost:8504" : "线上域名";
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8504"
+    : "http://106.54.1.199:8504";
 
 OpenAPI.BASE = baseUrl;
 console.log("当前环境：", process.env.NODE_ENV, "请求地址", baseUrl);

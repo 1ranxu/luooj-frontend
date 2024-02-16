@@ -5,7 +5,7 @@
         <a-space>
           <a-link :hoverable="false" href="/">
             <img src="../assets/oj-logo.png" class="logo" />
-            <div class="title">落 OJ</div>
+            <div class="title">落畔题</div>
           </a-link>
         </a-space>
       </a-layout-header>

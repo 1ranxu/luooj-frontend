@@ -130,12 +130,12 @@
             <a-option value="user">普通用户</a-option>
           </a-select>
         </a-form-item>
-        <a-form-item field="性别" label="性别 :">
+        <!--        <a-form-item field="性别" label="性别 :">
           <a-select v-model="userInfo.gender" placeholder="请选择用户性别">
             <a-option value="0">男</a-option>
             <a-option value="1">女</a-option>
           </a-select>
-        </a-form-item>
+        </a-form-item>-->
         <a-form-item field="userProfile" label="简介 :">
           <a-textarea
             v-model="userInfo.userProfile"
@@ -230,11 +230,11 @@ const columns = [
     dataIndex: "userProfile",
     align: "center",
   },
-  {
-    title: "性别",
-    dataIndex: "gender",
-    align: "center",
-  },
+  /*  {
+      title: "性别",
+      dataIndex: "gender",
+      align: "center",
+    },*/
   {
     title: "角色",
     slotName: "userRole",
@@ -283,7 +283,7 @@ const onPageSizeChange = (size: number) => {
 const openModalForm = async (userId: any) => {
   const res = await UserControllerService.getUserByIdUsingGet(userId);
   console.log("res:", res.data);
-  userInfo.value = res.data;
+  userInfo.value = { ...res.data, userPassword: null };
   console.log(userInfo.value);
   visible.value = true;
 };
