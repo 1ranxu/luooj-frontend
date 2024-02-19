@@ -36,7 +36,7 @@
 <style>
 #userlayout {
   text-align: center;
-  background-image: url("background.jpg");
+  background-image: url("../../public/background.jpg");
   background-color: rgb(255, 255, 255, 0.5);
   opacity: 1;
   background-repeat: no-repeat;

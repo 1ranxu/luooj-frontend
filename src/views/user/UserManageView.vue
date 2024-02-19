@@ -321,7 +321,10 @@ let userAvatarImg = userInfo.value?.userAvatar;
  * 上传头像
  */
 const uploadAvatar = async () => {
-  const res = await FileControllerService.uploadFileUsingPost(file?.value.file);
+  const res = await FileControllerService.uploadFileUsingPost(
+    "user_avatar",
+    file?.value.file
+  );
   if (res.code === 0) {
     userAvatarImg = res.data;
     Message.success("上传成功，点击确认即可修改头像");
