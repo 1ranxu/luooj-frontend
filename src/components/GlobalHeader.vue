@@ -16,7 +16,7 @@
               <a-link :hoverable="false" href="/">
                 <img class="logo" src="../assets/oj-logo.png" />
               </a-link>
-              <div class="title">落畔题</div>
+              <h3 class="title">落畔题</h3>
             </div>
           </a-menu-item>
           <a-menu-item v-for="item in visibleRoutes" :key="item.path">

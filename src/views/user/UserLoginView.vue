@@ -7,13 +7,33 @@
       auto-label-width
       style="max-width: 480px; margin: 0 auto"
     >
-      <a-form-item field="userAccount" tooltip="请输入账号" label="账号">
-        <a-input v-model="form.userAccount" placeholder="请输入账号" />
+      <a-form-item
+        :rules="[
+          { required: true, message: '账号不能为空' },
+          { minLength: 4, message: '账号长度不能低于4位' },
+          { maxLength: 15, message: '账号长度不能高于15位' },
+        ]"
+        field="userAccount"
+        tooltip="请输入账号"
+        label="账号"
+      >
+        <a-input
+          v-model="form.userAccount"
+          placeholder="账号只能由英文字母大小写、数字组成"
+        />
       </a-form-item>
-      <a-form-item field="userPassword" label="密码">
+      <a-form-item
+        :rules="[
+          { required: true, message: '密码不能为空' },
+          { minLength: 8, message: '密码长度不能低于8位' },
+          { maxLength: 16, message: '密码长度不能高于16位' },
+        ]"
+        field="userPassword"
+        label="密码"
+      >
         <a-input-password
           v-model="form.userPassword"
-          placeholder="请输入密码"
+          placeholder="密码只能由英文字母大小写、数字组成"
         />
       </a-form-item>
       <a-form-item>

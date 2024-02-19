@@ -8,10 +8,21 @@
         <router-view />
       </a-layout-content>
       <a-layout-footer class="footer">
-        <a-link href="https://github.com/1ranxu" target="_blank">
-          <icon-github />
+        <a-tooltip content="查看本站技术及源码，欢迎 star">
+          <a-link
+            href="https://github.com/1ranxu/luooj-backend-microservice"
+            target="_blank"
+          >
+            <icon-github />
+          </a-link>
+        </a-tooltip>
+
+        <br />
+        <icon-copyright />
+        {{ new Date().getFullYear() }}落樱工作室出品 |
+        <a-link href="https://beian.miit.gov.cn/" target="_blank">
+          渝ICP备2024021408号-2
         </a-link>
-        LUOYINGDEHUIHEN出品
       </a-layout-footer>
     </a-layout>
   </div>
