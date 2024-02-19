@@ -14,13 +14,11 @@
           { maxLength: 15, message: '账号长度不能高于15位' },
         ]"
         field="userAccount"
-        tooltip="请输入账号"
         label="账号"
       >
-        <a-input
-          v-model="form.userAccount"
-          placeholder="账号只能由英文字母大小写、数字组成"
-        />
+        <a-tooltip content="大写字母、小写字母、数字" position="right">
+          <a-input v-model="form.userAccount" placeholder="请输入账号" />
+        </a-tooltip>
       </a-form-item>
       <a-form-item
         :rules="[
@@ -31,10 +29,12 @@
         field="userPassword"
         label="密码"
       >
-        <a-input-password
-          v-model="form.userPassword"
-          placeholder="密码只能由英文字母大小写、数字组成"
-        />
+        <a-tooltip content="大写字母、小写字母、数字" position="right">
+          <a-input-password
+            v-model="form.userPassword"
+            placeholder="请输入密码"
+          />
+        </a-tooltip>
       </a-form-item>
       <a-form-item>
         <a-button
