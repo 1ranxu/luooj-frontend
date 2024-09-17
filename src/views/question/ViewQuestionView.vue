@@ -358,6 +358,8 @@ const searchParams = ref<QuestionSubmitQueryRequest>({
   questionId: undefined,
   pageSize: 10,
   current: 1,
+  sortField: "createTime",
+  sortOrder: "descend",
 });
 // 个人提交记录总数
 const total = ref(0);
