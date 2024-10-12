@@ -265,12 +265,6 @@
 
 <script setup lang="ts">
 import { defineProps, onMounted, ref, watchEffect, withDefaults } from "vue";
-import {
-  QuestionControllerService,
-  QuestionSubmitAddRequest,
-  QuestionSubmitQueryRequest,
-  QuestionVO,
-} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import CodeEditor from "@/components/CodeEditor.vue";
 import MDViewer from "@/components/MDViewer.vue";
@@ -280,6 +274,11 @@ import { Codemirror } from "vue-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { cpp } from "@codemirror/lang-cpp";
 import java from "@codemirror/lang-java";
+import { QuestionSubmitControllerService } from "../../../generated/services/QuestionSubmitControllerService";
+import { QuestionSubmitQueryRequest } from "../../../generated/models/QuestionSubmitQueryRequest";
+import { QuestionVO } from "../../../generated/models/QuestionVO";
+import { QuestionSubmitAddRequest } from "../../../generated/models/QuestionSubmitAddRequest";
+import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
 
 interface Props {
   id: string;
@@ -326,7 +325,7 @@ const handleConsoleClick = () => {
  */
 const handleRunClick = async () => {
   runLoading.value = true;
-  const res = await QuestionControllerService.runQuestionOnlineUsingPost({
+  const res = await QuestionSubmitControllerService.questionRunOnlineUsingPost({
     input: runCodeRequest.value.input,
     code: form.value.code,
     language: form.value.language,
@@ -396,7 +395,7 @@ const loadData1 = async () => {
  */
 const loadData2 = async () => {
   const res =
-    await QuestionControllerService.listMyQuestionSubmitByPageUsingPost({
+    await QuestionSubmitControllerService.listMyQuestionSubmitByPageUsingPost({
       ...searchParams.value,
       questionId: props.id as any,
     });
@@ -468,7 +467,7 @@ const doQuestionSubmit = async () => {
   if (!question.value?.id) {
     return;
   }
-  const res = await QuestionControllerService.doQuestionSubmitUsingPost({
+  const res = await QuestionSubmitControllerService.doQuestionSubmitUsingPost({
     ...form.value,
     questionId: question.value?.id,
   });

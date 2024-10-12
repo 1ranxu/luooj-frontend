@@ -149,15 +149,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watchEffect } from "vue";
-import {
-  FileControllerService,
-  User,
-  UserControllerService,
-} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import moment from "moment";
 import { useRouter } from "vue-router";
 import { FileItem, Message } from "@arco-design/web-vue";
+import { User } from "../../../generated/models/User";
+import { UserControllerService } from "../../../generated/services/UserControllerService";
+import { FileControllerService } from "../../../generated";
 
 const router = useRouter();
 const tableRef = ref();
@@ -283,7 +281,7 @@ const onPageSizeChange = (size: number) => {
 const openModalForm = async (userId: any) => {
   const res = await UserControllerService.getUserByIdUsingGet(userId);
   console.log("res:", res.data);
-  userInfo.value = { ...res.data, userPassword: null };
+  userInfo.value = { ...res.data, userPassword: "" };
   console.log(userInfo.value);
   visible.value = true;
 };
@@ -322,8 +320,8 @@ let userAvatarImg = userInfo.value?.userAvatar;
  */
 const uploadAvatar = async () => {
   const res = await FileControllerService.uploadFileUsingPost(
-    "user_avatar",
-    file?.value.file
+    file?.value.file,
+    "user_avatar"
   );
   if (res.code === 0) {
     userAvatarImg = res.data;

@@ -95,15 +95,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watchEffect } from "vue";
-import {
-  Question,
-  QuestionControllerService,
-  QuestionSubmitQueryRequest,
-} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import moment from "moment";
 import JudgeInfoMessageEnum from "@/enums/JudgeInfoMessageEnum";
+import { QuestionSubmitQueryRequest } from "../../../generated/models/QuestionSubmitQueryRequest";
+import { QuestionSubmitControllerService } from "../../../generated/services/QuestionSubmitControllerService";
+import { Question } from "../../../generated/models/Question";
 
 const router = useRouter();
 
@@ -127,11 +125,10 @@ const dataList = ref([]);
  * 获取提交记录
  */
 const loadData = async () => {
-  const res = await QuestionControllerService.listQuestionSubmitByPageUsingPost(
-    {
+  const res =
+    await QuestionSubmitControllerService.listQuestionSubmitByPageUsingPost({
       ...searchParams.value,
-    }
-  );
+    });
   if (res.code === 0) {
     dataList.value = res.data.records;
     total.value = res.data.total;

@@ -1,8 +1,13 @@
-import { QuestionSubmitJudgeInfo } from "./QuestionSubmitJudgeInfo";
+/* generated using openapi-typescript-codegen -- do no edit */
+/* istanbul ignore file */
+/* tslint:disable */
+/* eslint-disable */
+
+import type { QuestionSubmitJudgeInfo } from './QuestionSubmitJudgeInfo';
 
 export type RunCodeResponse = {
-  output?: string;
-  message?: string;
-  status?: number;
-  judgeInfo?: QuestionSubmitJudgeInfo;
+    judgeInfo?: QuestionSubmitJudgeInfo;
+    message?: string;
+    output?: string;
+    status?: number;
 };

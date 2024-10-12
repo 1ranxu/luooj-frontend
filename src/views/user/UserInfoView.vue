@@ -83,14 +83,12 @@
 </template>
 <script setup lang="ts">
 import { useStore } from "vuex";
-import {
-  FileControllerService,
-  UserControllerService,
-  UserUpdateMyRequest,
-} from "../../../generated";
 import { ref } from "vue";
 import { FileItem, Message } from "@arco-design/web-vue";
 import { useRouter } from "vue-router";
+import { UserUpdateMyRequest } from "../../../generated/models/UserUpdateMyRequest";
+import { FileControllerService } from "../../../generated";
+import { UserControllerService } from "../../../generated/services/UserControllerService";
 
 const router = useRouter();
 
@@ -131,8 +129,8 @@ let userAvatarImg = updateForm.value.userAvatar;
  */
 const uploadAvatar = async () => {
   const res = await FileControllerService.uploadFileUsingPost(
-    "user_avatar",
-    file?.value.file
+    file?.value.file,
+    "user_avatar"
   );
   if (res.code === 0) {
     userAvatarImg = res.data;
@@ -151,7 +149,7 @@ const openModalForm = () => {
  * 确定修改按钮
  */
 const handleOk = async () => {
-  const res = await UserControllerService.updateMyUserUsingPost({
+  const res = await UserControllerService.updatePersonalInfoUsingPost({
     ...updateForm.value,
     userAvatar: userAvatarImg,
   });

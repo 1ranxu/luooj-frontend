@@ -12,15 +12,15 @@ export class FileControllerService {
 
     /**
      * uploadFile
+     * @param file file
      * @param biz 
-     * @param file 
      * @returns BaseResponse_string_ OK
      * @returns any Created
      * @throws ApiError
      */
     public static uploadFileUsingPost(
+file: Blob,
 biz?: string,
-file?: Blob,
 ): CancelablePromise<BaseResponse_string_ | any> {
         return __request(OpenAPI, {
             method: 'POST',

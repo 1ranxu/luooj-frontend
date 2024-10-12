@@ -54,10 +54,11 @@
 </template>
 <script setup lang="ts">
 import { reactive } from "vue";
-import { UserControllerService, UserLoginRequest } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { UserControllerService } from "../../../generated/services/UserControllerService";
+import { UserAccountLoginRequest } from "../../../generated/models/UserAccountLoginRequest";
 
 const router = useRouter();
 
@@ -68,7 +69,7 @@ const store = useStore();
 const form = reactive({
   userAccount: "",
   userPassword: "",
-} as UserLoginRequest);
+} as UserAccountLoginRequest);
 
 const handleSubmit = async () => {
   // console.log(form);

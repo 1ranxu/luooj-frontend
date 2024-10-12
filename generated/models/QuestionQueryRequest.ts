@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 export type QuestionQueryRequest = {
-    answer?: string;
     content?: string;
     current?: number;
+    difficulty?: number;
     id?: number;
     pageSize?: number;
     sortField?: string;

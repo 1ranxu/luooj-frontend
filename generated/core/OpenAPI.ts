@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ApiRequestOptions } from "./ApiRequestOptions";
+import type { ApiRequestOptions } from './ApiRequestOptions';
 
 type Resolver<T> = (options: ApiRequestOptions) => Promise<T>;
 type Headers = Record<string, string>;
@@ -20,11 +20,10 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-    // BASE: 'http://localhost:8085',
-    BASE: 'http://localhost:8504',
+    BASE: 'http://localhost:8504/api/user',
     VERSION: '1.0',
-    WITH_CREDENTIALS: true,
-    CREDENTIALS: 'include' ,
+    WITH_CREDENTIALS: false,
+    CREDENTIALS: 'include',
     TOKEN: undefined,
     USERNAME: undefined,
     PASSWORD: undefined,

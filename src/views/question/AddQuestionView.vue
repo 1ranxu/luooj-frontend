@@ -126,12 +126,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import MDEditor from "@/components/MDEditor.vue";
-import {
-  QuestionAddRequest,
-  QuestionControllerService,
-} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useRoute } from "vue-router";
+import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
+import { QuestionAddRequest } from "../../../generated/models/QuestionAddRequest";
 
 const route = useRoute();
 

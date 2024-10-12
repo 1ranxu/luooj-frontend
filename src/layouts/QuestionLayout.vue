@@ -154,16 +154,14 @@
 </template>
 
 <script setup lang="ts">
-import {
-  LoginUserVO,
-  QuestionControllerService,
-  UserControllerService,
-} from "../../generated";
 import message from "@arco-design/web-vue/es/message";
 import { useStore } from "vuex";
 import { ref, watch, watchEffect } from "vue";
 import AccessEnum from "@/access/AccessEnum";
 import { useRoute, useRouter } from "vue-router";
+import { LoginUserVO } from "../../generated/models/LoginUserVO";
+import { UserControllerService } from "../../generated/services/UserControllerService";
+import { QuestionControllerService } from "../../generated/services/QuestionControllerService";
 
 const store = useStore();
 const router = useRouter();
@@ -194,7 +192,7 @@ watch(
 
 const getPrevQuestion = async () => {
   console.log(route.params);
-  const res = await QuestionControllerService.getPreviousQuestionUsingGet(
+  const res = await QuestionControllerService.getPrevQuestionUsingGet(
     route.params.id as any
   );
   console.log(questionId.value);
@@ -218,7 +216,7 @@ const getNextQuestion = async () => {
 };
 
 const getRandomQuestion = async () => {
-  const res = await QuestionControllerService.getRandomQuestion();
+  const res = await QuestionControllerService.getRandomQuestionUsingGet();
   console.log(res);
   if (res.code === 0) {
     router.push({

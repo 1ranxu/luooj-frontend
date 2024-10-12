@@ -109,8 +109,9 @@ import { useStore } from "vuex";
 import routes from "@/router/routes";
 import checkAccess from "@/access/CheckAccess";
 import AccessEnum from "@/access/AccessEnum";
-import { LoginUserVO, UserControllerService } from "../../generated";
 import message from "@arco-design/web-vue/es/message";
+import { LoginUserVO } from "../../generated/models/LoginUserVO";
+import { UserControllerService } from "../../generated/services/UserControllerService";
 
 const store = useStore();
 const loginUser = ref<LoginUserVO>();

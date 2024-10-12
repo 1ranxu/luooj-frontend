@@ -5,10 +5,13 @@
 
 export type User = {
     createTime?: string;
+    email?: string;
+    fans?: number;
+    followers?: number;
+    gender?: number;
     id?: number;
     isDelete?: number;
-    mpOpenId?: string;
-    unionId?: string;
+    score?: number;
     updateTime?: string;
     userAccount?: string;
     userAvatar?: string;

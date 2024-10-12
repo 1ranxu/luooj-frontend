@@ -5,7 +5,14 @@
 
 export type UserVO = {
     createTime?: string;
+    email?: string;
+    fans?: number;
+    followers?: number;
+    gender?: number;
     id?: number;
+    score?: number;
+    updateTime?: string;
+    userAccount?: string;
     userAvatar?: string;
     userName?: string;
     userProfile?: string;

@@ -6,16 +6,17 @@
 export type Question = {
     acceptedNum?: number;
     answer?: string;
+    comments?: number;
     content?: string;
     createTime?: string;
-    favourNum?: number;
+    difficulty?: number;
     id?: number;
     isDelete?: number;
     judgeCase?: string;
     judgeConfig?: string;
+    likes?: number;
     submitNum?: number;
     tags?: string;
-    thumbNum?: number;
     title?: string;
     updateTime?: string;
     userId?: number;

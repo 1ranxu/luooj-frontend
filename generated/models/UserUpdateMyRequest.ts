@@ -4,6 +4,8 @@
 /* eslint-disable */
 
 export type UserUpdateMyRequest = {
+    email?: string;
+    gender?: number;
     userAvatar?: string;
     userName?: string;
     userProfile?: string;
