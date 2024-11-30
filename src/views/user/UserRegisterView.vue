@@ -70,23 +70,19 @@
         field="email"
         label="邮箱"
       >
-        <a-tooltip content="大写字母、小写字母、数字" position="top">
-          <a-input v-model="form.email" placeholder="请输入邮箱" />
-        </a-tooltip>
+        <a-input v-model="form.email" placeholder="请输入邮箱" />
+
         <a-button
+          type="text"
+          status="success"
           @click="getCaptcha(form.email, 'REGISTER')"
-          style="background-color: rgb(255, 255, 255); border-radius: 6px"
+          :disabled="
+            form.email == undefined || !emailRegex.test(form.email) || time > 0
+          "
+          style="height: 32px; width: 130px"
         >
-          <a-tooltip content="获取验证码" position="right">
-            <a-countdown
-              :value="Date.now() + 60 * 1000"
-              format="ss"
-              :now="Date.now()"
-              :start="start"
-              @finish="handleFinish"
-            >
-            </a-countdown>
-          </a-tooltip>
+          <template v-if="time != 0"> {{ time }}</template>
+          <template v-if="time == 0"> {{ tip }}</template>
         </a-button>
       </a-form-item>
       <a-form-item
@@ -94,7 +90,7 @@
         field="captcha"
         label="验证码"
       >
-        <a-tooltip content="大写字母、小写字母、数字" position="top">
+        <a-tooltip content="数字" position="top">
           <a-input v-model="form.captcha" placeholder="请输入验证码" />
         </a-tooltip>
       </a-form-item>
@@ -121,6 +117,8 @@ import message from "@arco-design/web-vue/es/message";
 import { UserControllerService } from "../../../generated/services/UserControllerService";
 import { RegisterRequest } from "../../../generated/models/RegisterRequest";
 
+document.title="注册"
+
 const router = useRouter();
 
 const route = useRoute();
@@ -130,7 +128,7 @@ const form = reactive({
   userAccount: "",
   userPassword: "",
   checkPassword: "",
-  email: "",
+  email: undefined,
   captcha: "",
 } as RegisterRequest);
 
@@ -167,17 +165,29 @@ const handleSubmit = async () => {
     message.error("注册失败，" + res.message);
   }
 };
-const start = ref(false);
-const handleFinish = () => {
-  start.value = false;
-};
+
+const tip = ref("获取验证码");
+const time = ref(0);
+const intervalId = ref();
+let emailRegex = new RegExp(
+  "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"
+);
 const getCaptcha = async (email: string, op: string) => {
-  start.value = false;
+  time.value = 60; // 设置倒计时时间为60秒
+  intervalId.value = setInterval(() => {
+    if (time.value > 0) {
+      time.value--; // 每秒减少1
+    } else {
+      clearInterval(intervalId.value); // 清除计时器
+      time.value = 0; // 重置倒计时时间
+    }
+  }, 1000); // 设置定时器，每1000毫秒（1秒）执行一次
   const res = await UserControllerService.getCaptchaUsingGet(email, op);
-  if (res.code === 0) {
+  if (res.code == 0) {
     message.success("发送成功，请注意查收");
+    console.log("hh");
   } else {
-    message.error("发送失败，请稍后再试" + res.message);
+    message.error("发送失败，请稍后再试，" + res.message);
   }
 };
 </script>
