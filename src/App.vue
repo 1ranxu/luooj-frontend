@@ -25,6 +25,8 @@ import BasicLayout from "@/layouts/BasicLayout.vue";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 
+document.title="落畔题"
+
 const route = useRoute();
 //全局初始化函数，全局单次调用的代码都可以携带这里
 const doInit = () => {
