@@ -2,8 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ModelAndView } from '../models/ModelAndView';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -11,11 +9,11 @@ import { request as __request } from '../core/request';
 export class BasicErrorControllerService {
 
     /**
-     * errorHtml
-     * @returns ModelAndView OK
+     * error
+     * @returns any OK
      * @throws ApiError
      */
-    public static errorHtmlUsingGet(): CancelablePromise<ModelAndView> {
+    public static errorUsingGet(): CancelablePromise<Record<string, any>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/user/error',
@@ -28,11 +26,11 @@ export class BasicErrorControllerService {
     }
 
     /**
-     * errorHtml
-     * @returns ModelAndView OK
+     * error
+     * @returns any OK
      * @throws ApiError
      */
-    public static errorHtmlUsingHead(): CancelablePromise<ModelAndView> {
+    public static errorUsingHead(): CancelablePromise<Record<string, any>> {
         return __request(OpenAPI, {
             method: 'HEAD',
             url: '/api/user/error',
@@ -44,12 +42,11 @@ export class BasicErrorControllerService {
     }
 
     /**
-     * errorHtml
-     * @returns ModelAndView OK
-     * @returns any Created
+     * error
+     * @returns any OK
      * @throws ApiError
      */
-    public static errorHtmlUsingPost(): CancelablePromise<ModelAndView | any> {
+    public static errorUsingPost(): CancelablePromise<Record<string, any>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/error',
@@ -62,12 +59,11 @@ export class BasicErrorControllerService {
     }
 
     /**
-     * errorHtml
-     * @returns ModelAndView OK
-     * @returns any Created
+     * error
+     * @returns any OK
      * @throws ApiError
      */
-    public static errorHtmlUsingPut(): CancelablePromise<ModelAndView | any> {
+    public static errorUsingPut(): CancelablePromise<Record<string, any>> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/api/user/error',
@@ -80,11 +76,11 @@ export class BasicErrorControllerService {
     }
 
     /**
-     * errorHtml
-     * @returns ModelAndView OK
+     * error
+     * @returns any OK
      * @throws ApiError
      */
-    public static errorHtmlUsingDelete(): CancelablePromise<ModelAndView> {
+    public static errorUsingDelete(): CancelablePromise<Record<string, any>> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/user/error',
@@ -96,11 +92,11 @@ export class BasicErrorControllerService {
     }
 
     /**
-     * errorHtml
-     * @returns ModelAndView OK
+     * error
+     * @returns any OK
      * @throws ApiError
      */
-    public static errorHtmlUsingOptions(): CancelablePromise<ModelAndView> {
+    public static errorUsingOptions(): CancelablePromise<Record<string, any>> {
         return __request(OpenAPI, {
             method: 'OPTIONS',
             url: '/api/user/error',
@@ -112,11 +108,11 @@ export class BasicErrorControllerService {
     }
 
     /**
-     * errorHtml
-     * @returns ModelAndView OK
+     * error
+     * @returns any OK
      * @throws ApiError
      */
-    public static errorHtmlUsingPatch(): CancelablePromise<ModelAndView> {
+    public static errorUsingPatch(): CancelablePromise<Record<string, any>> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/user/error',

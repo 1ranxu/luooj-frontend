@@ -8,4 +8,6 @@ export type FollowQueryRequest = {
     pageSize?: number;
     sortField?: string;
     sortOrder?: string;
+    userAccount?: string;
+    userName?: string;
 };

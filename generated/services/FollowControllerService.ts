@@ -68,13 +68,14 @@ userId?: number,
      * getFansPage
      * @param fansQueryRequest fansQueryRequest
      * @returns BaseResponse_Page_UserVO_ OK
+     * @returns any Created
      * @throws ApiError
      */
-    public static getFansPageUsingGet(
+    public static getFansPageUsingPost(
 fansQueryRequest: FansQueryRequest,
-): CancelablePromise<BaseResponse_Page_UserVO_> {
+): CancelablePromise<BaseResponse_Page_UserVO_ | any> {
         return __request(OpenAPI, {
-            method: 'GET',
+            method: 'POST',
             url: '/api/user/follow/get/fans/page',
             body: fansQueryRequest,
             errors: {
@@ -89,13 +90,14 @@ fansQueryRequest: FansQueryRequest,
      * getFollowPage
      * @param followQueryRequest followQueryRequest
      * @returns BaseResponse_Page_UserVO_ OK
+     * @returns any Created
      * @throws ApiError
      */
-    public static getFollowPageUsingGet(
+    public static getFollowPageUsingPost(
 followQueryRequest: FollowQueryRequest,
-): CancelablePromise<BaseResponse_Page_UserVO_> {
+): CancelablePromise<BaseResponse_Page_UserVO_ | any> {
         return __request(OpenAPI, {
-            method: 'GET',
+            method: 'POST',
             url: '/api/user/follow/get/follow/page',
             body: followQueryRequest,
             errors: {

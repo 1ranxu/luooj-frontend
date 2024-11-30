@@ -8,4 +8,6 @@ export type FansQueryRequest = {
     pageSize?: number;
     sortField?: string;
     sortOrder?: string;
+    userAccount?: string;
+    userName?: string;
 };
