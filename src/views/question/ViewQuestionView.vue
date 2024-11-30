@@ -385,6 +385,7 @@ const loadData1 = async () => {
   );
   if (res.code === 0) {
     question.value = res.data;
+    document.title = res.data?.title;
   } else {
     message.error("加载失败，" + res.message);
   }

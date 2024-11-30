@@ -96,6 +96,8 @@ import moment from "moment/moment";
 import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
 import { Question } from "../../../generated/models/Question";
 
+document.title="题目管理"
+
 const router = useRouter();
 
 // 搜索参数

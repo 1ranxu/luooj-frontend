@@ -2,4 +2,6 @@
   <div class="noAuth">你妹权限</div>
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+document.title="无权限"
+</script>

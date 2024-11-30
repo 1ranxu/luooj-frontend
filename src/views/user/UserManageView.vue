@@ -157,6 +157,8 @@ import { User } from "../../../generated/models/User";
 import { UserControllerService } from "../../../generated/services/UserControllerService";
 import { FileControllerService } from "../../../generated";
 
+document.title="用户管理"
+
 const router = useRouter();
 const tableRef = ref();
 const file = ref();

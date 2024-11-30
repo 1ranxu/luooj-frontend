@@ -103,6 +103,8 @@ import { QuestionSubmitQueryRequest } from "../../../generated/models/QuestionSu
 import { QuestionSubmitControllerService } from "../../../generated/services/QuestionSubmitControllerService";
 import { Question } from "../../../generated/models/Question";
 
+document.title="状态"
+
 const router = useRouter();
 
 // 搜索参数
