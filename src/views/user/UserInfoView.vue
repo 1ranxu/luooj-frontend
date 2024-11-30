@@ -4,24 +4,29 @@
       <a-avatar :size="100" shape="circle">
         <img alt="头像" :src="loginUser.userAvatar" />
       </a-avatar>
-      <a-button
-        type="text"
-        shape="round"
-        status="normal"
-        size="medium"
-        style="margin: 10px"
-        @click="openFollowModalForm"
+      <a-badge :max-count="9999" :count="loginUser.followers" :dotStyle="{ background: '#7BC616', color: '#fff' }">
+        <a-button
+          type="text"
+          shape="round"
+          status="normal"
+          size="medium"
+          style="margin: 10px"
+          @click="openFollowModalForm"
         >关注
-      </a-button>
-      <a-button
-        type="text"
-        shape="round"
-        status="normal"
-        size="medium"
-        style="margin: 10px"
-        @click="openFanModalForm"
+        </a-button>
+      </a-badge>
+      <a-badge :max-count="9999" :count="loginUser.fans" :dotStyle="{ background: '#F53F3F', color: '#fff' }">
+        <a-button
+          type="text"
+          shape="round"
+          status="normal"
+          size="medium"
+          style="margin: 10px"
+          @click="openFanModalForm"
         >粉丝
-      </a-button>
+        </a-button>
+      </a-badge>
+
     </a-descriptions-item>
     <a-card title="我的信息">
       <a-descriptions :data="data" size="large" column="1" bordered />
