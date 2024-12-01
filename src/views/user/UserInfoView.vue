@@ -26,7 +26,6 @@
         >粉丝
         </a-button>
       </a-badge>
-
     </a-descriptions-item>
     <a-card title="我的信息">
       <a-descriptions :data="data" size="large" column="1" bordered />
@@ -45,16 +44,16 @@
       unmountOnClose
     >
       <a-form
-        :model="searchParams"
+        :model="followSearchParams"
         layout="inline"
         style="justify-content: center; align-content: center; margin: 25px"
       >
         <a-form-item field="title" label="账号：" tooltip="请输入用户的账号">
-          <a-input v-model="searchParams.userAccount" placeholder="请输入用户的账号" />
+          <a-input v-model="followSearchParams.userAccount" placeholder="请输入用户的账号" />
         </a-form-item>
         <a-form-item field="title" label="用户昵称：" tooltip="请输入用户昵称">
           <a-input
-            v-model="searchParams.userName"
+            v-model="followSearchParams.userName"
             placeholder="请输入要搜索的用户名称"
           />
         </a-form-item>
@@ -71,14 +70,14 @@
         :data="followList"
         :pagination="{
           showTotal: true,
-          pageSize: searchParams.pageSize,
-          current: searchParams.current,
+          pageSize: followSearchParams.pageSize,
+          current: followSearchParams.current,
           total,
           showJumper: true,
           showPageSize: true,
         }"
-        @page-change="onPageChange"
-        @pageSizeChange="onPageSizeChange"
+        @page-change="onFollowPageChange"
+        @pageSizeChange="onFollowPageSizeChange"
       >
         <template #userAvatar="{ record }">
           <a-avatar :size="70" shape="circle">
@@ -116,16 +115,16 @@
       :closable="false"
     >
       <a-form
-        :model="searchParams"
+        :model="fanSearchParams"
         layout="inline"
         style="justify-content: center; align-content: center; margin: 25px"
       >
         <a-form-item field="title" label="账号：" tooltip="请输入用户的账号">
-          <a-input v-model="searchParams.userAccount" placeholder="请输入用户的账号" />
+          <a-input v-model="fanSearchParams.userAccount" placeholder="请输入用户的账号" />
         </a-form-item>
         <a-form-item field="title" label="用户昵称：" tooltip="请输入用户昵称">
           <a-input
-            v-model="searchParams.userName"
+            v-model="fanSearchParams.userName"
             placeholder="请输入要搜索的用户名称"
           />
         </a-form-item>
@@ -142,14 +141,14 @@
         :data="fanList"
         :pagination="{
           showTotal: true,
-          pageSize: searchParams.pageSize,
-          current: searchParams.current,
+          pageSize: fanSearchParams.pageSize,
+          current: fanSearchParams.current,
           total,
           showJumper: true,
           showPageSize: true,
         }"
-        @page-change="onPageChange"
-        @pageSizeChange="onPageSizeChange"
+        @page-change="onFanPageChange"
+        @pageSizeChange="onFanPageSizeChange"
       >
         <template #userAvatar="{ record }">
           <a-avatar :size="70" shape="circle">
@@ -477,7 +476,7 @@
 </template>
 <script setup lang="ts">
 import { useStore } from "vuex";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { FileItem, Message } from "@arco-design/web-vue";
 import { useRouter } from "vue-router";
 import { UserUpdateMyRequest } from "../../../generated/models/UserUpdateMyRequest";
@@ -567,12 +566,19 @@ const fanList = ref([]);
 
 // 分页
 const total = ref(0);
-const searchParams = ref({
+const followSearchParams = ref({
   userName: "",
   userAccount:"",
   pageSize: 10,
   current: 1,
 });
+const fanSearchParams = ref({
+  userName: "",
+  userAccount:"",
+  pageSize: 10,
+  current: 1,
+});
+
 
 // 密码
 const updatePasswordForm = ref({
@@ -670,7 +676,7 @@ const updatePersonalInfo = async () => {
  */
 const getFollow = async () => {
   const res = await FollowControllerService.getFollowPageUsingPost({
-    ...searchParams.value,
+    ...followSearchParams.value,
     sortField: "createTime",
     sortOrder: "descend",
   });
@@ -692,7 +698,7 @@ const getFollow = async () => {
  */
 const getFan = async () => {
   const res = await FollowControllerService.getFansPageUsingPost({
-    ...searchParams.value,
+    ...fanSearchParams.value,
     sortField: "createTime",
     sortOrder: "descend",
   });
@@ -708,6 +714,17 @@ const getFan = async () => {
     message.error("加载失败，" + res.message);
   }
 };
+
+/**
+ * 监听 searchParams 变量，改变时触发页面的重新加载
+ */
+watchEffect(() => {
+  getFollow();
+
+});
+watchEffect(() => {
+  getFan();
+});
 
 /**
  * 关注或取消关注
@@ -729,9 +746,15 @@ const follow = async (record: any) => {
  * 改变页码
  * @param page
  */
-const onPageChange = (page: number) => {
-  searchParams.value = {
-    ...searchParams.value,
+const onFollowPageChange = (page: number) => {
+  followSearchParams.value = {
+    ...followSearchParams.value,
+    current: page,
+  };
+};
+const onFanPageChange = (page: number) => {
+  followSearchParams.value = {
+    ...followSearchParams.value,
     current: page,
   };
 };
@@ -740,9 +763,15 @@ const onPageChange = (page: number) => {
  * 改变分页大小
  * @param size
  */
-const onPageSizeChange = (size: number) => {
-  searchParams.value = {
-    ...searchParams.value,
+const onFollowPageSizeChange = (size: number) => {
+  followSearchParams.value = {
+    ...followSearchParams.value,
+    pageSize: size,
+  };
+};
+const onFanPageSizeChange = (size: number) => {
+  fanSearchParams.value = {
+    ...followSearchParams.value,
     pageSize: size,
   };
 };
