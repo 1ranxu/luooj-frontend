@@ -48,10 +48,10 @@
         layout="inline"
         style="justify-content: center; align-content: center; margin: 25px"
       >
-        <a-form-item field="title" label="账号：" tooltip="请输入用户的账号">
+        <a-form-item field="userAccount" label="账号：" tooltip="请输入用户的账号">
           <a-input v-model="followSearchParams.userAccount" placeholder="请输入用户的账号" />
         </a-form-item>
-        <a-form-item field="title" label="用户昵称：" tooltip="请输入用户昵称">
+        <a-form-item field="userName" label="用户昵称：" tooltip="请输入用户昵称">
           <a-input
             v-model="followSearchParams.userName"
             placeholder="请输入要搜索的用户名称"
@@ -64,6 +64,7 @@
         </a-form-item>
       </a-form>
       <a-table
+        :show-header="false"
         :column-resizable="true"
         :ref="followTableRef"
         :columns="columns"
@@ -119,10 +120,10 @@
         layout="inline"
         style="justify-content: center; align-content: center; margin: 25px"
       >
-        <a-form-item field="title" label="账号：" tooltip="请输入用户的账号">
+        <a-form-item field="userAccount" label="账号：" tooltip="请输入用户的账号">
           <a-input v-model="fanSearchParams.userAccount" placeholder="请输入用户的账号" />
         </a-form-item>
-        <a-form-item field="title" label="用户昵称：" tooltip="请输入用户昵称">
+        <a-form-item field="userName" label="用户昵称：" tooltip="请输入用户昵称">
           <a-input
             v-model="fanSearchParams.userName"
             placeholder="请输入要搜索的用户名称"
@@ -135,6 +136,7 @@
         </a-form-item>
       </a-form>
       <a-table
+        :show-header="false"
         :column-resizable="true"
         :ref="fanTableRef"
         :columns="columns"
@@ -259,7 +261,7 @@
             { minLength: 8, message: '密码长度不能低于8位' },
             { maxLength: 16, message: '密码长度不能高于16位' },
           ]"
-          field="userPassword"
+          field="newPassword"
           label="密码"
         >
           <a-tooltip content="大写字母、小写字母、数字" position="top">
@@ -533,6 +535,12 @@ const followTableRef = ref();
 const followList = ref([]);
 const columns = [
   {
+    title: "头像",
+    slotName: "userAvatar",
+    align: "center",
+    width: 64,
+  },
+  {
     title: "账号",
     dataIndex: "userAccount",
     align: "center",
@@ -542,12 +550,7 @@ const columns = [
     dataIndex: "userName",
     align: "center",
   },
-  {
-    title: "头像",
-    slotName: "userAvatar",
-    align: "center",
-    width: 64,
-  },
+
   {
     title: "简介",
     dataIndex: "userProfile",
@@ -753,8 +756,8 @@ const onFollowPageChange = (page: number) => {
   };
 };
 const onFanPageChange = (page: number) => {
-  followSearchParams.value = {
-    ...followSearchParams.value,
+  fanSearchParams.value = {
+    ...fanSearchParams.value,
     current: page,
   };
 };
@@ -771,7 +774,7 @@ const onFollowPageSizeChange = (size: number) => {
 };
 const onFanPageSizeChange = (size: number) => {
   fanSearchParams.value = {
-    ...followSearchParams.value,
+    ...fanSearchParams.value,
     pageSize: size,
   };
 };
