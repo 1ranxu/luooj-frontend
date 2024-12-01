@@ -4,7 +4,11 @@
       <a-avatar :size="100" shape="circle">
         <img alt="头像" :src="loginUser.userAvatar" />
       </a-avatar>
-      <a-badge :max-count="9999" :count="loginUser.followers" :dotStyle="{ background: '#7BC616', color: '#fff' }">
+      <a-badge
+        :max-count="9999"
+        :count="loginUser.followers"
+        :dotStyle="{ background: '#7BC616', color: '#fff' }"
+      >
         <a-button
           type="text"
           shape="round"
@@ -12,10 +16,14 @@
           size="medium"
           style="margin: 10px"
           @click="openFollowModalForm"
-        >关注
+          >关注
         </a-button>
       </a-badge>
-      <a-badge :max-count="9999" :count="loginUser.fans" :dotStyle="{ background: '#F53F3F', color: '#fff' }">
+      <a-badge
+        :max-count="9999"
+        :count="loginUser.fans"
+        :dotStyle="{ background: '#F53F3F', color: '#fff' }"
+      >
         <a-button
           type="text"
           shape="round"
@@ -23,7 +31,7 @@
           size="medium"
           style="margin: 10px"
           @click="openFanModalForm"
-        >粉丝
+          >粉丝
         </a-button>
       </a-badge>
     </a-descriptions-item>
@@ -48,18 +56,33 @@
         layout="inline"
         style="justify-content: center; align-content: center; margin: 25px"
       >
-        <a-form-item field="userAccount" label="账号：" tooltip="请输入用户的账号">
-          <a-input v-model="followSearchParams.userAccount" placeholder="请输入用户的账号" />
+        <a-form-item
+          field="userAccount"
+          label="账号："
+          tooltip="请输入用户的账号"
+        >
+          <a-input
+            v-model="followSearchParams.userAccount"
+            placeholder="请输入用户的账号"
+          />
         </a-form-item>
-        <a-form-item field="userName" label="用户昵称：" tooltip="请输入用户昵称">
+        <a-form-item
+          field="userName"
+          label="用户昵称："
+          tooltip="请输入用户昵称"
+        >
           <a-input
             v-model="followSearchParams.userName"
             placeholder="请输入要搜索的用户名称"
           />
         </a-form-item>
         <a-form-item>
-          <a-button type="outline" shape="round" status="normal" @click="getFollow"
-          >搜 索
+          <a-button
+            type="outline"
+            shape="round"
+            status="normal"
+            @click="getFollow"
+            >搜 索
           </a-button>
         </a-form-item>
       </a-form>
@@ -120,10 +143,21 @@
         layout="inline"
         style="justify-content: center; align-content: center; margin: 25px"
       >
-        <a-form-item field="userAccount" label="账号：" tooltip="请输入用户的账号">
-          <a-input v-model="fanSearchParams.userAccount" placeholder="请输入用户的账号" />
+        <a-form-item
+          field="userAccount"
+          label="账号："
+          tooltip="请输入用户的账号"
+        >
+          <a-input
+            v-model="fanSearchParams.userAccount"
+            placeholder="请输入用户的账号"
+          />
         </a-form-item>
-        <a-form-item field="userName" label="用户昵称：" tooltip="请输入用户昵称">
+        <a-form-item
+          field="userName"
+          label="用户昵称："
+          tooltip="请输入用户昵称"
+        >
           <a-input
             v-model="fanSearchParams.userName"
             placeholder="请输入要搜索的用户名称"
@@ -131,7 +165,7 @@
         </a-form-item>
         <a-form-item>
           <a-button type="outline" shape="round" status="normal" @click="getFan"
-          >搜 索
+            >搜 索
           </a-button>
         </a-form-item>
       </a-form>
@@ -475,10 +509,121 @@
       </a-button>
     </div>
   </div>
+  <div id="userAcceptedQuestionDetail">
+    <a-tooltip
+      position="bottom"
+      :content="
+        acceptedQuestionDetail.eachDifficultysubmissionPassRate[0] * 100 + '%'
+      "
+    >
+      <div
+        style="
+          float: left;
+          width: 200px;
+          height: 88px;
+          background-color: rgb(247, 248, 250);
+          border-radius: 10px;
+        "
+      >
+        <div style="text-align: center; font-size: 20px; margin-top: 15px">
+          <a-typography-text type="success"> 简单</a-typography-text>
+        </div>
+        <div style="text-align: center; font-size: 18px">
+          <a-typography-text>
+            {{ acceptedQuestionDetail.eachDifficultyPassNum[0] }}/{{
+              acceptedQuestionDetail.eachDifficultyQuestionNum[0]
+            }}
+          </a-typography-text>
+        </div>
+      </div>
+    </a-tooltip>
+    <a-tooltip
+      position="bottom"
+      :content="
+        acceptedQuestionDetail.eachDifficultysubmissionPassRate[1] * 100 + '%'
+      "
+    >
+      <div
+        style="
+          float: left;
+          margin-left: 6px;
+          width: 200px;
+          height: 88px;
+          background-color: rgb(247, 248, 250);
+          border-radius: 10px;
+        "
+      >
+        <div style="text-align: center; font-size: 20px; margin-top: 15px">
+          <a-typography-text type="warning"> 中等</a-typography-text>
+        </div>
+        <div style="text-align: center; font-size: 18px">
+          <a-typography-text>
+            {{ acceptedQuestionDetail.eachDifficultyPassNum[1] }}/{{
+              acceptedQuestionDetail.eachDifficultyQuestionNum[1]
+            }}
+          </a-typography-text>
+        </div>
+      </div>
+    </a-tooltip>
+    <a-tooltip
+      position="bottom"
+      :content="
+        acceptedQuestionDetail.eachDifficultysubmissionPassRate[2] * 100 + '%'
+      "
+    >
+      <div
+        style="
+          float: left;
+          margin-left: 6px;
+          width: 200px;
+          height: 88px;
+          background-color: rgb(247, 248, 250);
+          border-radius: 10px;
+        "
+      >
+        <div style="text-align: center; font-size: 20px; margin-top: 15px">
+          <a-typography-text type="danger"> 困难</a-typography-text>
+        </div>
+        <div style="text-align: center; font-size: 18px">
+          <a-typography-text>
+            {{ acceptedQuestionDetail.eachDifficultyPassNum[2] }}/{{
+              acceptedQuestionDetail.eachDifficultyQuestionNum[2]
+            }}
+          </a-typography-text>
+        </div>
+      </div>
+    </a-tooltip>
+    <a-tooltip
+      position="bottom"
+      :content="acceptedQuestionDetail.submissionPassRate * 100 + '%'"
+    >
+      <div
+        style="
+          float: left;
+          margin-left: 6px;
+          width: 200px;
+          height: 88px;
+          background-color: rgb(247, 248, 250);
+          border-radius: 10px;
+        "
+      >
+        <div style="text-align: center; font-size: 20px; margin-top: 15px">
+          <a-typography-text type="primary"> 已解答</a-typography-text>
+        </div>
+        <div style="text-align: center; font-size: 18px">
+          <a-typography-text>
+            {{ acceptedQuestionDetail.passTotalNum }}/{{
+              acceptedQuestionDetail.questionTotalNum
+            }}
+          </a-typography-text>
+        </div>
+      </div>
+    </a-tooltip>
+  </div>
 </template>
 <script setup lang="ts">
 import { useStore } from "vuex";
-import { ref, watchEffect } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { FileItem, Message } from "@arco-design/web-vue";
 import { useRouter } from "vue-router";
 import { UserUpdateMyRequest } from "../../../generated/models/UserUpdateMyRequest";
@@ -486,6 +631,8 @@ import { FileControllerService } from "../../../generated";
 import { UserControllerService } from "../../../generated/services/UserControllerService";
 import message from "@arco-design/web-vue/es/message";
 import { FollowControllerService } from "../../../generated/services/FollowControllerService";
+import { AcceptedQuestionDetailVO } from "../../../generated/models/AcceptedQuestionDetailVO";
+import { AcceptedQuestionControllerService } from "../../../generated/services/AcceptedQuestionControllerService";
 
 document.title = "个人";
 
@@ -571,17 +718,16 @@ const fanList = ref([]);
 const total = ref(0);
 const followSearchParams = ref({
   userName: "",
-  userAccount:"",
+  userAccount: "",
   pageSize: 10,
   current: 1,
 });
 const fanSearchParams = ref({
   userName: "",
-  userAccount:"",
+  userAccount: "",
   pageSize: 10,
   current: 1,
 });
-
 
 // 密码
 const updatePasswordForm = ref({
@@ -604,6 +750,28 @@ const emailForm = ref({
   captcha: "",
   eamil: loginUser.email,
 });
+
+// 通过详情
+const acceptedQuestionDetail = ref({
+  passTotalNum: 0,
+  eachDifficultyPassNum: {
+    0: 0,
+    1: 0,
+    2: 0,
+  },
+  questionTotalNum: 0,
+  eachDifficultyQuestionNum: {
+    0: 0,
+    1: 0,
+    2: 0,
+  },
+  submissionPassRate: 0,
+  eachDifficultysubmissionPassRate: {
+    0: 0,
+    1: 0,
+    2: 0,
+  },
+} as AcceptedQuestionDetailVO);
 
 // 弹窗
 const updatePersonalInfoVisible = ref(false);
@@ -723,7 +891,6 @@ const getFan = async () => {
  */
 watchEffect(() => {
   getFollow();
-
 });
 watchEffect(() => {
   getFan();
@@ -886,6 +1053,16 @@ const uploadAvatar = async () => {
   }
 };
 
+onMounted(async () => {
+  const res =
+    await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet();
+  if (res.code == 0) {
+    acceptedQuestionDetail.value = res.data;
+  } else {
+    Message.error("" + res.message);
+  }
+});
+
 /**
  * 回到首页
  * @param question
@@ -911,6 +1088,16 @@ const onChange = async (_: never, currentFile: FileItem) => {
 <style scoped>
 #userInfoView {
   margin: 0 auto;
+  padding: 10px;
+  max-width: 820px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
+}
+
+#userAcceptedQuestionDetail {
+  margin: 0 auto;
+  margin-top: 10px;
+  height: 85px;
   padding: 10px;
   max-width: 820px;
   border-radius: 10px;
