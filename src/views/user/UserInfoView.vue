@@ -35,10 +35,12 @@
         </a-button>
       </a-badge>
     </a-descriptions-item>
-    <a-card title="我的信息">
+    <a-card title="全站排名">
       <a-descriptions :data="data" size="large" column="1" bordered />
       <template #extra>
-        <a-badge status="success" text="在线" />
+        <a-tooltip content="通过题目数排名">
+          <a-badge status="processing" :text="acceptedQuestionRanking" />
+        </a-tooltip>
       </template>
     </a-card>
     <!--  关注列表  -->
@@ -672,6 +674,7 @@ const data = [
 const updatePersonalInfoForm = ref<UserUpdateMyRequest>({
   ...store.state.user?.loginUser,
 });
+const acceptedQuestionRanking = ref(1);
 
 // 头像
 const file = ref();
@@ -842,6 +845,15 @@ const updatePersonalInfo = async () => {
   }
 };
 
+/**
+ * 获取个人通过题目数排名
+ */
+const getAcceptedQuestionRanking = async () => {
+  const res = await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet();
+  if (res.code == 0) {
+    acceptedQuestionRanking.value = res.data;
+  }
+};
 /**
  * 获取关注列表
  */
@@ -1053,14 +1065,21 @@ const uploadAvatar = async () => {
   }
 };
 
-onMounted(async () => {
-  const res =
-    await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet();
-  if (res.code == 0) {
+/**
+ * 获取通过题目详情
+ */
+const getAcceptedQuestionDetail = async ()=>{
+  const res = await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet();
+  if (res.code === 0) {
     acceptedQuestionDetail.value = res.data;
   } else {
     Message.error("" + res.message);
   }
+}
+
+onMounted(() => {
+  getAcceptedQuestionDetail();
+  getAcceptedQuestionRanking()
 });
 
 /**
