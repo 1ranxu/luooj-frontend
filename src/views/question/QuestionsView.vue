@@ -66,7 +66,7 @@
       <template #acceptedRate="{ record }">
         {{
           `${
-            record.submitNum
+            record.submitNum != 0
               ? (record.acceptedNum / record.submitNum).toFixed(2) * 100
               : "0"
           }%(${record.acceptedNum}/${record.submitNum})`
@@ -87,6 +87,8 @@ import { useRouter } from "vue-router";
 import moment from "moment";
 import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
 import { Question } from "../../../generated/models/Question";
+
+document.title="题库"
 
 const router = useRouter();
 

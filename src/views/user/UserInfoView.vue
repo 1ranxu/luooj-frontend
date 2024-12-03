@@ -622,6 +622,24 @@
       </div>
     </a-tooltip>
   </div>
+  <div id="userSubmitDetail">
+    <a-space>
+      <a-select
+        v-model="hotMap.calendar[0].range"
+        :style="{ width: '150px' }"
+        placeholder="请选择年份"
+      >
+        <a-option v-for="year in years" :key="year"
+        >{{ year }}
+        </a-option>
+      </a-select>
+      <a-typography style="margin-left: 100px;color: #3c3c4399">总提交次数：</a-typography>
+      <a-typography>{{submitDetail.years[hotMap.calendar[0].range]}}</a-typography>
+      <a-typography style="margin-left: 100px;color: #3c3c4399">累计提交天数：</a-typography>
+      <a-typography>{{submitDetail.dayNum[hotMap.calendar[0].range]}}</a-typography>
+    </a-space>
+      <v-chart autoresize :option="hotMap"/>
+  </div>
 </template>
 <script setup lang="ts">
 import { useStore } from "vuex";
@@ -635,6 +653,7 @@ import message from "@arco-design/web-vue/es/message";
 import { FollowControllerService } from "../../../generated/services/FollowControllerService";
 import { AcceptedQuestionDetailVO } from "../../../generated/models/AcceptedQuestionDetailVO";
 import { AcceptedQuestionControllerService } from "../../../generated/services/AcceptedQuestionControllerService";
+import { QuestionSubmitControllerService } from "../../../generated/services/QuestionSubmitControllerService";
 
 document.title = "个人";
 
@@ -776,6 +795,18 @@ const acceptedQuestionDetail = ref({
   },
 } as AcceptedQuestionDetailVO);
 
+// 提交详情
+const submitDetail =ref({
+  years: {
+  },
+  submitDetail: {
+
+  },
+  dayNum: {
+  },
+});
+const years = ref([]);
+
 // 弹窗
 const updatePersonalInfoVisible = ref(false);
 const followVisible = ref(false);
@@ -828,6 +859,46 @@ const closeEmailUnBindModel = () => {
   emailUnBindVisible.value = false;
 };
 
+// 热力图
+const hotMap = ref({
+  tooltip: {
+    position: 'top',
+    formatter: function (params) {
+      return `${params.value}`;
+    }
+  },
+  visualMap: {
+    min: 0,
+    max: 100,
+    calculable: true,
+    splitNumber: '5',
+    type:'piecewise',
+    orient: 'horizontal',
+    left: 'center',
+    top: 'top',
+    inRange: {
+      color: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e','#216e39']
+    },
+  },
+  calendar: [
+    {
+      left: 30,
+      right: 30,
+      range: '2024',
+      cellSize: ['auto', 16],
+    },
+  ],
+  series: [
+    {
+      type: 'heatmap',
+      coordinateSystem: 'calendar',
+      calendarIndex: 0,
+      data: Object.entries(submitDetail.value.submitDetail),
+    },
+  ]
+});
+
+
 /**
  * 编辑个人资料
  */
@@ -865,7 +936,7 @@ const getFollow = async () => {
   });
   if (res.code === 0) {
     followList.value = await Promise.all(
-      res.data.records.map(async (x) => {
+      res.data.records.map(async (x:any) => {
         const isFollow = await FollowControllerService.isFollowUsingGet(x.id);
         return { ...x, isFollow: isFollow.data };
       })
@@ -887,7 +958,7 @@ const getFan = async () => {
   });
   if (res.code === 0) {
     fanList.value = await Promise.all(
-      res.data.records.map(async (x) => {
+      res.data.records.map(async (x:any) => {
         const isFollow = await FollowControllerService.isFollowUsingGet(x.id);
         return { ...x, isFollow: isFollow.data };
       })
@@ -1077,9 +1148,25 @@ const getAcceptedQuestionDetail = async ()=>{
   }
 }
 
+/**
+ * 获取个人提交详情
+ */
+const getSubmitDetail = async ()=>{
+  const res = await QuestionSubmitControllerService.getPersonSubmitDetailUsingGet();
+  if (res.code === 0) {
+    console.log(submitDetail.value.submitDetail);
+    submitDetail.value= res.data;
+    hotMap.value.series[0].data=Object.entries(res.data?.submitDetail)
+    years.value=Object.keys(res.data?.years)
+  } else {
+    Message.error("" + res.message);
+  }
+}
+
 onMounted(() => {
   getAcceptedQuestionDetail();
-  getAcceptedQuestionRanking()
+  getAcceptedQuestionRanking();
+  getSubmitDetail();
 });
 
 /**
@@ -1117,6 +1204,15 @@ const onChange = async (_: never, currentFile: FileItem) => {
   margin: 0 auto;
   margin-top: 10px;
   height: 85px;
+  padding: 10px;
+  max-width: 820px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
+}
+#userSubmitDetail {
+  margin: 0 auto;
+  margin-top: 10px;
+  height: 200px;
   padding: 10px;
   max-width: 820px;
   border-radius: 10px;
