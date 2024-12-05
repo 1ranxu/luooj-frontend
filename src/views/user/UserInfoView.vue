@@ -1,9 +1,11 @@
 <template>
   <div id="userInfoView">
     <a-descriptions-item>
+      <!--   头像展示   -->
       <a-avatar :size="100" shape="circle">
         <img alt="头像" :src="loginUser.userAvatar" />
       </a-avatar>
+      <!--   关注列表展示按钮   -->
       <a-badge
         :max-count="9999"
         :count="loginUser.followers"
@@ -15,10 +17,11 @@
           status="normal"
           size="medium"
           style="margin: 10px"
-          @click="openFollowModalForm"
+          @click="openFollowModal"
           >关注
         </a-button>
       </a-badge>
+      <!--   粉丝列表展示按钮   -->
       <a-badge
         :max-count="9999"
         :count="loginUser.fans"
@@ -30,13 +33,19 @@
           status="normal"
           size="medium"
           style="margin: 10px"
-          @click="openFanModalForm"
+          @click="openFanModal"
           >粉丝
         </a-button>
       </a-badge>
     </a-descriptions-item>
+    <!--  通过题目数排名  -->
     <a-card title="全站排名">
-      <a-descriptions :data="data" size="large" column="1" bordered />
+      <a-descriptions
+        :data="userInfoColumns"
+        size="large"
+        column="1"
+        bordered
+      />
       <template #extra>
         <a-tooltip content="通过题目数排名">
           <a-badge status="processing" :text="acceptedQuestionRanking" />
@@ -48,7 +57,7 @@
       width="50%"
       :visible="followVisible"
       placement="right"
-      @cancel="closeFollowModel"
+      @cancel="closeFollowModal"
       :footer="false"
       :closable="false"
       unmountOnClose
@@ -61,11 +70,11 @@
         <a-form-item
           field="userAccount"
           label="账号："
-          tooltip="请输入用户的账号"
+          tooltip="请输入用户账号"
         >
           <a-input
             v-model="followSearchParams.userAccount"
-            placeholder="请输入用户的账号"
+            placeholder="请输入用户账号"
           />
         </a-form-item>
         <a-form-item
@@ -92,13 +101,13 @@
         :show-header="false"
         :column-resizable="true"
         :ref="followTableRef"
-        :columns="columns"
+        :columns="followColumns"
         :data="followList"
         :pagination="{
           showTotal: true,
           pageSize: followSearchParams.pageSize,
           current: followSearchParams.current,
-          total,
+          total: followListTotal,
           showJumper: true,
           showPageSize: true,
         }"
@@ -135,7 +144,7 @@
       width="50%"
       :visible="fanVisible"
       placement="right"
-      @cancel="closeFanModel"
+      @cancel="closeFanModal"
       unmountOnClose
       :footer="false"
       :closable="false"
@@ -148,11 +157,11 @@
         <a-form-item
           field="userAccount"
           label="账号："
-          tooltip="请输入用户的账号"
+          tooltip="请输入用户账号"
         >
           <a-input
             v-model="fanSearchParams.userAccount"
-            placeholder="请输入用户的账号"
+            placeholder="请输入用户账号"
           />
         </a-form-item>
         <a-form-item
@@ -175,13 +184,13 @@
         :show-header="false"
         :column-resizable="true"
         :ref="fanTableRef"
-        :columns="columns"
+        :columns="fanColumns"
         :data="fanList"
         :pagination="{
           showTotal: true,
           pageSize: fanSearchParams.pageSize,
           current: fanSearchParams.current,
-          total,
+          total: fanListTotal,
           showJumper: true,
           showPageSize: true,
         }"
@@ -219,7 +228,7 @@
       :visible="updatePersonalInfoVisible"
       placement="right"
       @ok="updatePersonalInfo"
-      @cancel="closeUpdatePersonalInfoModel"
+      @cancel="closeUpdatePersonalInfoModal"
       unmountOnClose
     >
       <div style="text-align: center">
@@ -248,7 +257,7 @@
         title="个人信息"
         style="max-width: 480px; margin: 0 auto"
       >
-        <a-form-item field="用户昵称" label="昵称 :">
+        <a-form-item field="userName" label="昵称 :">
           <a-input
             v-model="updatePersonalInfoForm.userName"
             placeholder="请输入用户昵称"
@@ -282,7 +291,7 @@
       :visible="updatePasswordVisible"
       placement="right"
       @ok="handleUpdatePasswordSubmit"
-      @cancel="closeUpdatePasswordModel"
+      @cancel="closeUpdatePasswordModal"
       unmountOnClose
     >
       <a-form
@@ -368,7 +377,7 @@
       :visible="emailBindVisible"
       placement="right"
       @ok="handleEmailBindSubmit"
-      @cancel="closeEmailBindModel"
+      @cancel="closeEmailBindModal"
       unmountOnClose
     >
       <a-form
@@ -416,7 +425,7 @@
       :visible="emailUnBindVisible"
       placement="right"
       @ok="handleEmailUnBindSubmit"
-      @cancel="closeEmailUnBindModel"
+      @cancel="closeEmailUnBindModal"
       unmountOnClose
     >
       <a-form
@@ -477,7 +486,7 @@
         size="medium"
         type="outline"
         style="margin: 10px"
-        @click="openUpdatePersonalInfoModalForm"
+        @click="openUpdatePersonalInfoModal"
         >编辑个人资料
       </a-button>
       <a-button
@@ -486,7 +495,7 @@
         size="medium"
         type="outline"
         style="margin: 10px"
-        @click="openUpdatePasswordModalForm"
+        @click="openUpdatePasswordModal"
         >修改密码
       </a-button>
       <a-button
@@ -495,7 +504,7 @@
         size="medium"
         type="outline"
         style="margin: 10px"
-        @click="openEmailBindModalForm"
+        @click="openEmailBindModal"
         v-if="!loginUser.email"
         >绑定邮箱
       </a-button>
@@ -505,12 +514,13 @@
         size="medium"
         type="outline"
         style="margin: 10px"
-        @click="openEmailUnBindModalForm"
+        @click="openEmailUnBindModal"
         v-if="loginUser.email"
         >解绑邮箱
       </a-button>
     </div>
   </div>
+  <!-- 通过题目详情统计 -->
   <div id="userAcceptedQuestionDetail">
     <a-tooltip
       position="bottom"
@@ -622,6 +632,7 @@
       </div>
     </a-tooltip>
   </div>
+  <!-- 题目提交详情统计 -->
   <div id="userSubmitDetail">
     <a-space>
       <a-select
@@ -629,17 +640,347 @@
         :style="{ width: '150px' }"
         placeholder="请选择年份"
       >
-        <a-option v-for="year in years" :key="year"
-        >{{ year }}
-        </a-option>
+        <a-option v-for="year in years" :key="year">{{ year }}</a-option>
       </a-select>
-      <a-typography style="margin-left: 100px;color: #3c3c4399">总提交次数：</a-typography>
-      <a-typography>{{submitDetail.years[hotMap.calendar[0].range]}}</a-typography>
-      <a-typography style="margin-left: 100px;color: #3c3c4399">累计提交天数：</a-typography>
-      <a-typography>{{submitDetail.dayNum[hotMap.calendar[0].range]}}</a-typography>
+      <a-typography style="margin-left: 100px; color: #3c3c4399"
+        >总提交次数：
+      </a-typography>
+      <a-typography
+        >{{ submitDetail.years[hotMap.calendar[0].range] }}
+      </a-typography>
+      <a-typography style="margin-left: 100px; color: #3c3c4399"
+        >累计提交天数：
+      </a-typography>
+      <a-typography
+        >{{ submitDetail.dayNum[hotMap.calendar[0].range] }}
+      </a-typography>
     </a-space>
-      <v-chart autoresize :option="hotMap"/>
+    <v-chart autoresize :option="hotMap" />
   </div>
+  <!-- 题单/题解/收藏 -->
+  <div id="other">
+    <a-tabs default-active-key="questionList" size="large">
+      <!--题单-->
+      <a-tab-pane key="questionList" title="题单">
+        <a-list
+          :scrollbar="true"
+          :max-height="700"
+          :size="'large'"
+          :data="questionList"
+          :pagination-props="{
+            total: questionListTotal,
+            current: questionListSearchParams.current,
+            pageSize: questionListSearchParams.pageSize,
+            showTotal: true,
+            showPageSize: true,
+          }"
+          @pageSizeChange="onQuestionListPageSizeChange"
+          @pageChange="onQuestionListPageChange"
+        >
+          <template #header>
+            <a-button
+              type="text"
+              shape="round"
+              status="normal"
+              size="medium"
+              @click="openAddQuestionListModal"
+              style="position: relative; top: 9px"
+              >创建题单
+            </a-button>
+            <a-form
+              :model="questionListSearchParams"
+              layout="inline"
+              style="
+                position: absolute;
+                top: 0;
+                left: 50px;
+                justify-content: center;
+                align-content: center;
+                margin: 25px;
+              "
+            >
+              <a-form-item
+                field="title"
+                label="标题："
+                tooltip="请输入题单标题"
+              >
+                <a-input
+                  v-model="questionListSearchParams.title"
+                  placeholder="请输入题单标题"
+                />
+              </a-form-item>
+              <a-form-item>
+                <a-button
+                  type="outline"
+                  shape="round"
+                  status="normal"
+                  @click="getQuestionList"
+                  >搜 索
+                </a-button>
+              </a-form-item>
+            </a-form>
+          </template>
+          <template #item="{ item }">
+            <a-list-item>
+              <a-button
+                type="text"
+                shape="round"
+                status="normal"
+                size="medium"
+                style="margin: 10px"
+                @click="openActualQuestionListModal(item.id)"
+              >
+                <a-list-item-meta :title="item.title"></a-list-item-meta>
+              </a-button>
+              <template #actions>
+                <icon-edit
+                  @click="openUpdateQuestionListModal(item.id, item.title)"
+                />
+                <a-popconfirm
+                  content="确定吗?"
+                  type="error"
+                  okText="是"
+                  cancelText="否"
+                  @cancel="
+                    () => {
+                      message.warning(`已取消`);
+                    }
+                  "
+                  @ok="deleteQuestionList(item.id)"
+                >
+                  <icon-delete />
+                </a-popconfirm>
+              </template>
+            </a-list-item>
+          </template>
+        </a-list>
+      </a-tab-pane>
+      <!--题解-->
+      <a-tab-pane key="questionSolution" title="题解">
+        <a-list></a-list>
+      </a-tab-pane>
+      <!--收藏-->
+      <a-tab-pane key="collect" title="收藏">
+        <a-tabs
+          :position="'left'"
+          default-active-key="collectQuestionList"
+          size="small"
+        >
+          <!-- 收藏题单 -->
+          <a-tab-pane key="collectQuestionList" title="题单">
+            <a-list
+              :scrollbar="true"
+              :max-height="700"
+              :size="'large'"
+              :data="collectQuestionList"
+              :pagination-props="{
+                total: collectQuestionListTotal,
+                current: collectQuestionListSearchParams.current,
+                pageSize: collectQuestionListSearchParams.pageSize,
+                showTotal: true,
+                showPageSize: true,
+              }"
+              @pageSizeChange="onCollectQuestionListPageSizeChange"
+              @pageChange="onCollectQuestionListPageChange"
+            >
+              <template #item="{ item }">
+                <a-list-item>
+                  <a-button
+                    type="text"
+                    shape="round"
+                    status="normal"
+                    size="medium"
+                    style="margin: 10px"
+                    @click="openActualCollectQuestionsModal(item.id)"
+                  >
+                    <a-list-item-meta :title="item.title"></a-list-item-meta>
+                  </a-button>
+                  <template #actions>
+                    <a-popconfirm
+                      content="确定吗?"
+                      type="error"
+                      okText="是"
+                      cancelText="否"
+                      @cancel="
+                        () => {
+                          message.warning(`已取消`);
+                        }
+                      "
+                      @ok="unCollectQuestionList(item.id)"
+                    >
+                      <icon-delete />
+                    </a-popconfirm>
+                  </template>
+                </a-list-item>
+              </template>
+            </a-list>
+          </a-tab-pane>
+          <a-tab-pane key="collectQuestionSolution" title="题解">
+            <!-- 收藏题解 -->
+            <a-list></a-list>
+          </a-tab-pane>
+        </a-tabs>
+      </a-tab-pane>
+    </a-tabs>
+  </div>
+  <!-- 创建题单 -->
+  <a-modal
+    width="50%"
+    :visible="addQuestionListVisible"
+    placement="right"
+    @cancel="closeAddQuestionListModal"
+    @ok="addQuestionList"
+    :ok-text="'创建'"
+    unmountOnClose
+    :closable="false"
+  >
+    <a-form
+      :model="addQuestionListForm"
+      label-align="right"
+      title="创建题单"
+      style="max-width: 480px; margin: 0 auto"
+    >
+      <a-form-item field="title" label="题单标题 :">
+        <a-input
+          v-model="addQuestionListForm.title"
+          placeholder="请输入题单标题"
+        />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+  <!-- 更新题单 -->
+  <a-modal
+    width="50%"
+    :visible="updateQuestionListVisible"
+    placement="right"
+    @cancel="closeUpdateQuestionListModal"
+    @ok="updateQuestionList"
+    :ok-text="'更新'"
+    unmountOnClose
+    :closable="false"
+  >
+    <a-form
+      :model="updateQuestionListForm"
+      label-align="right"
+      title="修改题单"
+      style="max-width: 480px; margin: 0 auto"
+    >
+      <a-form-item field="title" label="题单标题 :">
+        <a-input
+          v-model="updateQuestionListForm.title"
+          placeholder="请输入题单标题"
+        />
+      </a-form-item>
+    </a-form>
+  </a-modal>
+  <!-- 具体的题单 -->
+  <a-modal
+    width="50%"
+    :visible="actualQuestionsVisible"
+    placement="right"
+    @cancel="closeActualQuestionsModel"
+    unmountOnClose
+    :footer="false"
+    :closable="false"
+  >
+    <a-list
+      :data="questions"
+      :pagination-props="{
+        total: questionsTotal,
+        current: questionsSearchParams.current,
+        pageSize: questionsSearchParams.pageSize,
+        showTotal: true,
+        showPageSize: true,
+      }"
+      @pageSizeChange="onQuestionsPageSizeChange"
+      @pageChange="onQuestionsPageChange"
+    >
+      <template #item="{ item }">
+        <a-list-item>
+          <a-button
+            type="text"
+            shape="round"
+            status="normal"
+            size="medium"
+            style="margin: 10px"
+            @click="toDoQuestion(item)"
+          >
+            <a-list-item-meta :title="item.title"></a-list-item-meta>
+          </a-button>
+          <template #actions>
+            <a-popconfirm
+              content="确定要取消收藏此题目吗?"
+              type="error"
+              okText="是"
+              cancelText="否"
+              @cancel="
+                () => {
+                  message.warning(`已取消`);
+                }
+              "
+              @ok="deleteQuestionInQuestionList(item.id, item.questionListId)"
+            >
+              <icon-delete />
+            </a-popconfirm>
+          </template>
+        </a-list-item>
+      </template>
+    </a-list>
+  </a-modal>
+  <!-- 具体的收藏题单 -->
+  <a-modal
+    width="50%"
+    :visible="actualCollectQuestionsVisible"
+    placement="right"
+    @cancel="closeActualCollectQuestionsModel"
+    unmountOnClose
+    :footer="false"
+    :closable="false"
+  >
+    <a-list
+      :data="collectQuestions"
+      :pagination-props="{
+        total: collectQuestionsTotal,
+        current: collectQuestionsSearchParams.current,
+        pageSize: collectQuestionsSearchParams.pageSize,
+        showTotal: true,
+        showPageSize: true,
+      }"
+      @pageSizeChange="onCollectQuestionsPageSizeChange"
+      @pageChange="onCollectQuestionsPageChange"
+    >
+      <template #item="{ item }">
+        <a-list-item>
+          <a-button
+            type="text"
+            shape="round"
+            status="normal"
+            size="medium"
+            style="margin: 10px"
+            @click="toDoQuestion(item)"
+          >
+            <a-list-item-meta :title="item.title"></a-list-item-meta>
+          </a-button>
+          <template #actions>
+            <a-popconfirm
+              content="确定要删除此题目吗?"
+              type="error"
+              okText="是"
+              cancelText="否"
+              @cancel="
+                () => {
+                  message.warning(`已取消`);
+                }
+              "
+              @ok="deleteQuestionInQuestionList(item.id, item.questionListId)"
+            >
+              <icon-delete />
+            </a-popconfirm>
+          </template>
+        </a-list-item>
+      </template>
+    </a-list>
+  </a-modal>
 </template>
 <script setup lang="ts">
 import { useStore } from "vuex";
@@ -654,16 +995,21 @@ import { FollowControllerService } from "../../../generated/services/FollowContr
 import { AcceptedQuestionDetailVO } from "../../../generated/models/AcceptedQuestionDetailVO";
 import { AcceptedQuestionControllerService } from "../../../generated/services/AcceptedQuestionControllerService";
 import { QuestionSubmitControllerService } from "../../../generated/services/QuestionSubmitControllerService";
+import { QuestionListControllerService } from "../../../generated/services/QuestionListControllerService";
+import { QuestionCollectControllerService } from "../../../generated/services/QuestionCollectControllerService";
+import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
+import { Question } from "../../../generated/models/Question";
+import { QuestionListCollectControllerService } from "../../../generated/services/QuestionListCollectControllerService";
 
 document.title = "个人";
 
 const router = useRouter();
 const store = useStore();
 
-// 个人
 // 获取登录用户
 let loginUser = store.state.user.loginUser;
-const data = [
+// 个人信息所展示的列
+const userInfoColumns = [
   {
     label: "账号：",
     value: loginUser.userAccount,
@@ -690,19 +1036,30 @@ const data = [
       loginUser.gender == null ? "未设置" : loginUser.gender == 0 ? "男" : "女",
   },
 ];
+
+// 编辑个人资料的表单对象
 const updatePersonalInfoForm = ref<UserUpdateMyRequest>({
   ...store.state.user?.loginUser,
 });
+
+// 通过题目排名
 const acceptedQuestionRanking = ref(1);
 
 // 头像
 const file = ref();
 let userAvatarImg = updatePersonalInfoForm.value.userAvatar;
 
-// 关注
+// 关注分页
 const followTableRef = ref();
 const followList = ref([]);
-const columns = [
+const followListTotal = ref(0);
+const followSearchParams = ref({
+  userName: "",
+  userAccount: "",
+  pageSize: 10,
+  current: 1,
+});
+const followColumns = [
   {
     title: "头像",
     slotName: "userAvatar",
@@ -732,26 +1089,104 @@ const columns = [
   },
 ];
 
-// 粉丝
+// 粉丝分页
 const fanTableRef = ref();
 const fanList = ref([]);
-
-// 分页
-const total = ref(0);
-const followSearchParams = ref({
-  userName: "",
-  userAccount: "",
-  pageSize: 10,
-  current: 1,
-});
+const fanListTotal = ref(0);
 const fanSearchParams = ref({
   userName: "",
   userAccount: "",
   pageSize: 10,
   current: 1,
 });
+const fanColumns = [
+  {
+    title: "头像",
+    slotName: "userAvatar",
+    align: "center",
+    width: 64,
+  },
+  {
+    title: "账号",
+    dataIndex: "userAccount",
+    align: "center",
+  },
+  {
+    title: "名称",
+    dataIndex: "userName",
+    align: "center",
+  },
 
-// 密码
+  {
+    title: "简介",
+    dataIndex: "userProfile",
+    align: "center",
+  },
+  {
+    title: "操作",
+    slotName: "optional",
+    align: "center",
+  },
+];
+
+// 题单分页
+const questionList = ref([]);
+const questionListTotal = ref(0);
+const questionListSearchParams = ref({
+  pageSize: 10,
+  current: 1,
+  sortField: "createTime",
+  sortOrder: "ascend",
+  title: "",
+  userId: loginUser.id,
+});
+// 创建题单的表单对象
+const addQuestionListForm = ref({
+  title: "",
+});
+// 更新题单的表单对象
+const updateQuestionListForm = ref({
+  id: 0,
+  title: "",
+});
+
+// 具体的题单中的题目分页
+const questions = ref([]);
+const questionsTotal = ref(0);
+const questionsSearchParams = ref({
+  pageSize: 10,
+  current: 1,
+  sortField: "createTime",
+  sortOrder: "ascend",
+  questionListId: 0,
+});
+
+// 收藏题单分页
+const collectQuestionList = ref([]);
+const collectQuestionListTotal = ref(0);
+const collectQuestionListSearchParams = ref({
+  pageSize: 10,
+  current: 1,
+  sortField: "createTime",
+  sortOrder: "ascend",
+  userId: loginUser.id,
+});
+
+// 具体的收藏题单中的题目分页
+const collectQuestions = ref([]);
+const collectQuestionsTotal = ref(0);
+const collectQuestionsSearchParams = ref({
+  pageSize: 10,
+  current: 1,
+  sortField: "createTime",
+  sortOrder: "ascend",
+  questionListId: 0,
+});
+
+// 用来记录所点击的某个题单的id
+const questionListId = ref(0);
+
+// 修改密码的表单对象
 const updatePasswordForm = ref({
   captcha: "",
   checkPassword: "",
@@ -759,7 +1194,7 @@ const updatePasswordForm = ref({
   eamil: loginUser.email,
 });
 
-// 验证码
+// 验证码相关
 const tip = ref("获取验证码");
 const time = ref(0);
 const intervalId = ref();
@@ -767,13 +1202,13 @@ let emailRegex = new RegExp(
   "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"
 );
 
-// 邮箱
+// 邮箱相关的表单对象
 const emailForm = ref({
   captcha: "",
   eamil: loginUser.email,
 });
 
-// 通过详情
+// 通过题目详情
 const acceptedQuestionDetail = ref({
   passTotalNum: 0,
   eachDifficultyPassNum: {
@@ -795,109 +1230,140 @@ const acceptedQuestionDetail = ref({
   },
 } as AcceptedQuestionDetailVO);
 
-// 提交详情
-const submitDetail =ref({
-  years: {
-  },
-  submitDetail: {
-
-  },
-  dayNum: {
-  },
+// 题目提交详情
+const submitDetail = ref({
+  years: {},
+  submitDetail: {},
+  dayNum: {},
 });
+
+// 题目提交的年份
 const years = ref([]);
 
-// 弹窗
+// 弹窗是否可见
 const updatePersonalInfoVisible = ref(false);
 const followVisible = ref(false);
 const fanVisible = ref(false);
 const updatePasswordVisible = ref(false);
 const emailBindVisible = ref(false);
 const emailUnBindVisible = ref(false);
+const actualQuestionsVisible = ref(false);
+const addQuestionListVisible = ref(false);
+const updateQuestionListVisible = ref(false);
+const actualCollectQuestionsVisible = ref(false);
+
 // 打开弹窗
-const openUpdatePersonalInfoModalForm = () => {
+const openUpdatePersonalInfoModal = () => {
   updatePersonalInfoVisible.value = true;
 };
-const openFollowModalForm = () => {
+const openFollowModal = () => {
   followVisible.value = true;
   getFollow();
 };
-const openFanModalForm = () => {
+const openFanModal = () => {
   fanVisible.value = true;
   getFan();
 };
-const openUpdatePasswordModalForm = () => {
+const openUpdatePasswordModal = () => {
   updatePasswordVisible.value = true;
 };
 
-const openEmailBindModalForm = () => {
+const openEmailBindModal = () => {
   emailBindVisible.value = true;
 };
 
-const openEmailUnBindModalForm = () => {
+const openEmailUnBindModal = () => {
   emailUnBindVisible.value = true;
 };
 
+const openActualQuestionListModal = (id: number) => {
+  questionListId.value = id;
+  actualQuestionsVisible.value = true;
+  getQuestionsByQuestionListId(id);
+};
+const openAddQuestionListModal = () => {
+  addQuestionListVisible.value = true;
+};
+const openUpdateQuestionListModal = (id: number, title: string) => {
+  updateQuestionListVisible.value = true;
+  updateQuestionListForm.value.id = id;
+  updateQuestionListForm.value.title = title;
+};
+const openActualCollectQuestionsModal = (id: number) => {
+  actualCollectQuestionsVisible.value = true;
+  getCollectQuestionsByCollectQuestionListId(id);
+
+};
 // 关闭弹窗
-const closeUpdatePersonalInfoModel = () => {
+const closeUpdatePersonalInfoModal = () => {
   updatePersonalInfoVisible.value = false;
 };
-const closeFollowModel = () => {
+const closeFollowModal = () => {
   followVisible.value = false;
 };
-const closeFanModel = () => {
+const closeFanModal = () => {
   fanVisible.value = false;
 };
-const closeUpdatePasswordModel = () => {
+const closeUpdatePasswordModal = () => {
   updatePasswordVisible.value = false;
 };
-const closeEmailBindModel = () => {
+const closeEmailBindModal = () => {
   emailBindVisible.value = false;
 };
-
-const closeEmailUnBindModel = () => {
+const closeEmailUnBindModal = () => {
   emailUnBindVisible.value = false;
+};
+const closeActualQuestionsModel = () => {
+  actualQuestionsVisible.value = false;
+};
+const closeAddQuestionListModal = () => {
+  addQuestionListVisible.value = false;
+};
+const closeUpdateQuestionListModal = () => {
+  updateQuestionListVisible.value = false;
+};
+const closeActualCollectQuestionsModel = () => {
+  actualCollectQuestionsVisible.value = false;
 };
 
 // 热力图
 const hotMap = ref({
   tooltip: {
-    position: 'top',
+    position: "top",
     formatter: function (params) {
       return `${params.value}`;
-    }
+    },
   },
   visualMap: {
     min: 0,
     max: 100,
     calculable: true,
-    splitNumber: '5',
-    type:'piecewise',
-    orient: 'horizontal',
-    left: 'center',
-    top: 'top',
+    splitNumber: "5",
+    type: "piecewise",
+    orient: "horizontal",
+    left: "center",
+    top: "top",
     inRange: {
-      color: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e','#216e39']
+      color: ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
     },
   },
   calendar: [
     {
       left: 30,
       right: 30,
-      range: '2024',
-      cellSize: ['auto', 16],
+      range: "2024",
+      cellSize: ["auto", 16],
     },
   ],
   series: [
     {
-      type: 'heatmap',
-      coordinateSystem: 'calendar',
+      type: "heatmap",
+      coordinateSystem: "calendar",
       calendarIndex: 0,
       data: Object.entries(submitDetail.value.submitDetail),
     },
-  ]
+  ],
 });
-
 
 /**
  * 编辑个人资料
@@ -920,11 +1386,13 @@ const updatePersonalInfo = async () => {
  * 获取个人通过题目数排名
  */
 const getAcceptedQuestionRanking = async () => {
-  const res = await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet();
+  const res =
+    await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet();
   if (res.code == 0) {
-    acceptedQuestionRanking.value = res.data;
+    acceptedQuestionRanking.value = res.data as number;
   }
 };
+
 /**
  * 获取关注列表
  */
@@ -935,13 +1403,13 @@ const getFollow = async () => {
     sortOrder: "descend",
   });
   if (res.code === 0) {
-    followList.value = await Promise.all(
-      res.data.records.map(async (x:any) => {
+    followList.value = (await Promise.all(
+      res.data.records.map(async (x: any) => {
         const isFollow = await FollowControllerService.isFollowUsingGet(x.id);
         return { ...x, isFollow: isFollow.data };
       })
-    );
-    total.value = res.data.total;
+    )) as [];
+    followListTotal.value = res.data.total;
   } else {
     message.error("加载失败，" + res.message);
   }
@@ -957,27 +1425,17 @@ const getFan = async () => {
     sortOrder: "descend",
   });
   if (res.code === 0) {
-    fanList.value = await Promise.all(
-      res.data.records.map(async (x:any) => {
+    fanList.value = (await Promise.all(
+      res.data.records.map(async (x: any) => {
         const isFollow = await FollowControllerService.isFollowUsingGet(x.id);
         return { ...x, isFollow: isFollow.data };
       })
-    );
-    total.value = res.data.total;
+    )) as [];
+    fanListTotal.value = res.data.total;
   } else {
     message.error("加载失败，" + res.message);
   }
 };
-
-/**
- * 监听 searchParams 变量，改变时触发页面的重新加载
- */
-watchEffect(() => {
-  getFollow();
-});
-watchEffect(() => {
-  getFan();
-});
 
 /**
  * 关注或取消关注
@@ -1011,6 +1469,30 @@ const onFanPageChange = (page: number) => {
     current: page,
   };
 };
+const onQuestionListPageChange = (page: number) => {
+  questionListSearchParams.value = {
+    ...questionListSearchParams.value,
+    current: page,
+  };
+};
+const onQuestionsPageChange = (page: number) => {
+  questionsSearchParams.value = {
+    ...questionsSearchParams.value,
+    current: page,
+  };
+};
+const onCollectQuestionListPageChange = (page: number) => {
+  collectQuestionListSearchParams.value = {
+    ...collectQuestionListSearchParams.value,
+    current: page,
+  };
+};
+const onCollectQuestionsPageChange = (page: number) => {
+  collectQuestionsSearchParams.value = {
+    ...collectQuestionsSearchParams.value,
+    current: page,
+  };
+};
 
 /**
  * 改变分页大小
@@ -1025,6 +1507,30 @@ const onFollowPageSizeChange = (size: number) => {
 const onFanPageSizeChange = (size: number) => {
   fanSearchParams.value = {
     ...fanSearchParams.value,
+    pageSize: size,
+  };
+};
+const onQuestionListPageSizeChange = (size: number) => {
+  questionListSearchParams.value = {
+    ...questionListSearchParams.value,
+    pageSize: size,
+  };
+};
+const onQuestionsPageSizeChange = (size: number) => {
+  questionsSearchParams.value = {
+    ...questionsSearchParams.value,
+    pageSize: size,
+  };
+};
+const onCollectQuestionListPageSizeChange = (size: number) => {
+  collectQuestionListSearchParams.value = {
+    ...collectQuestionListSearchParams.value,
+    pageSize: size,
+  };
+};
+const onCollectQuestionsPageSizeChange = (size: number) => {
+  collectQuestionsSearchParams.value = {
+    ...collectQuestionsSearchParams.value,
     pageSize: size,
   };
 };
@@ -1139,35 +1645,233 @@ const uploadAvatar = async () => {
 /**
  * 获取通过题目详情
  */
-const getAcceptedQuestionDetail = async ()=>{
-  const res = await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet();
+const getAcceptedQuestionDetail = async () => {
+  const res =
+    await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet();
   if (res.code === 0) {
-    acceptedQuestionDetail.value = res.data;
+    acceptedQuestionDetail.value = res.data as {};
   } else {
     Message.error("" + res.message);
   }
-}
+};
 
 /**
  * 获取个人提交详情
  */
-const getSubmitDetail = async ()=>{
-  const res = await QuestionSubmitControllerService.getPersonSubmitDetailUsingGet();
+const getSubmitDetail = async () => {
+  const res =
+    await QuestionSubmitControllerService.getPersonSubmitDetailUsingGet();
   if (res.code === 0) {
     console.log(submitDetail.value.submitDetail);
-    submitDetail.value= res.data;
-    hotMap.value.series[0].data=Object.entries(res.data?.submitDetail)
-    years.value=Object.keys(res.data?.years)
+    submitDetail.value = res.data;
+    hotMap.value.series[0].data = Object.entries(res.data?.submitDetail);
+    years.value = Object.keys(res.data?.years) as never[];
   } else {
     Message.error("" + res.message);
   }
-}
+};
+/**
+ * 获取题单
+ */
+const getQuestionList = async () => {
+  const res =
+    await QuestionListControllerService.listQuestionListByPageUserUsingPost(
+      questionListSearchParams.value
+    );
+  if (res.code === 0) {
+    questionList.value = res.data.records;
+    questionListTotal.value = res.data.total;
+  } else {
+    Message.error("" + res.message);
+  }
+};
 
-onMounted(() => {
-  getAcceptedQuestionDetail();
-  getAcceptedQuestionRanking();
-  getSubmitDetail();
+/**
+ * 获取某个题单的题目
+ */
+const getQuestionsByQuestionListId = async (id: number) => {
+  console.log(questionsSearchParams.value);
+  const res =
+    await QuestionCollectControllerService.listQuestionCollectByPageUserUsingPost(
+      { ...questionsSearchParams.value, questionListId: id }
+    );
+  if (res.code === 0) {
+    questions.value = (await Promise.all(
+      res.data.records.map(async (x: any) => {
+        const questionVO =
+          await QuestionControllerService.getQuestionVoByIdUsingGet(
+            x.questionId
+          );
+        return { ...questionVO.data, questionListId: id };
+      })
+    )) as [];
+    questionsTotal.value = res.data.total;
+  } else {
+    Message.error("" + res.message);
+  }
+};
+
+/**
+ * 跳转到做题页面
+ * @param question
+ */
+const toDoQuestion = (question: Question) => {
+  router.push({
+    path: `/view/question/${question.id}`,
+  });
+};
+
+/**
+ * 创建题单
+ */
+const addQuestionList = async () => {
+  const res = await QuestionListControllerService.addQuestionListUsingPost(
+    addQuestionListForm.value
+  );
+  if (res.code === 0) {
+    message.success("创建成功");
+    addQuestionListVisible.value = false;
+    location.reload();
+  } else {
+    message.error("创建失败，" + res.message);
+  }
+};
+
+/**
+ * 更新题单
+ */
+const updateQuestionList = async () => {
+  const res = await QuestionListControllerService.updateQuestionListUsingPost(
+    updateQuestionListForm.value
+  );
+  if (res.code === 0) {
+    message.success("更新成功");
+    updateQuestionListVisible.value = false;
+    location.reload();
+  } else {
+    message.error("更新失败，" + res.message);
+  }
+};
+
+/**
+ * 删除题单
+ */
+const deleteQuestionList = async (id: number) => {
+  const res = await QuestionListControllerService.deleteQuestionListUsingPost(
+    id
+  );
+  if (res.code === 0) {
+    message.success("删除成功");
+    location.reload();
+  } else {
+    message.error("删除失败，" + res.message);
+  }
+};
+
+/**
+ * 删除题单中的题目
+ * @param questionId
+ * @param questionListId
+ */
+const deleteQuestionInQuestionList = async (questionId: number, questionListId: number) => {
+  const res =
+    await QuestionCollectControllerService.deleteQuestionCollectUsingPost({
+      questionId: questionId,
+      questionListId: questionListId,
+    });
+  if (res.code === 0) {
+    message.success("删除成功");
+  } else {
+    message.error("删除失败，" + res.message);
+  }
+};
+
+/**
+ * 获取收藏的题单
+ */
+const getCollectQuestionList = async () => {
+  const res =
+    await QuestionListCollectControllerService.listQuestionListCollectByPageUserUsingPost(
+      collectQuestionListSearchParams.value
+    );
+  if (res.code === 0) {
+    collectQuestionList.value = (await Promise.all(
+      res.data.records.map(async (x: any) => {
+        const questionList =
+          await QuestionListControllerService.getQuestionListByIdUsingPost(
+            x.questionListId
+          );
+        return questionList.data;
+      })
+    )) as [];
+    collectQuestionListTotal.value = res.data.total;
+  } else {
+    Message.error("" + res.message);
+  }
+};
+/**
+ * 取消收藏题单
+ */
+const unCollectQuestionList = async (questionListId: number) => {
+  const res =
+    await QuestionListCollectControllerService.deleteQuestionListCollectUsingPost({
+      questionListId: questionListId,
+    });
+  if (res.code === 0) {
+    message.success("取消收藏成功");
+  } else {
+    message.error("取消收藏失败，" + res.message);
+  }
+};
+/**
+ * 获取某个收藏题单的题目
+ */
+const getCollectQuestionsByCollectQuestionListId = async (id: number) => {
+  const res =
+    await QuestionCollectControllerService.listQuestionCollectByPageUserUsingPost(
+      { ...collectQuestionsSearchParams.value, questionListId: id }
+    );
+  if (res.code === 0) {
+    collectQuestions.value = (await Promise.all(
+      res.data.records.map(async (x: any) => {
+        const questionVO =
+          await QuestionControllerService.getQuestionVoByIdUsingGet(
+            x.questionId
+          );
+        return { ...questionVO.data, questionListId: id };
+      })
+    )) as [];
+    collectQuestionsTotal.value = res.data.total;
+  } else {
+    Message.error("" + res.message);
+  }
+};
+
+onMounted(async () => {
+  await getAcceptedQuestionDetail();
+  await getAcceptedQuestionRanking();
+  await getSubmitDetail();
+  await getQuestionList();
 });
+
+/**
+ * 监听 searchParams 变量，改变时触发页面的重新加载
+ */
+watchEffect(() => {
+  getFollow();
+});
+watchEffect(() => {
+  getFan();
+});
+watchEffect(() => {
+  getQuestionList();
+});
+watchEffect(() => {
+  getQuestionsByQuestionListId(questionListId.value);
+});
+watchEffect(async ()=>{
+    await getCollectQuestionList();
+})
 
 /**
  * 回到首页
@@ -1193,7 +1897,8 @@ const onChange = async (_: never, currentFile: FileItem) => {
 
 <style scoped>
 #userInfoView {
-  margin: 0 auto;
+  position: relative;
+  margin-left: 0;
   padding: 10px;
   max-width: 820px;
   border-radius: 10px;
@@ -1201,7 +1906,8 @@ const onChange = async (_: never, currentFile: FileItem) => {
 }
 
 #userAcceptedQuestionDetail {
-  margin: 0 auto;
+  position: relative;
+  margin-left: 0;
   margin-top: 10px;
   height: 85px;
   padding: 10px;
@@ -1209,12 +1915,25 @@ const onChange = async (_: never, currentFile: FileItem) => {
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
 }
+
 #userSubmitDetail {
-  margin: 0 auto;
+  position: relative;
+  margin-left: 0;
   margin-top: 10px;
   height: 200px;
   padding: 10px;
   max-width: 820px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
+}
+
+#other {
+  position: absolute;
+  left: 868px;
+  top: 127px;
+  height: 821px;
+  padding: 10px;
+  width: 580px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
 }
