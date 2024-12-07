@@ -12,13 +12,13 @@ export type QuestionVO = {
     comments?: number;
     content?: string;
     createTime?: string;
-    favourNum?: number;
+    difficulty?: number;
     id?: number;
     isAccepted?: number;
     judgeConfig?: QuestionJudgeCconfig;
+    likes?: number;
     submitNum?: number;
     tags?: Array<string>;
-    thumbNum?: number;
     title?: string;
     updateTime?: string;
     userId?: number;

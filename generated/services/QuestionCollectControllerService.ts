@@ -5,9 +5,11 @@
 import type { BaseResponse_boolean_ } from '../models/BaseResponse_boolean_';
 import type { BaseResponse_Page_QuestionCollect_ } from '../models/BaseResponse_Page_QuestionCollect_';
 import type { BaseResponse_QuestionCollect_ } from '../models/BaseResponse_QuestionCollect_';
+import type { BaseResponse_QuestionCollectByUserAllQuestionListDetail_ } from '../models/BaseResponse_QuestionCollectByUserAllQuestionListDetail_';
 import type { QuestionCollectAddRequest } from '../models/QuestionCollectAddRequest';
 import type { QuestionCollectDeleteRequest } from '../models/QuestionCollectDeleteRequest';
 import type { QuestionCollectQueryRequest } from '../models/QuestionCollectQueryRequest';
+import type { QuestionListQueryRequest } from '../models/QuestionListQueryRequest';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -75,6 +77,33 @@ id: number,
             query: {
                 'id': id,
             },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * isQuestionCollectedByUserAllQuestionList
+     * @param questionId questionId
+     * @param questionListQueryRequest questionListQueryRequest
+     * @returns BaseResponse_QuestionCollectByUserAllQuestionListDetail_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static isQuestionCollectedByUserAllQuestionListUsingPost(
+questionId: number,
+questionListQueryRequest: QuestionListQueryRequest,
+): CancelablePromise<BaseResponse_QuestionCollectByUserAllQuestionListDetail_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/question/question_collect/isQuestionCollectedByUserAllQuestionList',
+            query: {
+                'questionId': questionId,
+            },
+            body: questionListQueryRequest,
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

@@ -29,6 +29,23 @@
 
                   <template #extra>
                     <a-space wrap>
+                      <!-- 收藏 -->
+                      <icon-star-fill
+                        style="font-size: 23px; color: rgb(247, 186, 30)"
+                        v-if="isCollect"
+                        @click="openQuestionListModal"
+                      />
+                      <icon-star-fill
+                        style="font-size: 23px; color: rgb(229, 230, 235)"
+                        v-else
+                        @click="openQuestionListModal"
+                      />
+                      <!-- 点赞 -->
+                      <a-rate :count="1" :allow-clear="true" color="red">
+                        <template #character>
+                          <icon-heart-fill />
+                        </template>
+                      </a-rate>
                       <a-tag
                         v-for="(tag, index) of question.tags"
                         :key="index"
@@ -56,13 +73,13 @@
                   :data="dataList"
                   :pagination="{
                     showTotal: true,
-                    current: searchParams.current,
-                    pageSize: searchParams.pageSize,
+                    current: questionSubmitSearchParams.current,
+                    pageSize: questionSubmitSearchParams.pageSize,
                     total,
                     showPageSize: true,
                   }"
-                  @page-change="onPageChange"
-                  @pageSizeChange="onPageSizeChange"
+                  @page-change="onQuestionSubmitPageChange"
+                  @pageSizeChange="onQuestionSubmitPageSizeChange"
                   @row-click="handleHistoryRecordClick"
                 >
                   <template #message="{ record }">
@@ -112,6 +129,90 @@
         </a-card>
       </div>
     </a-resize-box>
+    <!--  题单  -->
+    <a-modal
+      width="50%"
+      :visible="questionListVisible"
+      placement="right"
+      @cancel="closeQuestionListModal"
+      :footer="false"
+      unmountOnClose
+      :closable="false"
+    >
+      <a-list
+        :scrollbar="true"
+        :max-height="700"
+        :size="'large'"
+        :data="questionList"
+        :pagination-props="{
+          total: questionListTotal,
+          current: questionListSearchParams.current,
+          pageSize: questionListSearchParams.pageSize,
+          showTotal: true,
+          showPageSize: true,
+        }"
+        @pageSizeChange="onQuestionListPageSizeChange"
+        @pageChange="onQuestionListPageChange"
+      >
+        <template #header>
+          <a-form
+            :model="questionListSearchParams"
+            layout="inline"
+            style="
+              position: absolute;
+              top: 0;
+              left: 50px;
+              justify-content: center;
+              align-content: center;
+            "
+          >
+            <a-form-item field="title" label="标题：" tooltip="请输入题单标题">
+              <a-input
+                v-model="questionListSearchParams.title"
+                placeholder="请输入题单标题"
+              />
+            </a-form-item>
+            <a-form-item>
+              <a-button
+                type="outline"
+                shape="round"
+                status="normal"
+                @click="getQuestionCollectByUserAllQuestionListDetail"
+                >搜 索
+              </a-button>
+            </a-form-item>
+          </a-form>
+        </template>
+        <template #item="{ item }">
+          <a-list-item>
+            <a-list-item-meta :title="item.title">
+              <template #avatar>
+                <a-tooltip
+                  v-if="item.isCollect"
+                  content="取消收藏"
+                  @click="unCollectQuestion(item.id)"
+                >
+                  <icon-check-circle-fill
+                    :style="{ fontSize: '32px', color: 'black' }"
+                    :stroke-width="2"
+                  />
+                </a-tooltip>
+                <a-tooltip
+                  v-if="!item.isCollect"
+                  content="收藏"
+                  @click="collectQuestion(item.id)"
+                >
+                  <icon-check-circle-fill
+                    :style="{ fontSize: '32px', color: 'gray' }"
+                    :stroke-width="2"
+                  />
+                </a-tooltip>
+              </template>
+            </a-list-item-meta>
+          </a-list-item>
+        </template>
+      </a-list>
+    </a-modal>
     <!--右栏-->
     <div
       id="rightPart"
@@ -279,7 +380,10 @@ import { QuestionSubmitQueryRequest } from "../../../generated/models/QuestionSu
 import { QuestionVO } from "../../../generated/models/QuestionVO";
 import { QuestionSubmitAddRequest } from "../../../generated/models/QuestionSubmitAddRequest";
 import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
+import { QuestionCollectControllerService } from "../../../generated/services/QuestionCollectControllerService";
+import { useStore } from "vuex";
 
+// 获取题目id
 interface Props {
   id: string;
 }
@@ -287,6 +391,10 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   id: () => "",
 });
+
+// 获取登录用户
+const store = useStore();
+let loginUser = store.state.user.loginUser;
 
 const resizeBoxWidth = ref(755);
 const codeWidth = ref(0);
@@ -320,6 +428,7 @@ const runCodeResponse = ref({ output: "", message: "" });
 const handleConsoleClick = () => {
   consoleVisible.value = true;
 };
+
 /**
  * 自测运行代码
  */
@@ -337,12 +446,14 @@ const handleRunClick = async () => {
   }
   runLoading.value = false;
 };
+
 /**
  * 关闭控制台
  */
 const handleConsoleClose = () => {
   consoleVisible.value = false;
 };
+
 /**
  * 点击单条提交记录时的处理
  * @param value
@@ -351,8 +462,9 @@ const handleHistoryRecordClick = (value: any) => {
   historyVisible.value = true;
   historyRecord.value = value;
 };
+
 // 查询个人提交记录的参数
-const searchParams = ref<QuestionSubmitQueryRequest>({
+const questionSubmitSearchParams = ref<QuestionSubmitQueryRequest>({
   language: undefined,
   questionId: undefined,
   pageSize: 10,
@@ -364,71 +476,7 @@ const searchParams = ref<QuestionSubmitQueryRequest>({
 const total = ref(0);
 // 个人提交记录
 const dataList = ref([]);
-// 题目
-const question = ref<QuestionVO>();
-// 提交代码时的请求负载
-const form = ref<QuestionSubmitAddRequest>({
-  language: "java",
-  code: "",
-  questionId: -1,
-});
-
-// 支持语言
-const languages = ref<string[]>();
-
-/**
- * 获取题目
- */
-const loadData1 = async () => {
-  const res = await QuestionControllerService.getQuestionVoByIdUsingGet(
-    props.id as any
-  );
-  if (res.code === 0) {
-    question.value = res.data;
-    document.title = res.data?.title;
-  } else {
-    message.error("加载失败，" + res.message);
-  }
-};
-
-/**
- * 获取个人提交记录
- */
-const loadData2 = async () => {
-  const res =
-    await QuestionSubmitControllerService.listMyQuestionSubmitByPageUsingPost({
-      ...searchParams.value,
-      questionId: props.id as any,
-    });
-  if (res.code === 0) {
-    dataList.value = res.data.records;
-    total.value = res.data.total;
-  } else {
-    message.error("加载失败，" + res.message);
-  }
-};
-
-/**
- * 监听loadData函数所使用的变量的变化，改变时触发页面的重新加载
- */
-watchEffect(() => {
-  loadData2();
-});
-
-onMounted(async () => {
-  loadData1();
-  loadData2();
-  // 从后端获取支持语言
-  const res = await QuestionControllerService.getCodeLanguageUsingGet();
-  if (res.code === 0) {
-    languages.value = res.data;
-  }
-  // console.log(res);
-});
-
-/**
- * 个人提交记录需要展示的列
- */
+// 个人提交记录需要展示的列
 const columns = [
   {
     title: "判题结果",
@@ -459,6 +507,99 @@ const columns = [
     width: 100,
   },
 ];
+// 题目
+const question = ref<QuestionVO>();
+
+// 提交代码时的请求负载
+const form = ref<QuestionSubmitAddRequest>({
+  language: "java",
+  code: "",
+  questionId: -1,
+});
+
+// 支持语言
+const languages = ref<string[]>();
+
+// 题单
+const questionList = ref([]);
+const questionListTotal = ref(0);
+const questionListSearchParams = ref({
+  pageSize: 10,
+  current: 1,
+  sortField: "createTime",
+  sortOrder: "ascend",
+  title: "",
+  userId: loginUser.id,
+});
+const isCollect = ref(false);
+
+// 弹窗
+const questionListVisible = ref(false);
+// 打开弹窗
+const openQuestionListModal = () => {
+  questionListVisible.value = true;
+};
+// 关闭弹窗
+const closeQuestionListModal = () => {
+  questionListVisible.value = false;
+};
+
+/**
+ * 获取题目
+ */
+const loadData1 = async () => {
+  const res = await QuestionControllerService.getQuestionVoByIdUsingGet(
+    props.id as any
+  );
+  if (res.code === 0) {
+    question.value = res.data;
+    document.title = res.data?.title;
+  } else {
+    message.error("加载失败，" + res.message);
+  }
+};
+
+/**
+ * 获取个人提交记录
+ */
+const loadData2 = async () => {
+  const res =
+    await QuestionSubmitControllerService.listMyQuestionSubmitByPageUsingPost({
+      ...questionSubmitSearchParams.value,
+      questionId: props.id as any,
+    });
+  if (res.code === 0) {
+    dataList.value = res.data.records;
+    total.value = res.data.total;
+  } else {
+    message.error("加载失败，" + res.message);
+  }
+};
+
+/**
+ * 监听loadData函数所使用的变量的变化，改变时触发页面的重新加载
+ */
+watchEffect(async () => {
+  await loadData2();
+});
+
+onMounted(async () => {
+  await loadData1();
+  await loadData2();
+  await getLanguage();
+  await getQuestionCollectByUserAllQuestionListDetail();
+});
+
+/**
+ * 从后端获取支持语言
+ */
+const getLanguage = async () => {
+  // 从后端获取支持语言
+  const res = await QuestionControllerService.getCodeLanguageUsingGet();
+  if (res.code === 0) {
+    languages.value = res.data;
+  }
+};
 
 /**
  * 提交代码
@@ -486,25 +627,93 @@ const doQuestionSubmit = async () => {
 const onCodeChange = (value: string) => {
   form.value.code = value;
 };
+
 /**
- * 个人提交记录页面切换
+ * 页面切换
  * @param page
  */
-const onPageChange = (page: number) => {
-  searchParams.value = {
-    ...searchParams.value,
+const onQuestionSubmitPageChange = (page: number) => {
+  questionSubmitSearchParams.value = {
+    ...questionSubmitSearchParams.value,
+    current: page,
+  };
+};
+const onQuestionListPageChange = (page: number) => {
+  questionListSearchParams.value = {
+    ...questionListSearchParams.value,
     current: page,
   };
 };
 /**
- * 个人提交记录页面大小切换
+ * 页面大小切换
  * @param size
  */
-const onPageSizeChange = (size: number) => {
-  searchParams.value = {
-    ...searchParams.value,
+const onQuestionSubmitPageSizeChange = (size: number) => {
+  questionSubmitSearchParams.value = {
+    ...questionSubmitSearchParams.value,
     pageSize: size,
   };
+};
+const onQuestionListPageSizeChange = (size: number) => {
+  questionListSearchParams.value = {
+    ...questionListSearchParams.value,
+    pageSize: size,
+  };
+};
+
+/**
+ * 获取用户所有题单对某道题目的收藏情况
+ */
+const getQuestionCollectByUserAllQuestionListDetail = async () => {
+  const res =
+    await QuestionCollectControllerService.isQuestionCollectedByUserAllQuestionListUsingPost(
+      props.id as any,
+      questionListSearchParams.value
+    );
+  if (res.code == 0) {
+    questionList.value = res.data.questionListVOPage.records;
+    questionListTotal.value = res.data.questionListVOPage.total;
+    isCollect.value = res.data.isCollect;
+    console.log(isCollect.value);
+  } else {
+    message.error(res.message);
+  }
+};
+
+/**
+ * 收藏题目
+ * @param questionListId
+ */
+const collectQuestion = async (questionListId: number) => {
+  const res =
+    await QuestionCollectControllerService.addQuestionCollectUsingPost({
+      questionId: props.id as any,
+      questionListId: questionListId,
+    });
+  if(res.code==0){
+    await getQuestionCollectByUserAllQuestionListDetail();
+    message.success("收藏成功");
+  }else{
+    message.error("收藏失败");
+  }
+};
+
+/**
+ * 取消收藏
+ * @param questionListId
+ */
+const unCollectQuestion = async (questionListId: number) => {
+  const res =
+    await QuestionCollectControllerService.deleteQuestionCollectUsingPost({
+      questionId: props.id as any,
+      questionListId: questionListId,
+    });
+  if(res.code==0){
+    await getQuestionCollectByUserAllQuestionListDetail();
+    message.success("取消收藏成功");
+  }else{
+    message.error("取消收藏失败");
+  }
 };
 </script>
 
