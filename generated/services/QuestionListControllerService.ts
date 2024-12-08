@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { BaseResponse_boolean_ } from '../models/BaseResponse_boolean_';
 import type { BaseResponse_Page_QuestionList_ } from '../models/BaseResponse_Page_QuestionList_';
+import type { BaseResponse_Page_QuestionListVO_ } from '../models/BaseResponse_Page_QuestionListVO_';
 import type { BaseResponse_QuestionList_ } from '../models/BaseResponse_QuestionList_';
 import type { QuestionListAddRequest } from '../models/QuestionListAddRequest';
 import type { QuestionListQueryRequest } from '../models/QuestionListQueryRequest';
@@ -110,13 +111,13 @@ questionListQueryRequest: QuestionListQueryRequest,
     /**
      * listQuestionListByPageUser
      * @param questionListQueryRequest questionListQueryRequest
-     * @returns BaseResponse_Page_QuestionList_ OK
+     * @returns BaseResponse_Page_QuestionListVO_ OK
      * @returns any Created
      * @throws ApiError
      */
     public static listQuestionListByPageUserUsingPost(
 questionListQueryRequest: QuestionListQueryRequest,
-): CancelablePromise<BaseResponse_Page_QuestionList_ | any> {
+): CancelablePromise<BaseResponse_Page_QuestionListVO_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/question/question_list/list/page/user',
