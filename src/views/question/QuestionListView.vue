@@ -47,20 +47,25 @@
       </template>
       <template #item="{ item }">
         <a-list-item>
-          <a-button
-            type="text"
-            shape="round"
-            status="normal"
-            size="medium"
-            style="margin: 10px"
-            @click="openActualQuestionsModal(item.id,item.userId)"
-          >
-          <a-list-item-meta :title="item.title">
+          <a-list-item-meta>
+            <!-- 题单创建人头像 -->
             <template #avatar>
               <a-avatar><img alt="avatar" :src="item.userAvatar" /></a-avatar>
             </template>
+            <!-- 题单标题 -->
+            <template #title>
+              <a-button
+                type="text"
+                shape="round"
+                status="normal"
+                size="medium"
+                style="margin: 10px"
+                @click="openActualQuestionsModal(item.id,item.userId)"
+              >
+                {{item.title}}
+              </a-button>
+            </template>
           </a-list-item-meta>
-          </a-button>
           <template #actions>
             <!-- 收藏 -->
             <icon-star-fill
@@ -246,7 +251,7 @@ const getQuestionList = async () => {
   }
 };
 /**
- * 收藏题目
+ * 收藏题单
  * @param questionListId
  */
 const collectQuestion = async (questionListId: number) => {
@@ -263,7 +268,7 @@ const collectQuestion = async (questionListId: number) => {
 };
 
 /**
- * 取消收藏
+ * 取消收藏题单
  * @param questionListId
  */
 const unCollectQuestion = async (questionListId: number) => {
@@ -292,6 +297,8 @@ onMounted( async () => {
 
 /**
  * 获取某个题单的题目
+ * @param questionListId 题目所属题单的id
+ * @param userId 题目所属题单的创建人的id
  */
 const getQuestionsByQuestionListId = async (questionListId: number,userId:number) => {
   console.log(questionsSearchParams.value);
@@ -316,7 +323,7 @@ const getQuestionsByQuestionListId = async (questionListId: number,userId:number
 };
 
 /**
- * 删除题单中的题目
+ * 题单取消收藏题目
  * @param questionId
  * @param questionListId
  */
