@@ -15,4 +15,8 @@ export type QuestionComment = {
     questionId?: number;
     respondUserId?: number;
     userId?: number;
+    userName?: string;
+    userAvatar?: string;
+    showReplyBox?: boolean;
+    respondUserName?: string;
 };

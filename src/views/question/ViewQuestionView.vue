@@ -57,8 +57,225 @@
                 </a-card>
               </a-tab-pane>
               <!--评论区-->
-              <a-tab-pane key="comment" title="评论" disabled>
-                评论区
+              <a-tab-pane key="comment" title="评论">
+                <!-- 发表评论 -->
+                <a-comment align="right" :avatar="loginUser.userAvatar">
+                  <template #actions>
+                    <a-button
+                      key="1"
+                      type="primary"
+                      status="success"
+                      @click="publisOrReply(props.id, 0, 0)"
+                    >
+                      发表评论
+                    </a-button>
+                  </template>
+                  <template #content>
+                    <a-input
+                      v-model="replyContent"
+                      placeholder="Here is you content."
+                    />
+                  </template>
+                </a-comment>
+                <!-- 一级评论 -->
+                <a-comment
+                  v-for="firstComment in comments"
+                  :author="firstComment.userName"
+                  :content="firstComment.content"
+                  :avatar="firstComment.userAvatar"
+                  :datetime="moment(firstComment.createTime).format('YYYY-MM-DD HH:mm:ss')"
+                >
+                  <template #actions>
+                    <!-- 点赞图标 -->
+                    <span
+                      class="action"
+                      key="heart"
+                      @click="likeComment(firstComment.id)"
+                    >
+                      <span v-if="firstComment.isLike">
+                        <IconHeartFill :style="{ color: '#f53f3f' }" />
+                      </span>
+                      <span v-else>
+                        <IconHeart />
+                      </span>
+                      {{ firstComment.likes }}
+                    </span>
+                    <!-- 回复图标 -->
+                    <span
+                      class="action"
+                      key="reply"
+                      @click="toggleReplyBox(firstComment)"
+                    >
+                      <IconMessage /> Reply
+                    </span>
+                    <!-- 删除图标 -->
+                    <span
+                      class="action"
+                      key="delete"
+                      @click="deleteComment(firstComment.id)"
+                      v-if="firstComment.userId == loginUser.id"
+                    >
+                      <a-tooltip :content="'删除'">
+                        <IconDelete />
+                      </a-tooltip>
+                    </span>
+                    <!-- 举报图标 -->
+                    <span
+                      class="action"
+                      key="delete"
+                      v-if="firstComment.userId != loginUser.id"
+                      @click="reportComment(1,firstComment.id,firstComment.userId)"
+                    >
+                      <a-tooltip :content="'举报'">
+                        <icon-exclamation-circle />
+                      </a-tooltip>
+                    </span>
+
+                  </template>
+                  <!-- 一级评论回复框 -->
+                  <a-comment
+                    align="right"
+                    v-if="firstComment.showReplyBox"
+                    :avatar="loginUser.userAvatar"
+                  >
+                    <template #actions>
+                      <a-button
+                        key="0"
+                        type="secondary"
+                        @click="toggleReplyBox(firstComment)"
+                      >
+                        Cancel
+                      </a-button>
+                      <a-button
+                        key="1"
+                        type="primary"
+                        status="success"
+                        @click="
+                          publisOrReply(
+                            props.id,
+                            firstComment.id,
+                            0
+                          )
+                        "
+                      >
+                        Reply
+                      </a-button>
+                    </template>
+                    <template #content>
+                      <a-input
+                        v-model="replyContent"
+                        placeholder="Here is you content."
+                      />
+                    </template>
+                  </a-comment>
+                  <!-- 二级评论 -->
+                  <a-collapse v-if="firstComment.childList.length!=0" :default-active-key="[1]" accordion :bordered="false">
+                    <a-collapse-item  :header="firstComment.childList.length +'条回复'" key="1">
+                      <!-- 二级评论 -->
+                      <a-comment
+                        :author="secondComment.userName + '' + (secondComment.respondUserId==0 ? '' : ' 回复 '+ secondComment.respondUserName)"
+                        :content="secondComment.content"
+                        :avatar="secondComment.userAvatar"
+                        :datetime="moment(secondComment.createTime).format('YYYY-MM-DD HH:mm:ss')"
+                        v-for="secondComment in firstComment.childList"
+                      >
+                        <template #actions>
+                          <!-- 点赞图标 -->
+                          <span
+                            class="action"
+                            key="heart"
+                            @click="likeComment(secondComment.id)"
+                          >
+                            <span v-if="secondComment.isLike">
+                              <IconHeartFill :style="{ color: '#f53f3f' }" />
+                            </span>
+                            <span v-else>
+                              <IconHeart />
+                            </span>
+                            {{ secondComment.likes }}
+                          </span>
+                          <!-- 回复图标 -->
+                          <span
+                            class="action"
+                            key="reply"
+                            @click="toggleReplyBox(secondComment)"
+                          >
+                            <IconMessage /> Reply
+                          </span>
+                          <!-- 删除图标 -->
+                          <span
+                            class="action"
+                            key="delete"
+                            @click="deleteComment(secondComment.id)"
+                            v-if="secondComment.userId == loginUser.id"
+                          >
+                            <a-tooltip :content="'删除'">
+                              <IconDelete />
+                            </a-tooltip>
+                          </span>
+                          <!-- 举报图标 -->
+                          <span
+                            class="action"
+                            key="delete"
+                            v-if="secondComment.userId != loginUser.id"
+                            @click="reportComment(1,secondComment.id,secondComment.userId)"
+                          >
+                            <a-tooltip :content="'举报'">
+                              <icon-exclamation-circle />
+                            </a-tooltip>
+                          </span>
+                        </template>
+                        <!-- 二级评论回复框 -->
+                        <a-comment
+                          align="right"
+                          v-if="secondComment.showReplyBox"
+                          :avatar="loginUser.userAvatar"
+                        >
+                          <template #actions>
+                            <a-button
+                              key="0"
+                              type="secondary"
+                              @click="toggleReplyBox(secondComment)"
+                            >
+                              Cancel
+                            </a-button>
+                            <a-button
+                              key="1"
+                              type="primary"
+                              status="success"
+                              @click="
+                                publisOrReply(
+                                  props.id,
+                                  firstComment.id,
+                                  secondComment.userId
+                                )
+                              "
+                            >
+                              Reply
+                            </a-button>
+                          </template>
+                          <template #content>
+                            <a-input
+                              v-model="replyContent"
+                              placeholder="Here is you content."
+                            />
+                          </template>
+                        </a-comment>
+                      </a-comment>
+                    </a-collapse-item>
+                  </a-collapse>
+                </a-comment>
+                <a-pagination
+                  style="position:relative;top: 5px"
+                  :total="firstCommentNum"
+                  show-page-size
+                  simple
+                  show-total
+                  v-model:current="commentsSearchParams.current"
+                  v-model:page-size="commentsSearchParams.pageSize"
+                  @change="onCommentsPageChange"
+                  @page-size-change="onCommentsPageSizeChange"
+                />
               </a-tab-pane>
               <!--题解-->
               <a-tab-pane key="answers" title="题解">
@@ -382,6 +599,10 @@ import { QuestionSubmitAddRequest } from "../../../generated/models/QuestionSubm
 import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
 import { QuestionCollectControllerService } from "../../../generated/services/QuestionCollectControllerService";
 import { useStore } from "vuex";
+import { QuestionCommentControllerService } from "../../../generated/services/QuestionCommentControllerService";
+import { QuestionComment } from "../../../generated/models/QuestionComment";
+import { Message } from "@arco-design/web-vue";
+import { CommentReportControllerService } from "../../../generated/services/CommentReportControllerService";
 
 // 获取题目id
 interface Props {
@@ -544,6 +765,19 @@ const closeQuestionListModal = () => {
   questionListVisible.value = false;
 };
 
+// 评论
+const comments = ref([]);
+const commentNum = ref(0);
+const firstCommentNum = ref(0);
+const commentsSearchParams = ref({
+  current: 1,
+  pageSize: 10,
+  questionId: props.id,
+  sortField: "createTime",
+  sortOrder: "ascend",
+});
+const replyContent = ref("");
+
 /**
  * 获取题目
  */
@@ -588,6 +822,7 @@ onMounted(async () => {
   await loadData2();
   await getLanguage();
   await getQuestionCollectByUserAllQuestionListDetail();
+  await getComments();
 });
 
 /**
@@ -644,6 +879,13 @@ const onQuestionListPageChange = (page: number) => {
     current: page,
   };
 };
+const onCommentsPageChange = async (page: number) => {
+  commentsSearchParams.value = {
+    ...commentsSearchParams.value,
+    current: page,
+  };
+  await getComments();
+};
 /**
  * 页面大小切换
  * @param size
@@ -659,6 +901,13 @@ const onQuestionListPageSizeChange = (size: number) => {
     ...questionListSearchParams.value,
     pageSize: size,
   };
+};
+const onCommentsPageSizeChange = async (size: number) => {
+  questionListSearchParams.value = {
+    ...questionListSearchParams.value,
+    pageSize: size,
+  };
+  await getComments();
 };
 
 /**
@@ -690,10 +939,10 @@ const collectQuestion = async (questionListId: number) => {
       questionId: props.id as any,
       questionListId: questionListId,
     });
-  if(res.code==0){
+  if (res.code == 0) {
     await getQuestionCollectByUserAllQuestionListDetail();
     message.success("收藏成功");
-  }else{
+  } else {
     message.error("收藏失败");
   }
 };
@@ -708,13 +957,106 @@ const unCollectQuestion = async (questionListId: number) => {
       questionId: props.id as any,
       questionListId: questionListId,
     });
-  if(res.code==0){
+  if (res.code == 0) {
     await getQuestionCollectByUserAllQuestionListDetail();
     message.success("取消收藏成功");
-  }else{
+  } else {
     message.error("取消收藏失败");
   }
 };
+
+/**
+ * 获取评论列表
+ */
+const getComments = async () => {
+  const res =
+    await QuestionCommentControllerService.listQuestionCommentUsingPost(
+      commentsSearchParams.value
+    );
+  if (res.code == 0) {
+    comments.value = res.data.result;
+    commentNum.value = res.data.commentNum;
+    firstCommentNum.value = res.data.total;
+  }
+};
+
+/**
+ * 点击回复或者取消按钮，修改回复框的显示状态
+ * @param comment
+ */
+const toggleReplyBox = (comment: QuestionComment) => {
+  comment.showReplyBox = !comment.showReplyBox;
+};
+
+/**
+ * 发表或者回复评论
+ * @param questionId
+ * @param parentId
+ * @param respondUserId
+ */
+const publisOrReply = async (
+  questionId: number,
+  parentId: number,
+  respondUserId: number
+) => {
+  const res =
+    await QuestionCommentControllerService.publishQuestionCommentUsingPost({
+      questionId: questionId,
+      parentId: parentId,
+      respondUserId: respondUserId,
+      content: replyContent.value,
+    });
+  if (res.code == 0) {
+    await getComments();
+    Message.success("回复成功");
+  } else {
+    Message.error("回复失败：" + res.message);
+  }
+};
+
+/**
+ * 点赞评论
+ * @param commmntId
+ */
+const likeComment = async (commmntId: number) => {
+  const res =
+    await QuestionCommentControllerService.likeQuestionCommentUsingPost(
+      commmntId
+    );
+  if (res.code == 0) {
+    await getComments();
+  } else {
+    Message.error(res.message);
+  }
+};
+
+/**
+ * 删除评论
+ * @param commentId
+ */
+const deleteComment = async (commentId:number)=>{
+  const res = await QuestionCommentControllerService.deleteQuestionCommentUsingPost({
+    id:commentId,
+  })
+  if (res.code == 0) {
+    await getComments();
+    Message.success("删除成功")
+  } else {
+    Message.error("删除失败：" + res.message);
+  }
+}
+const reportComment = async (commentType:number,commentId:number,reportedUserId:number)=>{
+  const res = await CommentReportControllerService.addCommentReportUsingPost({
+    commentType:commentType,
+    commentId:commentId,
+    reportedUserId:reportedUserId,
+  })
+  if (res.code == 0) {
+    Message.success("举报成功")
+  } else {
+    Message.error("举报失败：" + res.message);
+  }
+}
 </script>
 
 <style scoped>
@@ -739,5 +1081,20 @@ const unCollectQuestion = async (questionListId: number) => {
 #history {
   min-width: 385px;
   flex: 1;
+}
+
+.action {
+  display: inline-block;
+  padding: 0 4px;
+  color: var(--color-text-1);
+  line-height: 24px;
+  background: transparent;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.action:hover {
+  background: var(--color-fill-3);
 }
 </style>
