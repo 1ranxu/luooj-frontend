@@ -728,7 +728,7 @@
                 status="normal"
                 size="medium"
                 style="margin: 10px"
-                @click="openActualQuestionListModal(item.id)"
+                @click="openActualQuestionsModal(item.id)"
               >
                 <a-list-item-meta :title="item.title"></a-list-item-meta>
               </a-button>
@@ -1276,7 +1276,7 @@ const openEmailUnBindModal = () => {
   emailUnBindVisible.value = true;
 };
 
-const openActualQuestionListModal = (id: number) => {
+const openActualQuestionsModal = (id: number) => {
   questionListId.value = id;
   actualQuestionsVisible.value = true;
   getQuestionsByQuestionListId(id);
@@ -1870,7 +1870,7 @@ watchEffect(() => {
   getQuestionsByQuestionListId(questionListId.value);
 });
 watchEffect(async ()=>{
-    await getCollectQuestionList();
+  await getCollectQuestionList();
 })
 
 /**
