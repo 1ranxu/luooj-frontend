@@ -225,9 +225,6 @@ const getRandomQuestion = async () => {
   }
 };
 
-router.afterEach((to, from, failure) => {
-  location.reload();
-});
 </script>
 
 <style>

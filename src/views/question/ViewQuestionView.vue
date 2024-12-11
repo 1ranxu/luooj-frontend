@@ -5,7 +5,11 @@
       <div id="leftPart">
         <a-card style="height: 695px">
           <a-scrollbar style="height: calc(100vh - 110px); overflow: auto">
-            <a-tabs default-active-key="question" size="mini">
+            <a-tabs
+              v-model:active-key="activeKey"
+              size="mini"
+              @tab-click="tabClick"
+            >
               <!--题目详情-->
               <a-tab-pane key="question" title="题目详情">
                 <a-card v-if="question" :title="question.title">
@@ -83,7 +87,11 @@
                   :author="firstComment.userName"
                   :content="firstComment.content"
                   :avatar="firstComment.userAvatar"
-                  :datetime="moment(firstComment.createTime).format('YYYY-MM-DD HH:mm:ss')"
+                  :datetime="
+                    moment(firstComment.createTime).format(
+                      'YYYY-MM-DD HH:mm:ss'
+                    )
+                  "
                 >
                   <template #actions>
                     <!-- 点赞图标 -->
@@ -124,13 +132,14 @@
                       class="action"
                       key="delete"
                       v-if="firstComment.userId != loginUser.id"
-                      @click="reportComment(1,firstComment.id,firstComment.userId)"
+                      @click="
+                        reportComment(1, firstComment.id, firstComment.userId)
+                      "
                     >
                       <a-tooltip :content="'举报'">
                         <icon-exclamation-circle />
                       </a-tooltip>
                     </span>
-
                   </template>
                   <!-- 一级评论回复框 -->
                   <a-comment
@@ -150,13 +159,7 @@
                         key="1"
                         type="primary"
                         status="success"
-                        @click="
-                          publisOrReply(
-                            props.id,
-                            firstComment.id,
-                            0
-                          )
-                        "
+                        @click="publisOrReply(props.id, firstComment.id, 0)"
                       >
                         Reply
                       </a-button>
@@ -169,14 +172,32 @@
                     </template>
                   </a-comment>
                   <!-- 二级评论 -->
-                  <a-collapse v-if="firstComment.childList.length!=0" :default-active-key="[1]" accordion :bordered="false">
-                    <a-collapse-item  :header="firstComment.childList.length +'条回复'" key="1">
+                  <a-collapse
+                    v-if="firstComment.childList.length != 0"
+                    :default-active-key="[1]"
+                    accordion
+                    :bordered="false"
+                  >
+                    <a-collapse-item
+                      :header="firstComment.childList.length + '条回复'"
+                      key="1"
+                    >
                       <!-- 二级评论 -->
                       <a-comment
-                        :author="secondComment.userName + '' + (secondComment.respondUserId==0 ? '' : ' 回复 '+ secondComment.respondUserName)"
+                        :author="
+                          secondComment.userName +
+                          '' +
+                          (secondComment.respondUserId == 0
+                            ? ''
+                            : ' 回复 ' + secondComment.respondUserName)
+                        "
                         :content="secondComment.content"
                         :avatar="secondComment.userAvatar"
-                        :datetime="moment(secondComment.createTime).format('YYYY-MM-DD HH:mm:ss')"
+                        :datetime="
+                          moment(secondComment.createTime).format(
+                            'YYYY-MM-DD HH:mm:ss'
+                          )
+                        "
                         v-for="secondComment in firstComment.childList"
                       >
                         <template #actions>
@@ -218,7 +239,13 @@
                             class="action"
                             key="delete"
                             v-if="secondComment.userId != loginUser.id"
-                            @click="reportComment(1,secondComment.id,secondComment.userId)"
+                            @click="
+                              reportComment(
+                                1,
+                                secondComment.id,
+                                secondComment.userId
+                              )
+                            "
                           >
                             <a-tooltip :content="'举报'">
                               <icon-exclamation-circle />
@@ -266,7 +293,7 @@
                   </a-collapse>
                 </a-comment>
                 <a-pagination
-                  style="position:relative;top: 5px"
+                  style="position: relative; top: 5px"
                   :total="firstCommentNum"
                   show-page-size
                   simple
@@ -279,9 +306,112 @@
               </a-tab-pane>
               <!--题解-->
               <a-tab-pane key="answers" title="题解">
-                <a-card v-if="question">
-                  <MDViewer :value="question.answer || ''" />
-                </a-card>
+                <a-list
+                  v-if="showQuestionSolutionList"
+                  :scrollbar="true"
+                  :max-height="700"
+                  :size="'large'"
+                  :data="questionSolutionList"
+                  :pagination-props="{
+                    total: questionSolutionListTotal,
+                    current: questionSolutionListSearchParams.current,
+                    pageSize: questionSolutionListSearchParams.pageSize,
+                    showTotal: true,
+                  }"
+                  @pageSizeChange="onQuestionSolutionListPageSizeChange"
+                  @pageChange="onQuestionSolutionListPageChange"
+                >
+                  <template #header>
+                    <a-form
+                      :model="questionSolutionListSearchParams"
+                      layout="inline"
+                      style="
+                        top: 20px;
+                        left: 80px;
+                        justify-content: center;
+                        align-content: center;
+                      "
+                    >
+                      <a-form-item field="tags" tooltip="请输入题目标签">
+                        <a-input-tag
+                          v-model="questionSolutionListSearchParams.tags"
+                          placeholder="请输入标签"
+                        />
+                      </a-form-item>
+                      <a-form-item field="title" tooltip="请输入题解标题">
+                        <a-input
+                          v-model="questionSolutionListSearchParams.title"
+                          placeholder="请输入题解标题"
+                        />
+                      </a-form-item>
+                      <!-- 搜索题解 -->
+                      <a-form-item>
+                        <a-button
+                          type="primary"
+                          shape="round"
+                          status="normal"
+                          @click="getQuestionSolutionList"
+                          >搜 索
+                        </a-button>
+                      </a-form-item>
+                      <!-- 创建题解 -->
+                      <a-form-item>
+                        <a-button
+                          type="primary"
+                          shape="round"
+                          status="success"
+                          @click="openAddQuestionSolutionModal"
+                          >发表题解
+                        </a-button>
+                      </a-form-item>
+                    </a-form>
+                  </template>
+                  <template #item="{ item }">
+                    <a-list-item
+                      @click="
+                        () => {
+                          showQuestionSolutionList = false;
+                          goToSolution(item.id);
+                        }
+                      "
+                    >
+                      <a-list-item-meta :title="item.title">
+                        <template #avatar>
+                          <a-avatar>
+                            <img alt="avatar" :src="item.userAvatar" />
+                          </a-avatar>
+                        </template>
+                        <template #title>
+                          <a-typography-text bold>
+                            {{item.title}}
+                          </a-typography-text>
+                        </template>
+                        <template #description>
+                          <a-typography-text ellipsis type="secondary">{{item.content}} </a-typography-text>
+                          <a-overflow-list style="width: 500px;" min="8" margin="8">
+                            <a-tag
+                              v-for="(tag, index) of JSON.parse(item.tags)"
+                              :key="index"
+                              color="green"
+                            >{{ tag }}
+                            </a-tag>
+                          </a-overflow-list>
+                          <!-- 点赞数图标 -->
+                          <span >
+                            <IconHeartFill :style="{ color: '#f53f3f' }" />
+                            {{ item.likes }}
+                          </span>
+                          <!-- 回复数图标 -->
+                          <span style="margin-left: 5px">
+                            <IconMessage /> {{ item.comments }}
+                          </span>
+                        </template>
+                      </a-list-item-meta>
+                    </a-list-item>
+                  </template>
+                </a-list>
+
+                <router-view v-if="!showQuestionSolutionList" />
               </a-tab-pane>
               <!--提交记录-->
               <a-tab-pane key="history" title="提交记录">
@@ -429,6 +559,39 @@
           </a-list-item>
         </template>
       </a-list>
+    </a-modal>
+    <!-- 创建题解 -->
+    <a-modal
+      width="50%"
+      :visible="addQuestionSolutionVisible"
+      placement="right"
+      @cancel="closeAddQuestionSolutionModal"
+      @ok="addQuestionSolution"
+      :ok-text="'创建'"
+      unmountOnClose
+      :closable="false"
+    >
+      <a-form :model="addQuestionSolutionForm" label-align="left">
+        <a-form-item field="title" label="题解标题" tooltip="请输入标题">
+          <a-input
+            v-model="addQuestionSolutionForm.title"
+            placeholder="请输入题解标题"
+          />
+        </a-form-item>
+        <a-form-item field="tags" label="标签" tooltip="请输入标签">
+          <a-input-tag
+            v-model="addQuestionSolutionForm.tags"
+            placeholder="请输入标签"
+            allow-clear
+          />
+        </a-form-item>
+        <a-form-item field="content" tooltip="请输入内容" label="题解内容">
+          <MDEditor
+            :value="addQuestionSolutionForm.content"
+            :hanndle-change="onContentChange"
+          />
+        </a-form-item>
+      </a-form>
     </a-modal>
     <!--右栏-->
     <div
@@ -582,7 +745,14 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, ref, watchEffect, withDefaults } from "vue";
+import {
+  defineProps,
+  onBeforeMount,
+  onMounted,
+  ref,
+  watchEffect,
+  withDefaults,
+} from "vue";
 import message from "@arco-design/web-vue/es/message";
 import CodeEditor from "@/components/CodeEditor.vue";
 import MDViewer from "@/components/MDViewer.vue";
@@ -603,15 +773,23 @@ import { QuestionCommentControllerService } from "../../../generated/services/Qu
 import { QuestionComment } from "../../../generated/models/QuestionComment";
 import { Message } from "@arco-design/web-vue";
 import { CommentReportControllerService } from "../../../generated/services/CommentReportControllerService";
+import { useRoute, useRouter } from "vue-router";
+import { QuestionSolutionControllerService } from "../../../generated/services/QuestionSolutionControllerService";
+import MDEditor from "@/components/MDEditor.vue";
+
+const router = useRouter();
+const route = useRoute();
 
 // 获取题目id
 interface Props {
   id: string;
 }
-
 const props = withDefaults(defineProps<Props>(), {
   id: () => "",
 });
+
+// Tab栏默认tab
+const activeKey = ref("question");
 
 // 获取登录用户
 const store = useStore();
@@ -756,13 +934,20 @@ const isCollect = ref(false);
 
 // 弹窗
 const questionListVisible = ref(false);
+const addQuestionSolutionVisible = ref(false);
 // 打开弹窗
 const openQuestionListModal = () => {
   questionListVisible.value = true;
 };
+const openAddQuestionSolutionModal = () => {
+  addQuestionSolutionVisible.value = true;
+};
 // 关闭弹窗
 const closeQuestionListModal = () => {
   questionListVisible.value = false;
+};
+const closeAddQuestionSolutionModal = () => {
+  addQuestionSolutionVisible.value = false;
 };
 
 // 评论
@@ -778,16 +963,46 @@ const commentsSearchParams = ref({
 });
 const replyContent = ref("");
 
+// 题解
+// 用来控制展示题解列表还是具体的题解
+const showQuestionSolutionList = ref(true);
+const questionSolutionList = ref([]);
+const questionSolutionListTotal = ref(0);
+const questionSolutionListSearchParams = ref({
+  pageSize: 3,
+  current: 1,
+  sortField: "createTime",
+  sortOrder: "ascend",
+  questionId: props.id,
+  title: "",
+  tags: [],
+});
+// 创建题解
+const addQuestionSolutionForm = ref({
+  questionId: props.id,
+  title: "",
+  content: "",
+  tags: [],
+});
+
+/**
+ * 题解内容改变函数
+ * @param value
+ */
+const onContentChange = (value: string) => {
+  addQuestionSolutionForm.value.content = value;
+};
+
 /**
  * 获取题目
  */
-const loadData1 = async () => {
+const getQuestionByQuestionId = async () => {
   const res = await QuestionControllerService.getQuestionVoByIdUsingGet(
     props.id as any
   );
   if (res.code === 0) {
     question.value = res.data;
-    document.title = res.data?.title;
+    document.title = res.data?.title as string;
   } else {
     message.error("加载失败，" + res.message);
   }
@@ -796,7 +1011,7 @@ const loadData1 = async () => {
 /**
  * 获取个人提交记录
  */
-const loadData2 = async () => {
+const getPersonalQuestionSubmitByQuestionId = async () => {
   const res =
     await QuestionSubmitControllerService.listMyQuestionSubmitByPageUsingPost({
       ...questionSubmitSearchParams.value,
@@ -811,18 +1026,37 @@ const loadData2 = async () => {
 };
 
 /**
- * 监听loadData函数所使用的变量的变化，改变时触发页面的重新加载
+ * 监听函数所使用的变量的变化，改变时触发页面的重新加载
  */
 watchEffect(async () => {
-  await loadData2();
+  await getQuestionByQuestionId();
+});
+watchEffect(async () => {
+  await getPersonalQuestionSubmitByQuestionId();
+});
+watchEffect(async () => {
+  await getQuestionSolutionList();
+});
+
+/**
+ * 在跳转到一个路由之前进行判断
+ */
+onBeforeMount(() => {
+  if (route.fullPath.includes("answers")) {
+    activeKey.value = "answers";
+  } else if (route.fullPath.includes("solution")) {
+    showQuestionSolutionList.value = false;
+    activeKey.value = "answers";
+  }
 });
 
 onMounted(async () => {
-  await loadData1();
-  await loadData2();
+  await getQuestionByQuestionId();
+  await getPersonalQuestionSubmitByQuestionId();
   await getLanguage();
   await getQuestionCollectByUserAllQuestionListDetail();
   await getComments();
+  await getQuestionSolutionList();
 });
 
 /**
@@ -886,6 +1120,14 @@ const onCommentsPageChange = async (page: number) => {
   };
   await getComments();
 };
+const onQuestionSolutionListPageChange = (page: number) => {
+  questionSolutionListSearchParams.value = {
+    ...questionSolutionListSearchParams.value,
+    current: page,
+  };
+  getQuestionSolutionList();
+};
+
 /**
  * 页面大小切换
  * @param size
@@ -908,6 +1150,13 @@ const onCommentsPageSizeChange = async (size: number) => {
     pageSize: size,
   };
   await getComments();
+};
+const onQuestionSolutionListPageSizeChange = (size: number) => {
+  questionSolutionListSearchParams.value = {
+    ...questionSolutionListSearchParams.value,
+    pageSize: size,
+  };
+  getQuestionSolutionList();
 };
 
 /**
@@ -1034,29 +1283,112 @@ const likeComment = async (commmntId: number) => {
  * 删除评论
  * @param commentId
  */
-const deleteComment = async (commentId:number)=>{
-  const res = await QuestionCommentControllerService.deleteQuestionCommentUsingPost({
-    id:commentId,
-  })
+const deleteComment = async (commentId: number) => {
+  const res =
+    await QuestionCommentControllerService.deleteQuestionCommentUsingPost({
+      id: commentId,
+    });
   if (res.code == 0) {
     await getComments();
-    Message.success("删除成功")
+    Message.success("删除成功");
   } else {
     Message.error("删除失败：" + res.message);
   }
-}
-const reportComment = async (commentType:number,commentId:number,reportedUserId:number)=>{
+};
+
+/**
+ * 举报评论
+ * @param commentType 评论类型
+ * @param commentId 评论id
+ * @param reportedUserId 被举人id
+ */
+const reportComment = async (
+  commentType: number,
+  commentId: number,
+  reportedUserId: number
+) => {
   const res = await CommentReportControllerService.addCommentReportUsingPost({
-    commentType:commentType,
-    commentId:commentId,
-    reportedUserId:reportedUserId,
-  })
+    commentType: commentType,
+    commentId: commentId,
+    reportedUserId: reportedUserId,
+  });
   if (res.code == 0) {
-    Message.success("举报成功")
+    Message.success("举报成功");
   } else {
     Message.error("举报失败：" + res.message);
   }
-}
+};
+
+/**
+ * 获取题解
+ */
+const getQuestionSolutionList = async () => {
+  const res =
+    await QuestionSolutionControllerService.listQuestionSolutionByPageUserUsingPost(
+      questionSolutionListSearchParams.value
+    );
+  if (res.code == 0) {
+    questionSolutionList.value = res.data.records;
+    questionSolutionListTotal.value = res.data.total;
+  } else {
+    message.error(res.message);
+  }
+};
+
+/**
+ * 创建题解
+ */
+const addQuestionSolution = async () => {
+  const res =
+    await QuestionSolutionControllerService.addQuestionSolutionUsingPost(
+      addQuestionSolutionForm.value
+    );
+  if (res.code == 0) {
+    message.success("发表成功");
+    addQuestionSolutionVisible.value = false;
+    await getQuestionSolutionList();
+  } else {
+    message.error(res.message);
+  }
+};
+
+/**
+ * Tab栏点击事件
+ * @param key
+ */
+const tabClick = (key: string) => {
+  if (key == "answers") {
+    if (route.path.includes("solution")) {
+      // 当在具体题解页面时点击tab栏，就什么都不做
+    } else {
+      // 如果点击的是题解tab栏就跳转到以下这个路由，然后就会执行onBeforeMount中的判断
+      router.push(`${route.path}?tab=answers`);
+    }
+  }
+};
+
+/**
+ * 点击题解进行跳转
+ * @param questionSolutionId
+ */
+const goToSolution = (questionSolutionId: number) => {
+  router.push({
+    path: `/view/question/${props.id}/solution/${questionSolutionId}`,
+  });
+};
+
+router.afterEach((to, from, failure) => {
+  // 路由跳转后，如果路径包含answers，就展示题解列表
+  if (to.fullPath.includes("answers")) {
+    showQuestionSolutionList.value = true;
+  } else if (to.fullPath.includes("solution")) {
+    // 如果路径包含solution，就不展示题解列表，并显示具体的题解
+    showQuestionSolutionList.value = false;
+  } else {
+    // 否则就刷新页面，因为有可能是跳转到下一道题目
+    location.reload();
+  }
+});
 </script>
 
 <style scoped>

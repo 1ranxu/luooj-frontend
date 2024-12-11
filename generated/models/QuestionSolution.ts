@@ -16,4 +16,6 @@ export type QuestionSolution = {
     title?: string;
     updateTime?: string;
     userId?: number;
+    userAvatar?: string;
+    useName?: string;
 };
