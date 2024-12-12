@@ -15,4 +15,8 @@ export type QuestionSolutionComment = {
     respondUserId?: number;
     solutionId?: number;
     userId?: number;
+    userName?:string;
+    userAvatar?:string;
+    respondUserName?:string;
+    showReplyBox?:boolean;
 };

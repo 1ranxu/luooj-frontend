@@ -60,6 +60,30 @@ id: number,
     }
 
     /**
+     * isQuestionSolutionCollect
+     * @param questionSolutionId questionSolutionId
+     * @returns BaseResponse_boolean_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static isQuestionSolutionCollectUsingPost(
+questionSolutionId: number,
+): CancelablePromise<BaseResponse_boolean_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/question/question_solution_collect/isCollect',
+            query: {
+                'questionSolutionId': questionSolutionId,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
      * listQuestionSolutionCollectByPage
      * @param questionSolutionCollectQueryRequest questionSolutionCollectQueryRequest
      * @returns BaseResponse_Page_QuestionSolutionCollect_ OK

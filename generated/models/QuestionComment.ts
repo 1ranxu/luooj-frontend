@@ -14,9 +14,9 @@ export type QuestionComment = {
     parentId?: number;
     questionId?: number;
     respondUserId?: number;
+    respondUserName?: string;
+    showReplyBox?: boolean;
+    userAvatar?: string;
     userId?: number;
     userName?: string;
-    userAvatar?: string;
-    showReplyBox?: boolean;
-    respondUserName?: string;
 };

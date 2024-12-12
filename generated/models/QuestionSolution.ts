@@ -15,7 +15,7 @@ export type QuestionSolution = {
     tags?: string;
     title?: string;
     updateTime?: string;
-    userId?: number;
     userAvatar?: string;
-    useName?: string;
+    userId?: number;
+    userName?: string;
 };

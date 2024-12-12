@@ -71,7 +71,7 @@
                       status="success"
                       @click="publisOrReply(props.id, 0, 0)"
                     >
-                      发表评论
+                      评论
                     </a-button>
                   </template>
                   <template #content>
@@ -357,6 +357,7 @@
                       <!-- 创建题解 -->
                       <a-form-item>
                         <a-button
+                          :disabled="question.isAccepted == 1"
                           type="primary"
                           shape="round"
                           status="success"
@@ -383,21 +384,27 @@
                         </template>
                         <template #title>
                           <a-typography-text bold>
-                            {{item.title}}
+                            {{ item.title }}
                           </a-typography-text>
                         </template>
                         <template #description>
-                          <a-typography-text ellipsis type="secondary">{{item.content}} </a-typography-text>
-                          <a-overflow-list style="width: 500px;" min="8" margin="8">
+                          <a-typography-text ellipsis type="secondary"
+                            >{{ item.content }}
+                          </a-typography-text>
+                          <a-overflow-list
+                            style="width: 500px"
+                            min="8"
+                            margin="8"
+                          >
                             <a-tag
                               v-for="(tag, index) of JSON.parse(item.tags)"
                               :key="index"
                               color="green"
-                            >{{ tag }}
+                              >{{ tag }}
                             </a-tag>
                           </a-overflow-list>
                           <!-- 点赞数图标 -->
-                          <span >
+                          <span>
                             <IconHeartFill :style="{ color: '#f53f3f' }" />
                             {{ item.likes }}
                           </span>
@@ -907,7 +914,24 @@ const columns = [
   },
 ];
 // 题目
-const question = ref<QuestionVO>();
+const question = ref<QuestionVO>({
+  acceptedNum: 0,
+  answer: "",
+  comments: 0,
+  content: "",
+  createTime: "",
+  difficulty: 0,
+  id: 0,
+  isAccepted: 1,
+  judgeConfig: {},
+  likes: 0,
+  submitNum: 0,
+  tags: [],
+  title: "",
+  updateTime: "",
+  userId: 0,
+  userVO: {},
+});
 
 // 提交代码时的请求负载
 const form = ref<QuestionSubmitAddRequest>({
@@ -1145,8 +1169,8 @@ const onQuestionListPageSizeChange = (size: number) => {
   };
 };
 const onCommentsPageSizeChange = async (size: number) => {
-  questionListSearchParams.value = {
-    ...questionListSearchParams.value,
+  commentsSearchParams.value = {
+    ...commentsSearchParams.value,
     pageSize: size,
   };
   await getComments();
