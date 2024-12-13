@@ -757,7 +757,125 @@
       </a-tab-pane>
       <!--题解-->
       <a-tab-pane key="questionSolution" title="题解">
-        <a-list></a-list>
+        <a-list
+          :hoverable="true"
+          :scrollbar="true"
+          :max-height="700"
+          :size="'large'"
+          :data="questionSolutionList"
+          :pagination-props="{
+            total: questionSolutionListTotal,
+            current: questionSolutionListSearchParams.current,
+            pageSize: questionSolutionListSearchParams.pageSize,
+            showTotal: true,
+          }"
+          @pageSizeChange="onQuestionSolutionListPageSizeChange"
+          @pageChange="onQuestionSolutionListPageChange"
+        >
+          <template #header>
+            <a-form
+              :model="questionSolutionListSearchParams"
+              layout="inline"
+              style="
+                top: 20px;
+                left: 80px;
+                justify-content: center;
+                align-content: center;
+              "
+            >
+              <a-form-item field="tags" tooltip="请输入题解标签">
+                <a-input-tag
+                  v-model="questionSolutionListSearchParams.tags"
+                  placeholder="请输入标签"
+                />
+              </a-form-item>
+              <a-form-item field="title" tooltip="请输入题解标题">
+                <a-input
+                  v-model="questionSolutionListSearchParams.title"
+                  placeholder="请输入题解标题"
+                />
+              </a-form-item>
+              <!-- 搜索题解 -->
+              <a-form-item>
+                <a-button
+                  type="primary"
+                  shape="round"
+                  status="normal"
+                  @click="getQuestionSolutionList"
+                  >搜 索
+                </a-button>
+              </a-form-item>
+            </a-form>
+          </template>
+          <template #item="{ item }">
+            <a-list-item>
+              <a-list-item-meta :title="item.title">
+                <template #avatar>
+                  <a-avatar>
+                    <img alt="avatar" :src="item.userAvatar" />
+                  </a-avatar>
+                </template>
+                <template #title>
+                  <a-typography-text
+                    bold
+                    @click="goToSolution(item.questionId, item.id)"
+                  >
+                    {{ item.title }}
+                  </a-typography-text>
+                </template>
+                <template #description>
+                  <a-typography-text
+                    ellipsis
+                    type="secondary"
+                    @click="goToSolution(item.questionId, item.id)"
+                    >{{ item.content }}
+                  </a-typography-text>
+                  <a-overflow-list
+                    style="width: 500px"
+                    min="8"
+                    margin="8"
+                    @click="goToSolution(item.questionId, item.id)"
+                  >
+                    <a-tag
+                      v-for="(tag, index) of JSON.parse(item.tags)"
+                      :key="index"
+                      color="green"
+                      >{{ tag }}
+                    </a-tag>
+                  </a-overflow-list>
+                  <!-- 点赞数图标 -->
+                  <span @click="goToSolution(item.questionId, item.id)">
+                    <IconHeartFill :style="{ color: '#f53f3f' }" />
+                    {{ item.likes }}
+                  </span>
+                  <!-- 回复数图标 -->
+                  <span
+                    style="margin-left: 5px"
+                    @click="goToSolution(item.questionId, item.id)"
+                  >
+                    <IconMessage /> {{ item.comments }}
+                  </span>
+                  <span style="margin-left: 5px">
+                    <a-popconfirm
+                      content="确定吗?"
+                      type="error"
+                      okText="是"
+                      cancelText="否"
+                      @cancel="
+                        () => {
+                          message.warning(`已取消`);
+                        }
+                      "
+                      @ok="deleteQuestionSolution(item.id)"
+                    >
+                      <icon-delete />
+                    </a-popconfirm>
+                  </span>
+                </template>
+              </a-list-item-meta>
+            </a-list-item>
+          </template>
+        </a-list>
       </a-tab-pane>
       <!--收藏-->
       <a-tab-pane key="collect" title="收藏">
@@ -815,9 +933,62 @@
               </template>
             </a-list>
           </a-tab-pane>
+          <!-- 收藏题解 -->
           <a-tab-pane key="collectQuestionSolution" title="题解">
-            <!-- 收藏题解 -->
-            <a-list></a-list>
+            <a-list
+              :hoverable="true"
+              :scrollbar="true"
+              :max-height="700"
+              :size="'large'"
+              :data="collectQuestionSolutionList"
+              :pagination-props="{
+                total: collectQuestionSolutionListTotal,
+                current: collectQuestionSolutionListSearchParams.current,
+                pageSize: collectQuestionSolutionListSearchParams.pageSize,
+                showTotal: true,
+              }"
+              @pageSizeChange="onCollectQuestionSolutionListPageSizeChange"
+              @pageChange="onCollectQuestionSolutionListPageChange"
+            >
+              <template #item="{ item }">
+                <a-list-item @click="goToSolution(item.questionId, item.id)">
+                  <a-list-item-meta :title="item.title">
+                    <template #avatar>
+                      <a-avatar>
+                        <img alt="avatar" :src="item.userAvatar" />
+                      </a-avatar>
+                    </template>
+                    <template #title>
+                      <a-typography-text bold>
+                        {{ item.title }}
+                      </a-typography-text>
+                    </template>
+                    <template #description>
+                      <a-typography-text ellipsis type="secondary"
+                        >{{ item.content }}
+                      </a-typography-text>
+                      <a-overflow-list style="width: 500px" min="4" margin="8">
+                        <a-tag
+                          v-for="(tag, index) of JSON.parse(item.tags)"
+                          :key="index"
+                          color="green"
+                          >{{ tag }}
+                        </a-tag>
+                      </a-overflow-list>
+                      <!-- 点赞数图标 -->
+                      <span>
+                        <IconHeartFill :style="{ color: '#f53f3f' }" />
+                        {{ item.likes }}
+                      </span>
+                      <!-- 回复数图标 -->
+                      <span style="margin-left: 5px">
+                        <IconMessage /> {{ item.comments }}
+                      </span>
+                    </template>
+                  </a-list-item-meta>
+                </a-list-item>
+              </template>
+            </a-list>
           </a-tab-pane>
         </a-tabs>
       </a-tab-pane>
@@ -988,7 +1159,11 @@ import { onMounted, ref, watchEffect } from "vue";
 import { FileItem, Message } from "@arco-design/web-vue";
 import { useRouter } from "vue-router";
 import { UserUpdateMyRequest } from "../../../generated/models/UserUpdateMyRequest";
-import { FileControllerService } from "../../../generated";
+import {
+  FileControllerService,
+  QuestionSolutionCollectControllerService,
+  QuestionSolutionControllerService,
+} from "../../../generated";
 import { UserControllerService } from "../../../generated/services/UserControllerService";
 import message from "@arco-design/web-vue/es/message";
 import { FollowControllerService } from "../../../generated/services/FollowControllerService";
@@ -1240,6 +1415,32 @@ const submitDetail = ref({
 // 题目提交的年份
 const years = ref([]);
 
+// 题解
+const questionSolutionList = ref([]);
+const questionSolutionListTotal = ref(0);
+const questionSolutionListSearchParams = ref({
+  pageSize: 4,
+  current: 1,
+  sortField: "createTime",
+  sortOrder: "ascend",
+  userId: loginUser.id,
+  questionId: null,
+  title: "",
+  tags: [],
+});
+
+// 题解收藏
+const collectQuestionSolutionList = ref([]);
+const collectQuestionSolutionListTotal = ref(0);
+const collectQuestionSolutionListSearchParams = ref({
+  pageSize: 4,
+  current: 1,
+  sortField: "createTime",
+  sortOrder: "ascend",
+  userId: loginUser.id,
+  solutionId: null,
+});
+
 // 弹窗是否可见
 const updatePersonalInfoVisible = ref(false);
 const followVisible = ref(false);
@@ -1292,7 +1493,6 @@ const openUpdateQuestionListModal = (id: number, title: string) => {
 const openActualCollectQuestionsModal = (id: number) => {
   actualCollectQuestionsVisible.value = true;
   getCollectQuestionsByCollectQuestionListId(id);
-
 };
 // 关闭弹窗
 const closeUpdatePersonalInfoModal = () => {
@@ -1493,6 +1693,20 @@ const onCollectQuestionsPageChange = (page: number) => {
     current: page,
   };
 };
+const onQuestionSolutionListPageChange = (page: number) => {
+  questionSolutionListSearchParams.value = {
+    ...questionSolutionListSearchParams.value,
+    current: page,
+  };
+  getQuestionSolutionList();
+};
+const onCollectQuestionSolutionListPageChange = (page: number) => {
+  collectQuestionSolutionListSearchParams.value = {
+    ...collectQuestionSolutionListSearchParams.value,
+    current: page,
+  };
+  getCollectQuestionSolutionList();
+};
 
 /**
  * 改变分页大小
@@ -1533,6 +1747,20 @@ const onCollectQuestionsPageSizeChange = (size: number) => {
     ...collectQuestionsSearchParams.value,
     pageSize: size,
   };
+};
+const onQuestionSolutionListPageSizeChange = (size: number) => {
+  questionSolutionListSearchParams.value = {
+    ...questionSolutionListSearchParams.value,
+    pageSize: size,
+  };
+  getQuestionSolutionList();
+};
+const onCollectQuestionSolutionListPageSizeChange = (size: number) => {
+  collectQuestionSolutionListSearchParams.value = {
+    ...collectQuestionSolutionListSearchParams.value,
+    pageSize: size,
+  };
+  getCollectQuestionSolutionList();
 };
 
 /**
@@ -1773,7 +2001,10 @@ const deleteQuestionList = async (id: number) => {
  * @param questionId
  * @param questionListId
  */
-const deleteQuestionInQuestionList = async (questionId: number, questionListId: number) => {
+const deleteQuestionInQuestionList = async (
+  questionId: number,
+  questionListId: number
+) => {
   const res =
     await QuestionCollectControllerService.deleteQuestionCollectUsingPost({
       questionId: questionId,
@@ -1814,9 +2045,11 @@ const getCollectQuestionList = async () => {
  */
 const unCollectQuestionList = async (questionListId: number) => {
   const res =
-    await QuestionListCollectControllerService.deleteQuestionListCollectUsingPost({
-      questionListId: questionListId,
-    });
+    await QuestionListCollectControllerService.deleteQuestionListCollectUsingPost(
+      {
+        questionListId: questionListId,
+      }
+    );
   if (res.code === 0) {
     message.success("取消收藏成功");
   } else {
@@ -1847,11 +2080,66 @@ const getCollectQuestionsByCollectQuestionListId = async (id: number) => {
   }
 };
 
+/**
+ * 获取题解
+ */
+const getQuestionSolutionList = async () => {
+  const res =
+    await QuestionSolutionControllerService.listQuestionSolutionByPageUserUsingPost(
+      questionSolutionListSearchParams.value
+    );
+  if (res.code == 0) {
+    questionSolutionList.value = res.data.records;
+    questionSolutionListTotal.value = res.data.total;
+  } else {
+    message.error(res.message);
+  }
+};
+
+/**
+ * 获取收藏的题解
+ */
+const getCollectQuestionSolutionList = async () => {
+  const res =
+    await QuestionSolutionCollectControllerService.listQuestionSolutionCollectByPageUserUsingPost(
+      collectQuestionSolutionListSearchParams.value
+    );
+  if (res.code === 0) {
+    collectQuestionSolutionList.value = (await Promise.all(
+      res.data.records.map(async (x: any) => {
+        const questionSolution =
+          await QuestionSolutionControllerService.getQuestionSolutionByIdUsingGet(
+            x.solutionId
+          );
+        return questionSolution.data;
+      })
+    )) as [];
+    collectQuestionSolutionListTotal.value = res.data.total;
+  } else {
+    Message.error("" + res.message);
+  }
+};
+
+const deleteQuestionSolution = async (id) => {
+  const res =
+    await QuestionSolutionControllerService.deleteQuestionSolutionUsingPost({
+      id: id,
+    });
+  if(res.code == 0){
+    message.success("删除成功");
+    await getQuestionSolutionList();
+  }else{
+    message.success("删除失败，"+res.message);
+  }
+};
+
 onMounted(async () => {
   await getAcceptedQuestionDetail();
   await getAcceptedQuestionRanking();
   await getSubmitDetail();
   await getQuestionList();
+  await getQuestionSolutionList();
+  await getCollectQuestionSolutionList();
 });
 
 /**
@@ -1869,9 +2157,9 @@ watchEffect(() => {
 watchEffect(() => {
   getQuestionsByQuestionListId(questionListId.value);
 });
-watchEffect(async ()=>{
+watchEffect(async () => {
   await getCollectQuestionList();
-})
+});
 
 /**
  * 回到首页
@@ -1892,6 +2180,16 @@ const onChange = async (_: never, currentFile: FileItem) => {
   file.value = {
     ...currentFile,
   };
+};
+
+/**
+ * 点击题解进行跳转
+ * @param questionSolutionId
+ */
+const goToSolution = (questionId: number, questionSolutionId: number) => {
+  router.push({
+    path: `/view/question/${questionId}/solution/${questionSolutionId}`,
+  });
 };
 </script>
 

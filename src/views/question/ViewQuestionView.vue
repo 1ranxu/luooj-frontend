@@ -332,7 +332,7 @@
                         align-content: center;
                       "
                     >
-                      <a-form-item field="tags" tooltip="请输入题目标签">
+                      <a-form-item field="tags" tooltip="请输入题解标签">
                         <a-input-tag
                           v-model="questionSolutionListSearchParams.tags"
                           placeholder="请输入标签"
@@ -417,7 +417,6 @@
                     </a-list-item>
                   </template>
                 </a-list>
-
                 <router-view v-if="!showQuestionSolutionList" />
               </a-tab-pane>
               <!--提交记录-->
