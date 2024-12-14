@@ -14,6 +14,7 @@ import UserManageView from "@/views/user/UserManageView.vue";
 import QuestionLayout from "@/layouts/QuestionLayout.vue";
 import QuestionListView from "@/views/question/QuestionListView.vue";
 import QuestionSoulutionView from "@/views/question/QuestionSolutionView.vue";
+import UserView from "@/views/user/UserView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -44,6 +45,16 @@ const routes: Array<RouteRecordRaw> = [
       access: AccessEnum.USER,
       hideInMenu: true,
     },
+  },
+  {
+    path: "/_userInfo/:id",
+    name: "Ta的主页",
+    component: UserView,
+    meta: {
+      access: AccessEnum.USER,
+      hideInMenu: true,
+    },
+    props: true,
   },
   {
     path: "/",

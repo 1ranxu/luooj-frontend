@@ -17,10 +17,13 @@ export class AcceptedQuestionControllerService {
      * @returns BaseResponse_AcceptedQuestionDetailVO_ OK
      * @throws ApiError
      */
-    public static getAcceptedQuestionDetailUsingGet(): CancelablePromise<BaseResponse_AcceptedQuestionDetailVO_> {
+    public static getAcceptedQuestionDetailUsingGet(userId?: number,): CancelablePromise<BaseResponse_AcceptedQuestionDetailVO_> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/question/accepted_question/get/user_accepted_question/detail',
+            query: {
+                'userId': userId,
+            },
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

@@ -115,7 +115,7 @@
         @pageSizeChange="onFollowPageSizeChange"
       >
         <template #userAvatar="{ record }">
-          <a-avatar :size="70" shape="circle">
+          <a-avatar :size="70" shape="circle" @click="goToUser(record.id)">
             <img alt="userAvatar" :src="record.userAvatar" />
           </a-avatar>
         </template>
@@ -198,7 +198,7 @@
         @pageSizeChange="onFanPageSizeChange"
       >
         <template #userAvatar="{ record }">
-          <a-avatar :size="70" shape="circle">
+          <a-avatar :size="70" shape="circle" @click="goToUser(record.id)">
             <img alt="userAvatar" :src="record.userAvatar" />
           </a-avatar>
         </template>
@@ -693,7 +693,7 @@
               style="
                 position: absolute;
                 top: 0;
-                left: 50px;
+                left: 80px;
                 justify-content: center;
                 align-content: center;
                 margin: 25px;
@@ -701,7 +701,6 @@
             >
               <a-form-item
                 field="title"
-                label="标题："
                 tooltip="请输入题单标题"
               >
                 <a-input
@@ -711,7 +710,7 @@
               </a-form-item>
               <a-form-item>
                 <a-button
-                  type="outline"
+                  type="primary"
                   shape="round"
                   status="normal"
                   @click="getQuestionList"
@@ -951,23 +950,23 @@
               @pageChange="onCollectQuestionSolutionListPageChange"
             >
               <template #item="{ item }">
-                <a-list-item @click="goToSolution(item.questionId, item.id)">
+                <a-list-item>
                   <a-list-item-meta :title="item.title">
                     <template #avatar>
-                      <a-avatar>
+                      <a-avatar @click="goToUser(item.userId)">
                         <img alt="avatar" :src="item.userAvatar" />
                       </a-avatar>
                     </template>
                     <template #title>
-                      <a-typography-text bold>
+                      <a-typography-text bold @click="goToSolution(item.questionId, item.id)">
                         {{ item.title }}
                       </a-typography-text>
                     </template>
                     <template #description>
-                      <a-typography-text ellipsis type="secondary"
+                      <a-typography-text ellipsis type="secondary" @click="goToSolution(item.questionId, item.id)"
                         >{{ item.content }}
                       </a-typography-text>
-                      <a-overflow-list style="width: 500px" min="4" margin="8">
+                      <a-overflow-list style="width: 500px" min="4" margin="8" @click="goToSolution(item.questionId, item.id)">
                         <a-tag
                           v-for="(tag, index) of JSON.parse(item.tags)"
                           :key="index"
@@ -976,12 +975,12 @@
                         </a-tag>
                       </a-overflow-list>
                       <!-- 点赞数图标 -->
-                      <span>
+                      <span @click="goToSolution(item.questionId, item.id)">
                         <IconHeartFill :style="{ color: '#f53f3f' }" />
                         {{ item.likes }}
                       </span>
                       <!-- 回复数图标 -->
-                      <span style="margin-left: 5px">
+                      <span style="margin-left: 5px" @click="goToSolution(item.questionId, item.id)">
                         <IconMessage /> {{ item.comments }}
                       </span>
                     </template>
@@ -1875,7 +1874,7 @@ const uploadAvatar = async () => {
  */
 const getAcceptedQuestionDetail = async () => {
   const res =
-    await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet();
+    await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet(loginUser.id);
   if (res.code === 0) {
     acceptedQuestionDetail.value = res.data as {};
   } else {
@@ -1888,7 +1887,7 @@ const getAcceptedQuestionDetail = async () => {
  */
 const getSubmitDetail = async () => {
   const res =
-    await QuestionSubmitControllerService.getPersonSubmitDetailUsingGet();
+    await QuestionSubmitControllerService.getPersonSubmitDetailUsingGet(loginUser.id);
   if (res.code === 0) {
     console.log(submitDetail.value.submitDetail);
     submitDetail.value = res.data;
@@ -2190,6 +2189,18 @@ const goToSolution = (questionId: number, questionSolutionId: number) => {
   router.push({
     path: `/view/question/${questionId}/solution/${questionSolutionId}`,
   });
+};
+
+/**
+ * 点击头像进行跳转
+ * @param userId
+ */
+const goToUser = (userId: number) => {
+  if(userId != loginUser.id){
+    router.push({
+      path: `/_userInfo/${userId}`,
+    });
+  }
 };
 </script>
 
