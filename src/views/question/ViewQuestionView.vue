@@ -45,11 +45,18 @@
                         @click="openQuestionListModal"
                       />
                       <!-- 点赞 -->
-                      <a-rate :count="1" :allow-clear="true" color="red">
-                        <template #character>
-                          <icon-heart-fill />
-                        </template>
-                      </a-rate>
+                      <!-- 点赞 -->
+                      <IconHeartFill
+                        v-if="question.isLike"
+                        style="font-size: 23px; color: red"
+                        @click="likeQuestion"
+                      />
+                      <IconHeart
+                        v-else
+                        style="font-size: 23px; color: gray"
+                        @click="likeQuestion"
+                      />
+                      {{ question.likes }}
                       <a-tag
                         v-for="(tag, index) of question.tags"
                         :key="index"
@@ -1216,6 +1223,19 @@ const collectQuestion = async (questionListId: number) => {
     message.success("收藏成功");
   } else {
     message.error("收藏失败");
+  }
+};
+
+/**
+ * 点赞题目
+ */
+const likeQuestion = async () => {
+  const res =
+    await QuestionControllerService.likeQuestionUsingPost( props.id );
+  if (res.code == 0) {
+    await getQuestionByQuestionId();
+  } else {
+    Message.error(res.message);
   }
 };
 

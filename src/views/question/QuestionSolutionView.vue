@@ -23,7 +23,7 @@
       <template #extra>
         <a-space wrap>
           <a-overflow-list
-            style="width: 280px;margin-top: 0px"
+            style="width: 480px;margin-top: 0px"
             min="4"
             margin="8"
           >
