@@ -101,7 +101,7 @@
                 >
                   <template #avatar>
                     <a-avatar @click="goToUser(firstComment.userId)" :size="32">
-                      <img :src="firstComment.userAvatar"/>
+                      <img :src="firstComment.userAvatar" />
                     </a-avatar>
                   </template>
                   <template #actions>
@@ -211,8 +211,11 @@
                         v-for="secondComment in firstComment.childList"
                       >
                         <template #avatar>
-                          <a-avatar @click="goToUser(secondComment.userId)" :size="32">
-                            <img :src="secondComment.userAvatar"/>
+                          <a-avatar
+                            @click="goToUser(secondComment.userId)"
+                            :size="32"
+                          >
+                            <img :src="secondComment.userAvatar" />
                           </a-avatar>
                         </template>
                         <template #actions>
@@ -383,30 +386,45 @@
                     </a-form>
                   </template>
                   <template #item="{ item }">
-                    <a-list-item
-                      @click="
-                        () => {
-                          showQuestionSolutionList = false;
-                          goToSolution(item.id);
-                        }
-                      "
-                    >
+                    <a-list-item>
                       <a-list-item-meta :title="item.title">
                         <template #avatar>
-                          <a-avatar>
+                          <a-avatar @click="goToUser(item.userId)">
                             <img alt="avatar" :src="item.userAvatar" />
                           </a-avatar>
                         </template>
                         <template #title>
-                          <a-typography-text bold>
+                          <a-typography-text
+                            bold
+                            @click="
+                              () => {
+                                showQuestionSolutionList = false;
+                                goToSolution(item.id);
+                              }
+                            "
+                          >
                             {{ item.title }}
                           </a-typography-text>
                         </template>
                         <template #description>
-                          <a-typography-text ellipsis type="secondary"
+                          <a-typography-text
+                            ellipsis
+                            type="secondary"
+                            @click="
+                              () => {
+                                showQuestionSolutionList = false;
+                                goToSolution(item.id);
+                              }
+                            "
                             >{{ item.content }}
                           </a-typography-text>
                           <a-overflow-list
+                            @click="
+                              () => {
+                                showQuestionSolutionList = false;
+                                goToSolution(item.id);
+                              }
+                            "
                             style="width: 500px"
                             min="8"
                             margin="8"
@@ -419,12 +437,27 @@
                             </a-tag>
                           </a-overflow-list>
                           <!-- 点赞数图标 -->
-                          <span>
+                          <span
+                            @click="
+                              () => {
+                                showQuestionSolutionList = false;
+                                goToSolution(item.id);
+                              }
+                            "
+                          >
                             <IconHeartFill :style="{ color: '#f53f3f' }" />
                             {{ item.likes }}
                           </span>
                           <!-- 回复数图标 -->
-                          <span style="margin-left: 5px">
+                          <span
+                            style="margin-left: 5px"
+                            @click="
+                              () => {
+                                showQuestionSolutionList = false;
+                                goToSolution(item.id);
+                              }
+                            "
+                          >
                             <IconMessage /> {{ item.comments }}
                           </span>
                         </template>
@@ -805,6 +838,7 @@ const route = useRoute();
 interface Props {
   id: string;
 }
+
 const props = withDefaults(defineProps<Props>(), {
   id: () => "",
 });
@@ -1238,8 +1272,7 @@ const collectQuestion = async (questionListId: number) => {
  * 点赞题目
  */
 const likeQuestion = async () => {
-  const res =
-    await QuestionControllerService.likeQuestionUsingPost( props.id );
+  const res = await QuestionControllerService.likeQuestionUsingPost(props.id);
   if (res.code == 0) {
     await getQuestionByQuestionId();
   } else {
@@ -1433,7 +1466,7 @@ const goToSolution = (questionSolutionId: number) => {
  * @param userId
  */
 const goToUser = (userId: number) => {
-  if(userId != loginUser.id){
+  if (userId != loginUser.id) {
     router.push({
       path: `/_userInfo/${userId}`,
     });
