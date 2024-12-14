@@ -40,7 +40,7 @@
               shape="round"
               status="normal"
               @click="getQuestionList"
-            >搜 索
+              >搜 索
             </a-button>
           </a-form-item>
         </a-form>
@@ -50,7 +50,9 @@
           <a-list-item-meta>
             <!-- 题单创建人头像 -->
             <template #avatar>
-              <a-avatar><img alt="avatar" :src="item.userAvatar" /></a-avatar>
+              <a-avatar @click="goToUser(item.userId)"
+                ><img alt="avatar" :src="item.userAvatar"
+              /></a-avatar>
             </template>
             <!-- 题单标题 -->
             <template #title>
@@ -60,9 +62,9 @@
                 status="normal"
                 size="medium"
                 style="margin: 10px"
-                @click="openActualQuestionsModal(item.id,item.userId)"
+                @click="openActualQuestionsModal(item.id, item.userId)"
               >
-                {{item.title}}
+                {{ item.title }}
               </a-button>
             </template>
           </a-list-item-meta>
@@ -70,13 +72,13 @@
             <!-- 收藏 -->
             <icon-star-fill
               style="font-size: 23px; color: rgb(247, 186, 30)"
-              v-if="item.isCollect&&item.userId!=loginUser.id"
+              v-if="item.isCollect && item.userId != loginUser.id"
               @click="unCollectQuestion(item.id)"
             />
             <!-- 取消收藏 -->
             <icon-star-fill
               style="font-size: 23px; color: rgb(229, 230, 235)"
-              v-if="!item.isCollect&&item.userId!=loginUser.id"
+              v-if="!item.isCollect && item.userId != loginUser.id"
               @click="collectQuestion(item.id)"
             />
           </template>
@@ -96,12 +98,12 @@
       <a-list
         :data="questions"
         :pagination-props="{
-        total: questionsTotal,
-        current: questionsSearchParams.current,
-        pageSize: questionsSearchParams.pageSize,
-        showTotal: true,
-        showPageSize: true,
-      }"
+          total: questionsTotal,
+          current: questionsSearchParams.current,
+          pageSize: questionsSearchParams.pageSize,
+          showTotal: true,
+          showPageSize: true,
+        }"
         @pageSizeChange="onQuestionsPageSizeChange"
         @pageChange="onQuestionsPageChange"
       >
@@ -124,10 +126,10 @@
                 okText="是"
                 cancelText="否"
                 @cancel="
-                () => {
-                  message.warning(`已取消`);
-                }
-              "
+                  () => {
+                    message.warning(`已取消`);
+                  }
+                "
                 @ok="deleteQuestionInQuestionList(item.id, item.questionListId)"
               >
                 <icon-delete />
@@ -190,10 +192,10 @@ const questionListId = ref(0);
 // 弹窗
 const actualQuestionsVisible = ref(false);
 // 打开弹窗
-const openActualQuestionsModal = (id: number,userId:number) => {
+const openActualQuestionsModal = (id: number, userId: number) => {
   questionListId.value = id;
   actualQuestionsVisible.value = true;
-  getQuestionsByQuestionListId(id,userId);
+  getQuestionsByQuestionListId(id, userId);
 };
 const closeActualQuestionsModel = () => {
   actualQuestionsVisible.value = false;
@@ -241,10 +243,14 @@ const getQuestionList = async () => {
       questionListSearchParams.value
     );
   if (res.code == 0) {
-    questionList.value = (await Promise.all(res.data.records.map(async (x: QuestionListVO) => {
-      const user = await UserControllerService.getUserVoByIdUsingGet(x.userId);
-      return { ...x, userAvatar: user.data?.userAvatar };
-    }))) as [];
+    questionList.value = (await Promise.all(
+      res.data.records.map(async (x: QuestionListVO) => {
+        const user = await UserControllerService.getUserVoByIdUsingGet(
+          x.userId
+        );
+        return { ...x, userAvatar: user.data?.userAvatar };
+      })
+    )) as [];
     questionListTotal.value = res.data.total;
   } else {
     message.success(res.message);
@@ -259,10 +265,10 @@ const collectQuestion = async (questionListId: number) => {
     await QuestionListCollectControllerService.addQuestionListCollectUsingPost({
       questionListId: questionListId,
     });
-  if(res.code==0){
+  if (res.code == 0) {
     await getQuestionList();
     message.success("收藏成功");
-  }else{
+  } else {
     message.error("收藏失败");
   }
 };
@@ -273,13 +279,15 @@ const collectQuestion = async (questionListId: number) => {
  */
 const unCollectQuestion = async (questionListId: number) => {
   const res =
-    await QuestionListCollectControllerService.deleteQuestionListCollectUsingPost({
-      questionListId: questionListId,
-    });
-  if(res.code==0){
+    await QuestionListCollectControllerService.deleteQuestionListCollectUsingPost(
+      {
+        questionListId: questionListId,
+      }
+    );
+  if (res.code == 0) {
     await getQuestionList();
     message.success("取消收藏成功");
-  }else{
+  } else {
     message.error("取消收藏失败");
   }
 };
@@ -291,7 +299,7 @@ watchEffect(async () => {
   await getQuestionList();
 });
 
-onMounted( async () => {
+onMounted(async () => {
   await getQuestionList();
 });
 
@@ -300,7 +308,10 @@ onMounted( async () => {
  * @param questionListId 题目所属题单的id
  * @param userId 题目所属题单的创建人的id
  */
-const getQuestionsByQuestionListId = async (questionListId: number,userId:number) => {
+const getQuestionsByQuestionListId = async (
+  questionListId: number,
+  userId: number
+) => {
   console.log(questionsSearchParams.value);
   const res =
     await QuestionCollectControllerService.listQuestionCollectByPageUserUsingPost(
@@ -313,7 +324,11 @@ const getQuestionsByQuestionListId = async (questionListId: number,userId:number
           await QuestionControllerService.getQuestionVoByIdUsingGet(
             x.questionId
           );
-        return { ...questionVO.data, questionListId: questionListId ,userId:userId};
+        return {
+          ...questionVO.data,
+          questionListId: questionListId,
+          userId: userId,
+        };
       })
     )) as [];
     questionsTotal.value = res.data.total;
@@ -327,7 +342,10 @@ const getQuestionsByQuestionListId = async (questionListId: number,userId:number
  * @param questionId
  * @param questionListId
  */
-const deleteQuestionInQuestionList = async (questionId: number, questionListId: number) => {
+const deleteQuestionInQuestionList = async (
+  questionId: number,
+  questionListId: number
+) => {
   const res =
     await QuestionCollectControllerService.deleteQuestionCollectUsingPost({
       questionId: questionId,
@@ -348,6 +366,18 @@ const toDoQuestion = (question: Question) => {
   router.push({
     path: `/view/question/${question.id}`,
   });
+};
+
+/**
+ * 点击头像进行跳转
+ * @param userId
+ */
+const goToUser = (userId: number) => {
+  if (userId != loginUser.id) {
+    router.push({
+      path: `/_userInfo/${userId}`,
+    });
+  }
 };
 </script>
 
