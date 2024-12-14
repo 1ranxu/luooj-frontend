@@ -84,9 +84,13 @@
       v-for="firstComment in comments"
       :author="firstComment.userName"
       :content="firstComment.content"
-      :avatar="firstComment.userAvatar"
       :datetime="moment(firstComment.createTime).format('YYYY-MM-DD HH:mm:ss')"
     >
+      <template #avatar>
+        <a-avatar @click="goToUser(firstComment.userId)" :size="32">
+          <img :src="firstComment.userAvatar" />
+        </a-avatar>
+      </template>
       <template #actions>
         <!-- 点赞图标 -->
         <span class="action" key="heart" @click="likeComment(firstComment.id)">
@@ -173,12 +177,16 @@
                 : ' 回复 ' + secondComment.respondUserName)
             "
             :content="secondComment.content"
-            :avatar="secondComment.userAvatar"
             :datetime="
               moment(secondComment.createTime).format('YYYY-MM-DD HH:mm:ss')
             "
             v-for="secondComment in firstComment.childList"
           >
+            <template #avatar>
+              <a-avatar @click="goToUser(secondComment.userId)" :size="32">
+                <img :src="secondComment.userAvatar" />
+              </a-avatar>
+            </template>
             <template #actions>
               <!-- 点赞图标 -->
               <span
@@ -550,6 +558,18 @@ const reportComment = async (
     Message.success("举报成功");
   } else {
     Message.error("举报失败：" + res.message);
+  }
+};
+
+/**
+ * 点击头像进行跳转
+ * @param userId
+ */
+const goToUser = (userId: number) => {
+  if (userId != loginUser.id) {
+    router.push({
+      path: `/_userInfo/${userId}`,
+    });
   }
 };
 </script>
