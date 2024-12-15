@@ -3,12 +3,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import { ContestQuestion } from "./ContestQuestion";
+
 export type ContestUpdateRequest = {
     award?: string;
     duration?: number;
     endTime?: string;
     id?: number;
-    questions?: Record<string, number>;
+    questions?: Record<string, ContestQuestion>;
     startTime?: string;
     status?: number;
     tips?: string;

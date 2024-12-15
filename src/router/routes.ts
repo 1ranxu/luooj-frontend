@@ -15,6 +15,7 @@ import QuestionLayout from "@/layouts/QuestionLayout.vue";
 import QuestionListView from "@/views/question/QuestionListView.vue";
 import QuestionSoulutionView from "@/views/question/QuestionSolutionView.vue";
 import UserView from "@/views/user/UserView.vue";
+import ContestsView from "@/views/question/ContestsView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -65,6 +66,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/questions",
     name: "题库",
     component: QuestionsView,
+  },
+  {
+    path: "/contests",
+    name: "竞赛",
+    component: ContestsView,
+    meta: {
+      access: AccessEnum.USER,
+    },
   },
   {
     path: "/questionList",
