@@ -1,5 +1,5 @@
 <template>
-  <div id="questionsView">
+  <div id="contestsView">
     <a-form
       :model="searchParams"
       layout="inline"
@@ -42,7 +42,7 @@
       @page-change="onPageChange"
       @pageSizeChange="onPageSizeChange"
     >
-      <template #isApply="{ record }">
+      <template #status="{ record }">
         {{
           moment().isBefore(moment(record.startTime))
             ? "未开始"
@@ -53,7 +53,7 @@
       </template>
 
       <template #title="{ record }">
-        <a-button type="text" @click="toDoQuestion(record)"
+        <a-button :disabled="!moment().isAfter(moment(record.startTime)) || !record.isApply" type="text" @click="goToContest(record.id)"
           >{{ record.title }}
         </a-button>
       </template>
@@ -506,7 +506,7 @@ onMounted(() => {
 const columns = [
   {
     title: "状态",
-    slotName: "isApply",
+    slotName: "status",
     align: "center",
   },
   {
@@ -542,15 +542,6 @@ const columns = [
   },
 ];
 
-/**
- * 跳转到做题页面
- * @param question
- */
-const toDoQuestion = (question: Question) => {
-  router.push({
-    path: `/view/question/${question.id}`,
-  });
-};
 
 /**
  * 页面切换
@@ -649,10 +640,20 @@ const doDelete = async (record: Contest) => {
     message.error("删除失败，" + res.message);
   }
 };
+
+/**
+ * 点击竞赛标题进行跳转
+ * @param userId
+ */
+const goToContest = (contestId: number) => {
+  router.push({
+    path: `/detail/contest/${contestId}`,
+  });
+};
 </script>
 
 <style scoped>
-#questionsView {
+#contestsView {
   max-width: 1280px;
   margin: 0 auto;
 }
