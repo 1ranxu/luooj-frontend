@@ -2196,7 +2196,11 @@ const goToSolution = (questionId: number, questionSolutionId: number) => {
  * @param userId
  */
 const goToUser = (userId: number) => {
-  if(userId != loginUser.id){
+  if (userId == loginUser.id) {
+    router.push({
+      path: `/_userInfo`,
+    });
+  }else{
     router.push({
       path: `/_userInfo/${userId}`,
     });
