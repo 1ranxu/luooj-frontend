@@ -265,38 +265,53 @@
         <template #firstQuestion="{ record }">
           <a-button
             type="text"
-            @click="openCodeModal(record.submitDetail['1'].code)"
+            @click="openCodeModal(record.submitDetail['1']?.code)"
           >
             {{
-              record.submitDetail["1"].acceptedTime != null
-                ? record.submitDetail["1"].acceptedTime
+              record.submitDetail["1"]?.acceptedTime != null
+                ? record.submitDetail["1"]?.acceptedTime
                 : ""
             }}
           </a-button>
         </template>
 
         <template #secondQuestion="{ record }">
-          {{
-            record.submitDetail["2"]?.acceptedTime != null
-              ? record.submitDetail["2"]?.acceptedTime
-              : ""
-          }}
+          <a-button
+            type="text"
+            @click="openCodeModal(record.submitDetail['2']?.code)"
+          >
+            {{
+              record.submitDetail["2"]?.acceptedTime != null
+                ? record.submitDetail["2"]?.acceptedTime
+                : ""
+            }}
+          </a-button>
         </template>
 
         <template #thirdQuestion="{ record }">
-          {{
-            record.submitDetail["3"]?.acceptedTime != null
-              ? record.submitDetail["3"]?.acceptedTime
-              : ""
-          }}
+          <a-button
+            type="text"
+            @click="openCodeModal(record.submitDetail['3']?.code)"
+          >
+            {{
+              record.submitDetail["3"]?.acceptedTime != null
+                ? record.submitDetail["3"]?.acceptedTime
+                : ""
+            }}
+          </a-button>
         </template>
 
         <template #fourthQuestion="{ record }">
-          {{
-            record.submitDetail["4"]?.acceptedTime != null
-              ? record.submitDetail["4"]?.acceptedTime
-              : ""
-          }}
+          <a-button
+            type="text"
+            @click="openCodeModal(record.submitDetail['4']?.code)"
+          >
+            {{
+              record.submitDetail["4"]?.acceptedTime != null
+                ? record.submitDetail["4"]?.acceptedTime
+                : ""
+            }}
+          </a-button>
         </template>
       </a-table>
     </a-drawer>
