@@ -12,4 +12,5 @@ export type ContestRank = {
     submitDetail?: Record<string, ContestRankQuestionDetail>;
     time?: Pair_string_int_;
     userVO?: UserVO;
+    rank?: number;
 };

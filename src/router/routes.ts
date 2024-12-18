@@ -16,6 +16,8 @@ import QuestionListView from "@/views/question/QuestionListView.vue";
 import QuestionSoulutionView from "@/views/question/QuestionSolutionView.vue";
 import UserView from "@/views/user/UserView.vue";
 import ContestsView from "@/views/question/ContestsView.vue";
+import ViewContestView from "@/views/question/ViewContestView.vue";
+import ContestLayout from "@/layouts/ContestLayout.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -74,6 +76,27 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       access: AccessEnum.USER,
     },
+  },
+  {
+    path: "/detail",
+    name: "查看竞赛",
+    component: ContestLayout,
+    meta: {
+      access: AccessEnum.USER,
+      hideInMenu: true,
+    },
+    children:[
+      {
+        path: "contest/:contestId",
+        name: "竞赛详情",
+        component: ViewContestView,
+        meta: {
+          access: AccessEnum.USER,
+          hideInMenu: true,
+        },
+        props: true,
+      }
+    ]
   },
   {
     path: "/questionList",

@@ -6,6 +6,9 @@
     <template v-else-if="route.path.startsWith('/view/question')">
       <router-view />
     </template>
+    <template v-else-if="route.path.startsWith('/detail/contest')">
+      <router-view />
+    </template>
     <template v-else>
       <BasicLayout />
     </template>
