@@ -22,6 +22,7 @@ import AcceptedQuestionManageView from "@/views/question/AcceptedQuestionManageV
 import ContestApplyManageView from "@/views/question/ContestApplyManageView.vue";
 import ContestResultManageView from "@/views/question/ContestResultManageView.vue";
 import QuestionCollectManageView from "@/views/question/QuestionCollectManageView.vue";
+import QuestionCommentManageView from "@/views/question/QuestionCommentManageView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -171,6 +172,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/manage/questionCollect",
     name: "题目收藏管理",
     component: QuestionCollectManageView,
+    meta: {
+      access: AccessEnum.ADMIN,
+    },
+  },
+  {
+    path: "/manage/questionComment",
+    name: "题目评论管理",
+    component: QuestionCommentManageView,
     meta: {
       access: AccessEnum.ADMIN,
     },

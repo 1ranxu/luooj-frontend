@@ -24,7 +24,7 @@
           </a-menu-item>
         </a-menu>
       </a-col>
-      <a-col flex="100px">
+      <a-col flex="80px">
         <!--<div v-if="store.state.user?.loginUser.userName === '未登录'">
           <a-link href="/user/login">登录</a-link>
         </div>
