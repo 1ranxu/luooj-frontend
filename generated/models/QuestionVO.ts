@@ -15,6 +15,7 @@ export type QuestionVO = {
     difficulty?: number;
     id?: number;
     isAccepted?: number;
+    isLike?: boolean;
     judgeConfig?: QuestionJudgeCconfig;
     likes?: number;
     submitNum?: number;

@@ -13,10 +13,10 @@ export type QuestionSolutionComment = {
     likes?: number;
     parentId?: number;
     respondUserId?: number;
+    respondUserName?: string;
+    showReplyBox?: boolean;
     solutionId?: number;
+    userAvatar?: string;
     userId?: number;
-    userName?:string;
-    userAvatar?:string;
-    respondUserName?:string;
-    showReplyBox?:boolean;
+    userName?: string;
 };

@@ -18,6 +18,7 @@ import UserView from "@/views/user/UserView.vue";
 import ContestsView from "@/views/question/ContestsView.vue";
 import ViewContestView from "@/views/question/ViewContestView.vue";
 import ContestLayout from "@/layouts/ContestLayout.vue";
+import AcceptedQuestionManageView from "@/views/question/AcceptedQuestionManageView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -159,6 +160,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/_userManage",
     name: "用户管理",
     component: UserManageView,
+    meta: {
+      access: AccessEnum.ADMIN,
+    },
+  },
+  {
+    path: "/manage/acceptedQuestion",
+    name: "通过题目管理",
+    component: AcceptedQuestionManageView,
     meta: {
       access: AccessEnum.ADMIN,
     },

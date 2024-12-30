@@ -40,10 +40,13 @@ questionSubmitAddRequest: QuestionSubmitAddRequest,
 
     /**
      * getPersonSubmitDetail
+     * @param userId userId
      * @returns BaseResponse_QuestionSubmitDetail_ OK
      * @throws ApiError
      */
-    public static getPersonSubmitDetailUsingGet(userId?: number,): CancelablePromise<BaseResponse_QuestionSubmitDetail_> {
+    public static getPersonSubmitDetailUsingGet(
+userId: number,
+): CancelablePromise<BaseResponse_QuestionSubmitDetail_> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/question/question_submit/get/user_submit/detail',

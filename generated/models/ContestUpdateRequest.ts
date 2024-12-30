@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { ContestQuestion } from "./ContestQuestion";
+import type { ContestQuestion } from './ContestQuestion';
 
 export type ContestUpdateRequest = {
     award?: string;
