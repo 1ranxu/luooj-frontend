@@ -1,26 +1,20 @@
 <template>
-  <div id="AcceptedQuestionManageView">
+  <div id="ContestApplyManageView">
     <a-form
       :model="searchParams"
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="id：" tooltip="请输入通过记录id">
+      <a-form-item field="title" label="竞赛id：" tooltip="请输入竞赛id">
         <a-input
-          v-model="searchParams.id"
-          placeholder="请输入要搜索的通过记录id"
+          v-model="searchParams.contestId"
+          placeholder="请输入要搜索的竞赛id"
         />
       </a-form-item>
-      <a-form-item field="title" label="题目id：" tooltip="请输入题目id">
+      <a-form-item field="title" label="参赛者id：" tooltip="请输入参赛者id">
         <a-input
-          v-model="searchParams.questionId"
-          placeholder="请输入要搜索的题目id"
-        />
-      </a-form-item>
-      <a-form-item field="title" label="用户id：" tooltip="请输入用户id">
-        <a-input
-          v-model="searchParams.userId"
-          placeholder="请输入要搜索的用户id"
+          v-model="searchParams.applicantId"
+          placeholder="请输入要搜索的参赛者id"
         />
       </a-form-item>
       <a-form-item>
@@ -84,11 +78,11 @@ import message from "@arco-design/web-vue/es/message";
 import moment from "moment";
 import { useRouter } from "vue-router";
 import {
-  AcceptedQuestion,
-  AcceptedQuestionControllerService,
+  ContestApply,
+  ContestApplyControllerService,
 } from "../../../generated";
 
-document.title = "通过题目管理";
+document.title = "竞赛报名管理";
 
 const router = useRouter();
 const tableRef = ref();
@@ -97,21 +91,19 @@ const dataList = ref([]);
 const total = ref(0);
 const searchParams = ref({
   id: undefined,
-  questionId: undefined,
-  userId: undefined,
+  contestId: undefined,
+  applicantId: undefined,
   pageSize: 10,
   current: 1,
 });
 
 const loadData = async () => {
   const res =
-    await AcceptedQuestionControllerService.listAcceptedQuestionByPageUsingPost(
-      {
-        ...searchParams.value,
-        sortField: "createTime",
-        sortOrder: "descend",
-      }
-    );
+    await ContestApplyControllerService.listContestApplyByPageUsingPost({
+      ...searchParams.value,
+      sortField: "createTime",
+      sortOrder: "descend",
+    });
   if (res.code === 0) {
     dataList.value = res.data.records;
     total.value = res.data.total;
@@ -141,13 +133,13 @@ const columns = [
     align: "center",
   },
   {
-    title: "题目id",
-    dataIndex: "questionId",
+    title: "竞赛id",
+    dataIndex: "contestId",
     align: "center",
   },
   {
-    title: "用户id",
-    dataIndex: "userId",
+    title: "参赛者id",
+    dataIndex: "applicantId",
     align: "center",
   },
   {
@@ -186,13 +178,13 @@ const onPageSizeChange = (size: number) => {
 
 /**
  * 删除
- * @param acceptedQuestion
+ * @param contestAppy
  */
-const doDelete = async (acceptedQuestion: AcceptedQuestion) => {
-  const res =
-    await AcceptedQuestionControllerService.deleteAcceptedQuestionUsingPost({
-      id: acceptedQuestion.id,
-    });
+const doDelete = async (contestAppy: ContestApply) => {
+  const res = await ContestApplyControllerService.applyContestUsingPost({
+    contestId: contestAppy.contestId,
+    isApply: false,
+  });
   if (res.code === 0) {
     message.success("删除成功");
     loadData();
@@ -214,7 +206,7 @@ const doSubmit = () => {
 </script>
 
 <style scoped>
-#AcceptedQuestionManageView {
+#ContestApplyManageView {
   padding: 5px;
   box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
   border-radius: 10px;
