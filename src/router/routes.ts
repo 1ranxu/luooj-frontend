@@ -25,6 +25,7 @@ import QuestionCollectManageView from "@/views/question/QuestionCollectManageVie
 import QuestionCommentManageView from "@/views/question/QuestionCommentManageView.vue";
 import QuestionListManageView from "@/views/question/QuestionListManageView.vue";
 import QuestionListCollectManageView from "@/views/question/QuestionListCollectManageView.vue";
+import QuestionSolutionManageView from "@/views/question/QuestionSolutionManageView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -206,6 +207,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/manage/questionListCollect",
     name: "题单收藏管理",
     component: QuestionListCollectManageView,
+    meta: {
+      access: AccessEnum.ADMIN,
+    },
+  },
+  {
+    path: "/manage/questionSolution",
+    name: "题解管理",
+    component: QuestionSolutionManageView,
     meta: {
       access: AccessEnum.ADMIN,
     },
