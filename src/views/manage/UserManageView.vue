@@ -5,10 +5,10 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="用户id：" tooltip="请输入用户的id">
+      <a-form-item field="id" label="用户id：" tooltip="请输入用户的id">
         <a-input v-model="searchParams.id" placeholder="请输入要搜索的用户id" />
       </a-form-item>
-      <a-form-item field="title" label="用户昵称：" tooltip="请输入用户昵称">
+      <a-form-item field="userName" label="用户昵称：" tooltip="请输入用户昵称">
         <a-input
           v-model="searchParams.userName"
           placeholder="请输入要搜索的用户名称"

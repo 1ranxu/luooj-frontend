@@ -1,23 +1,23 @@
 <template>
-  <div id="QuestionListManageView">
+  <div id="QuestionListCollectManageView">
     <a-form
       :model="searchParams"
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="id：" tooltip="请输入题单id">
-        <a-input v-model="searchParams.id" placeholder="请输入要搜索的题单id" />
+      <a-form-item field="id" label="id：" tooltip="请输入题单收藏id">
+        <a-input v-model="searchParams.id" placeholder="请输入要搜索的题单收藏id" />
       </a-form-item>
-      <a-form-item field="title" label="题单标题：" tooltip="请输入题单标题">
+      <a-form-item field="questionListId" label="题单id：" tooltip="请输入题单id">
         <a-input
-          v-model="searchParams.title"
-          placeholder="请输入要搜索的题单标题"
+          v-model="searchParams.questionListId"
+          placeholder="请输入要搜索的题单id"
         />
       </a-form-item>
-      <a-form-item field="title" label="创建人id：" tooltip="请输入创建人id">
+      <a-form-item field="userId" label="收藏人id：" tooltip="请输入收藏人id">
         <a-input
           v-model="searchParams.userId"
-          placeholder="请输入要搜索的创建人id"
+          placeholder="请输入要搜索的收藏人id"
         />
       </a-form-item>
       <a-form-item>
@@ -51,10 +51,6 @@
         {{ moment(record.createTime).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
 
-      <template #updateTime="{ record }">
-        {{ moment(record.updateTime).format("YYYY-MM-DD HH:mm:ss") }}
-      </template>
-
       <template #optional="{ record }">
         <a-space>
           <a-popconfirm
@@ -85,11 +81,11 @@ import message from "@arco-design/web-vue/es/message";
 import moment from "moment";
 import { useRouter } from "vue-router";
 import {
-  QuestionList,
-  QuestionListControllerService,
+  QuestionListCollect,
+  QuestionListCollectControllerService,
 } from "../../../generated";
 
-document.title = "题单管理";
+document.title = "题单收藏管理";
 
 const router = useRouter();
 const tableRef = ref();
@@ -98,7 +94,7 @@ const dataList = ref([]);
 const total = ref(0);
 const searchParams = ref({
   id: undefined,
-  title: undefined,
+  questionListId: undefined,
   userId: undefined,
   pageSize: 10,
   current: 1,
@@ -106,11 +102,13 @@ const searchParams = ref({
 
 const loadData = async () => {
   const res =
-    await QuestionListControllerService.listQuestionListByPageUsingPost({
-      ...searchParams.value,
-      sortField: "createTime",
-      sortOrder: "descend",
-    });
+    await QuestionListCollectControllerService.listQuestionListCollectByPageUsingPost(
+      {
+        ...searchParams.value,
+        sortField: "createTime",
+        sortOrder: "descend",
+      }
+    );
   if (res.code === 0) {
     dataList.value = res.data.records;
     total.value = res.data.total;
@@ -140,23 +138,18 @@ const columns = [
     align: "center",
   },
   {
-    title: "题单标题",
-    dataIndex: "title",
+    title: "题单id",
+    dataIndex: "questionListId",
     align: "center",
   },
   {
-    title: "创建人id",
+    title: "收藏人id",
     dataIndex: "userId",
     align: "center",
   },
   {
     title: "创建时间",
     slotName: "createTime",
-    align: "center",
-  },
-  {
-    title: "更新时间",
-    slotName: "updateTime",
     align: "center",
   },
   {
@@ -190,12 +183,15 @@ const onPageSizeChange = (size: number) => {
 
 /**
  * 删除
- * @param questionList
+ * @param questionListCollect
  */
-const doDelete = async (questionList: QuestionList) => {
-  const res = await QuestionListControllerService.deleteQuestionListUsingPost(
-    questionList.id as number
-  );
+const doDelete = async (questionListCollect: QuestionListCollect) => {
+  const res =
+    await QuestionListCollectControllerService.deleteQuestionListCollectUsingPost(
+      {
+        questionListId: questionListCollect.questionListId,
+      }
+    );
   if (res.code === 0) {
     message.success("删除成功");
     loadData();
@@ -217,7 +213,7 @@ const doSubmit = () => {
 </script>
 
 <style scoped>
-#QuestionListManageView {
+#QuestionListCollectManageView {
   padding: 5px;
   box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
   border-radius: 10px;

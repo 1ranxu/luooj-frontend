@@ -5,19 +5,19 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="id：" tooltip="请输入通过记录id">
+      <a-form-item field="id" label="id：" tooltip="请输入通过记录id">
         <a-input
           v-model="searchParams.id"
           placeholder="请输入要搜索的通过记录id"
         />
       </a-form-item>
-      <a-form-item field="title" label="题目id：" tooltip="请输入题目id">
+      <a-form-item field="questionId" label="题目id：" tooltip="请输入题目id">
         <a-input
           v-model="searchParams.questionId"
           placeholder="请输入要搜索的题目id"
         />
       </a-form-item>
-      <a-form-item field="title" label="用户id：" tooltip="请输入用户id">
+      <a-form-item field="userId" label="用户id：" tooltip="请输入用户id">
         <a-input
           v-model="searchParams.userId"
           placeholder="请输入要搜索的用户id"

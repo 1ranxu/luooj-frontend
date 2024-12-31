@@ -1,26 +1,23 @@
 <template>
-  <div id="QuestionCollectManageView">
+  <div id="QuestionListManageView">
     <a-form
       :model="searchParams"
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="id：" tooltip="请输入题目收藏记录id">
+      <a-form-item field="id" label="id：" tooltip="请输入题单id">
+        <a-input v-model="searchParams.id" placeholder="请输入要搜索的题单id" />
+      </a-form-item>
+      <a-form-item field="title" label="题单标题：" tooltip="请输入题单标题">
         <a-input
-          v-model="searchParams.id"
-          placeholder="请输入要搜索的题目收藏记录id"
+          v-model="searchParams.title"
+          placeholder="请输入要搜索的题单标题"
         />
       </a-form-item>
-      <a-form-item field="title" label="题单id：" tooltip="请输入题单id">
+      <a-form-item field="userId" label="创建人id：" tooltip="请输入创建人id">
         <a-input
-          v-model="searchParams.questionListId"
-          placeholder="请输入要搜索的题单id"
-        />
-      </a-form-item>
-      <a-form-item field="title" label="题目id：" tooltip="请输入题目id">
-        <a-input
-          v-model="searchParams.questionId"
-          placeholder="请输入要搜索的题目id"
+          v-model="searchParams.userId"
+          placeholder="请输入要搜索的创建人id"
         />
       </a-form-item>
       <a-form-item>
@@ -54,6 +51,10 @@
         {{ moment(record.createTime).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
 
+      <template #updateTime="{ record }">
+        {{ moment(record.updateTime).format("YYYY-MM-DD HH:mm:ss") }}
+      </template>
+
       <template #optional="{ record }">
         <a-space>
           <a-popconfirm
@@ -84,11 +85,11 @@ import message from "@arco-design/web-vue/es/message";
 import moment from "moment";
 import { useRouter } from "vue-router";
 import {
-  QuestionCollect,
-  QuestionCollectControllerService,
+  QuestionList,
+  QuestionListControllerService,
 } from "../../../generated";
 
-document.title = "题目收藏管理";
+document.title = "题单管理";
 
 const router = useRouter();
 const tableRef = ref();
@@ -97,15 +98,15 @@ const dataList = ref([]);
 const total = ref(0);
 const searchParams = ref({
   id: undefined,
-  questionListId: undefined,
-  questionId: undefined,
+  title: undefined,
+  userId: undefined,
   pageSize: 10,
   current: 1,
 });
 
 const loadData = async () => {
   const res =
-    await QuestionCollectControllerService.listQuestionCollectByPageUsingPost({
+    await QuestionListControllerService.listQuestionListByPageUsingPost({
       ...searchParams.value,
       sortField: "createTime",
       sortOrder: "descend",
@@ -139,18 +140,23 @@ const columns = [
     align: "center",
   },
   {
-    title: "题单id",
-    dataIndex: "questionListId",
+    title: "题单标题",
+    dataIndex: "title",
     align: "center",
   },
   {
-    title: "题目id",
-    dataIndex: "questionId",
+    title: "创建人id",
+    dataIndex: "userId",
     align: "center",
   },
   {
     title: "创建时间",
     slotName: "createTime",
+    align: "center",
+  },
+  {
+    title: "更新时间",
+    slotName: "updateTime",
     align: "center",
   },
   {
@@ -184,14 +190,12 @@ const onPageSizeChange = (size: number) => {
 
 /**
  * 删除
- * @param questionCollect
+ * @param questionList
  */
-const doDelete = async (questionCollect: QuestionCollect) => {
-  const res =
-    await QuestionCollectControllerService.deleteQuestionCollectUsingPost({
-      questionId: questionCollect.questionId,
-      questionListId: questionCollect.questionListId,
-    });
+const doDelete = async (questionList: QuestionList) => {
+  const res = await QuestionListControllerService.deleteQuestionListUsingPost(
+    questionList.id as number
+  );
   if (res.code === 0) {
     message.success("删除成功");
     loadData();
@@ -213,7 +217,7 @@ const doSubmit = () => {
 </script>
 
 <style scoped>
-#QuestionCollectManageView {
+#QuestionListManageView {
   padding: 5px;
   box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
   border-radius: 10px;

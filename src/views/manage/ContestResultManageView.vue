@@ -5,7 +5,7 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="竞赛id：" tooltip="请输入竞赛id">
+      <a-form-item field="contestId" label="竞赛id：" tooltip="请输入竞赛id">
         <a-input
           v-model="searchParams.contestId"
           placeholder="请输入要搜索的竞赛id"

@@ -1,5 +1,5 @@
 <template>
-  <div id="manageQuestionView">
+  <div id="QuestionManageView">
     <a-form
       :model="searchParams"
       layout="inline"
@@ -308,6 +308,6 @@ const doSearch = () => {
 </script>
 
 <style scoped>
-#manageQuestionView {
+#QuestionManageView {
 }
 </style>

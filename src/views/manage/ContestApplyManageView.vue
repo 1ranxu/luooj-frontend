@@ -5,13 +5,13 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="竞赛id：" tooltip="请输入竞赛id">
+      <a-form-item field="contestId" label="竞赛id：" tooltip="请输入竞赛id">
         <a-input
           v-model="searchParams.contestId"
           placeholder="请输入要搜索的竞赛id"
         />
       </a-form-item>
-      <a-form-item field="title" label="参赛者id：" tooltip="请输入参赛者id">
+      <a-form-item field="applicantId" label="参赛者id：" tooltip="请输入参赛者id">
         <a-input
           v-model="searchParams.applicantId"
           placeholder="请输入要搜索的参赛者id"

@@ -1,23 +1,26 @@
 <template>
-  <div id="QuestionListCollectManageView">
+  <div id="QuestionCollectManageView">
     <a-form
       :model="searchParams"
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="id：" tooltip="请输入题单收藏id">
-        <a-input v-model="searchParams.id" placeholder="请输入要搜索的题单收藏id" />
+      <a-form-item field="id" label="id：" tooltip="请输入题目收藏记录id">
+        <a-input
+          v-model="searchParams.id"
+          placeholder="请输入要搜索的题目收藏记录id"
+        />
       </a-form-item>
-      <a-form-item field="title" label="题单id：" tooltip="请输入题单id">
+      <a-form-item field="questionListId" label="题单id：" tooltip="请输入题单id">
         <a-input
           v-model="searchParams.questionListId"
           placeholder="请输入要搜索的题单id"
         />
       </a-form-item>
-      <a-form-item field="title" label="收藏人id：" tooltip="请输入收藏人id">
+      <a-form-item field="questionId" label="题目id：" tooltip="请输入题目id">
         <a-input
-          v-model="searchParams.userId"
-          placeholder="请输入要搜索的收藏人id"
+          v-model="searchParams.questionId"
+          placeholder="请输入要搜索的题目id"
         />
       </a-form-item>
       <a-form-item>
@@ -81,11 +84,11 @@ import message from "@arco-design/web-vue/es/message";
 import moment from "moment";
 import { useRouter } from "vue-router";
 import {
-  QuestionListCollect,
-  QuestionListCollectControllerService,
+  QuestionCollect,
+  QuestionCollectControllerService,
 } from "../../../generated";
 
-document.title = "题单收藏管理";
+document.title = "题目收藏管理";
 
 const router = useRouter();
 const tableRef = ref();
@@ -95,20 +98,18 @@ const total = ref(0);
 const searchParams = ref({
   id: undefined,
   questionListId: undefined,
-  userId: undefined,
+  questionId: undefined,
   pageSize: 10,
   current: 1,
 });
 
 const loadData = async () => {
   const res =
-    await QuestionListCollectControllerService.listQuestionListCollectByPageUsingPost(
-      {
-        ...searchParams.value,
-        sortField: "createTime",
-        sortOrder: "descend",
-      }
-    );
+    await QuestionCollectControllerService.listQuestionCollectByPageUsingPost({
+      ...searchParams.value,
+      sortField: "createTime",
+      sortOrder: "descend",
+    });
   if (res.code === 0) {
     dataList.value = res.data.records;
     total.value = res.data.total;
@@ -143,8 +144,8 @@ const columns = [
     align: "center",
   },
   {
-    title: "收藏人id",
-    dataIndex: "userId",
+    title: "题目id",
+    dataIndex: "questionId",
     align: "center",
   },
   {
@@ -183,15 +184,14 @@ const onPageSizeChange = (size: number) => {
 
 /**
  * 删除
- * @param questionListCollect
+ * @param questionCollect
  */
-const doDelete = async (questionListCollect: QuestionListCollect) => {
+const doDelete = async (questionCollect: QuestionCollect) => {
   const res =
-    await QuestionListCollectControllerService.deleteQuestionListCollectUsingPost(
-      {
-        questionListId: questionListCollect.questionListId,
-      }
-    );
+    await QuestionCollectControllerService.deleteQuestionCollectUsingPost({
+      questionId: questionCollect.questionId,
+      questionListId: questionCollect.questionListId,
+    });
   if (res.code === 0) {
     message.success("删除成功");
     loadData();
@@ -213,7 +213,7 @@ const doSubmit = () => {
 </script>
 
 <style scoped>
-#QuestionListCollectManageView {
+#QuestionCollectManageView {
   padding: 5px;
   box-shadow: 0px 0px 10px rgba(35, 7, 7, 0.21);
   border-radius: 10px;
