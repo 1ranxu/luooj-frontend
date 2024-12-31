@@ -29,6 +29,7 @@ import QuestionSolutionManageView from "@/views/manage/QuestionSolutionManageVie
 import QuestionSolutionCollectManageView from "@/views/manage/QuestionSolutionCollectManageView.vue";
 import QuestionSolutionCommentManageView from "@/views/manage/QuestionSolutionCommentManageView.vue";
 import CommentReportManageView from "@/views/manage/CommentReportManageView.vue";
+import QuestionSolutionReportManageView from "@/views/manage/QuestionSolutionReportManageView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -242,6 +243,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/manage/commentReport",
     name: "评论举报管理",
     component: CommentReportManageView,
+    meta: {
+      access: AccessEnum.ADMIN,
+    },
+  },
+  {
+    path: "/manage/questionSolutionReport",
+    name: "题解举报管理",
+    component: QuestionSolutionReportManageView,
     meta: {
       access: AccessEnum.ADMIN,
     },
