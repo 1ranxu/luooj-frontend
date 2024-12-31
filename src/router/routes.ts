@@ -5,12 +5,12 @@ import UserLayout from "@/layouts/UserLayout.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import UserRegisterView from "@/views/user/UserRegisterView.vue";
 import AddQuestionView from "@/views/question/AddQuestionView.vue";
-import ManageQuestionView from "@/views/question/ManageQuestionView.vue";
+import ManageQuestionView from "@/views/manage/QuestionManageView.vue";
 import QuestionsView from "@/views/question/QuestionsView.vue";
 import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
 import QuestionSubmitView from "@/views/question/QuestionSubmitView.vue";
 import UserInfoView from "@/views/user/UserInfoView.vue";
-import UserManageView from "@/views/user/UserManageView.vue";
+import UserManageView from "@/views/manage/UserManageView.vue";
 import QuestionLayout from "@/layouts/QuestionLayout.vue";
 import QuestionListView from "@/views/question/QuestionListView.vue";
 import QuestionSoulutionView from "@/views/question/QuestionSolutionView.vue";
@@ -18,16 +18,17 @@ import UserView from "@/views/user/UserView.vue";
 import ContestsView from "@/views/question/ContestsView.vue";
 import ViewContestView from "@/views/question/ViewContestView.vue";
 import ContestLayout from "@/layouts/ContestLayout.vue";
-import AcceptedQuestionManageView from "@/views/question/AcceptedQuestionManageView.vue";
-import ContestApplyManageView from "@/views/question/ContestApplyManageView.vue";
-import ContestResultManageView from "@/views/question/ContestResultManageView.vue";
-import QuestionCollectManageView from "@/views/question/QuestionCollectManageView.vue";
-import QuestionCommentManageView from "@/views/question/QuestionCommentManageView.vue";
-import QuestionListManageView from "@/views/question/QuestionListManageView.vue";
-import QuestionListCollectManageView from "@/views/question/QuestionListCollectManageView.vue";
-import QuestionSolutionManageView from "@/views/question/QuestionSolutionManageView.vue";
-import QuestionSolutionCollectManageView from "@/views/question/QuestionSolutionCollectManageView.vue";
-import QuestionSolutionCommentManageView from "@/views/question/QuestionSolutionCommentManageView.vue";
+import AcceptedQuestionManageView from "@/views/manage/AcceptedQuestionManageView.vue";
+import ContestApplyManageView from "@/views/manage/ContestApplyManageView.vue";
+import ContestResultManageView from "@/views/manage/ContestResultManageView.vue";
+import QuestionCollectManageView from "@/views/manage/QuestionCollectManageView.vue";
+import QuestionCommentManageView from "@/views/manage/QuestionCommentManageView.vue";
+import QuestionListManageView from "@/views/manage/QuestionListManageView.vue";
+import QuestionListCollectManageView from "@/views/manage/QuestionListCollectManageView.vue";
+import QuestionSolutionManageView from "@/views/manage/QuestionSolutionManageView.vue";
+import QuestionSolutionCollectManageView from "@/views/manage/QuestionSolutionCollectManageView.vue";
+import QuestionSolutionCommentManageView from "@/views/manage/QuestionSolutionCommentManageView.vue";
+import CommentReportManageView from "@/views/manage/CommentReportManageView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -233,6 +234,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/manage/questionSolutionComment",
     name: "题解评论管理",
     component: QuestionSolutionCommentManageView,
+    meta: {
+      access: AccessEnum.ADMIN,
+    },
+  },
+  {
+    path: "/manage/commentReport",
+    name: "评论举报管理",
+    component: CommentReportManageView,
     meta: {
       access: AccessEnum.ADMIN,
     },
