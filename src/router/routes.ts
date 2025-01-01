@@ -4,7 +4,6 @@ import AccessEnum from "@/access/AccessEnum";
 import UserLayout from "@/layouts/UserLayout.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import UserRegisterView from "@/views/user/UserRegisterView.vue";
-import AddQuestionView from "@/views/question/AddQuestionView.vue";
 import ManageQuestionView from "@/views/manage/QuestionManageView.vue";
 import QuestionsView from "@/views/question/QuestionsView.vue";
 import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
@@ -152,14 +151,6 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/add/question",
-    name: "创建题目",
-    component: AddQuestionView,
-    meta: {
-      access: AccessEnum.ADMIN,
-    },
-  },
-  {
     path: "/_userManage",
     name: "用户管理",
     component: UserManageView,
@@ -269,15 +260,6 @@ const routes: Array<RouteRecordRaw> = [
     component: ContestResultManageView,
     meta: {
       access: AccessEnum.ADMIN,
-    },
-  },
-  {
-    path: "/update/question",
-    name: "题目更新",
-    component: AddQuestionView,
-    meta: {
-      access: AccessEnum.ADMIN,
-      hideInMenu: true,
     },
   },
   // {
