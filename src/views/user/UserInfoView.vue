@@ -699,10 +699,7 @@
                 margin: 25px;
               "
             >
-              <a-form-item
-                field="title"
-                tooltip="请输入题单标题"
-              >
+              <a-form-item field="title" tooltip="请输入题单标题">
                 <a-input
                   v-model="questionListSearchParams.title"
                   placeholder="请输入题单标题"
@@ -870,6 +867,12 @@
                       <icon-delete />
                     </a-popconfirm>
                   </span>
+                  <span
+                    style="margin-left: 5px"
+                    @click="openUpdateQuestionSolutionModal(item)"
+                  >
+                    <icon-edit />
+                  </span>
                 </template>
               </a-list-item-meta>
             </a-list-item>
@@ -958,15 +961,26 @@
                       </a-avatar>
                     </template>
                     <template #title>
-                      <a-typography-text bold @click="goToSolution(item.questionId, item.id)">
+                      <a-typography-text
+                        bold
+                        @click="goToSolution(item.questionId, item.id)"
+                      >
                         {{ item.title }}
                       </a-typography-text>
                     </template>
                     <template #description>
-                      <a-typography-text ellipsis type="secondary" @click="goToSolution(item.questionId, item.id)"
+                      <a-typography-text
+                        ellipsis
+                        type="secondary"
+                        @click="goToSolution(item.questionId, item.id)"
                         >{{ item.content }}
                       </a-typography-text>
-                      <a-overflow-list style="width: 500px" min="4" margin="8" @click="goToSolution(item.questionId, item.id)">
+                      <a-overflow-list
+                        style="width: 500px"
+                        min="4"
+                        margin="8"
+                        @click="goToSolution(item.questionId, item.id)"
+                      >
                         <a-tag
                           v-for="(tag, index) of JSON.parse(item.tags)"
                           :key="index"
@@ -980,7 +994,10 @@
                         {{ item.likes }}
                       </span>
                       <!-- 回复数图标 -->
-                      <span style="margin-left: 5px" @click="goToSolution(item.questionId, item.id)">
+                      <span
+                        style="margin-left: 5px"
+                        @click="goToSolution(item.questionId, item.id)"
+                      >
                         <IconMessage /> {{ item.comments }}
                       </span>
                     </template>
@@ -1151,6 +1168,39 @@
       </template>
     </a-list>
   </a-modal>
+  <!-- 修改题解 -->
+  <a-modal
+    width="50%"
+    :visible="updateQuestionSolutionVisible"
+    placement="right"
+    @cancel="closeUpdateQuestionSolutionModal"
+    @ok="updateQuestionSolution"
+    :ok-text="'修改'"
+    unmountOnClose
+    :closable="false"
+  >
+    <a-form :model="updateQuestionSolutionForm" label-align="left">
+      <a-form-item field="title" label="题解标题" tooltip="请输入标题">
+        <a-input
+          v-model="updateQuestionSolutionForm.title"
+          placeholder="请输入题解标题"
+        />
+      </a-form-item>
+      <a-form-item field="tags" label="标签" tooltip="请输入标签">
+        <a-input-tag
+          v-model="updateQuestionSolutionForm.tags"
+          placeholder="请输入标签"
+          allow-clear
+        />
+      </a-form-item>
+      <a-form-item field="content" tooltip="请输入内容" label="题解内容">
+        <MDEditor
+          :value="updateQuestionSolutionForm.content"
+          :hanndle-change="onContentChange"
+        />
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 <script setup lang="ts">
 import { useStore } from "vuex";
@@ -1160,6 +1210,7 @@ import { useRouter } from "vue-router";
 import { UserUpdateMyRequest } from "../../../generated/models/UserUpdateMyRequest";
 import {
   FileControllerService,
+  QuestionSolution,
   QuestionSolutionCollectControllerService,
   QuestionSolutionControllerService,
 } from "../../../generated";
@@ -1174,6 +1225,7 @@ import { QuestionCollectControllerService } from "../../../generated/services/Qu
 import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
 import { Question } from "../../../generated/models/Question";
 import { QuestionListCollectControllerService } from "../../../generated/services/QuestionListCollectControllerService";
+import MDEditor from "@/components/MDEditor.vue";
 
 document.title = "个人";
 
@@ -1428,6 +1480,14 @@ const questionSolutionListSearchParams = ref({
   tags: [],
 });
 
+// 修改题解
+const updateQuestionSolutionForm = ref({
+  id: undefined,
+  title: "",
+  content: "",
+  tags: [],
+});
+
 // 题解收藏
 const collectQuestionSolutionList = ref([]);
 const collectQuestionSolutionListTotal = ref(0);
@@ -1451,6 +1511,7 @@ const actualQuestionsVisible = ref(false);
 const addQuestionListVisible = ref(false);
 const updateQuestionListVisible = ref(false);
 const actualCollectQuestionsVisible = ref(false);
+const updateQuestionSolutionVisible = ref(false);
 
 // 打开弹窗
 const openUpdatePersonalInfoModal = () => {
@@ -1493,6 +1554,15 @@ const openActualCollectQuestionsModal = (id: number) => {
   actualCollectQuestionsVisible.value = true;
   getCollectQuestionsByCollectQuestionListId(id);
 };
+const openUpdateQuestionSolutionModal = (
+  questionSolution: QuestionSolution
+) => {
+  updateQuestionSolutionVisible.value = true;
+  updateQuestionSolutionForm.value.id = questionSolution.id as any;
+  updateQuestionSolutionForm.value.title = questionSolution.title as string;
+  updateQuestionSolutionForm.value.content = questionSolution.content as string;
+  updateQuestionSolutionForm.value.tags = JSON.parse(questionSolution.tags ?? "[]");
+};
 // 关闭弹窗
 const closeUpdatePersonalInfoModal = () => {
   updatePersonalInfoVisible.value = false;
@@ -1524,7 +1594,9 @@ const closeUpdateQuestionListModal = () => {
 const closeActualCollectQuestionsModel = () => {
   actualCollectQuestionsVisible.value = false;
 };
-
+const closeUpdateQuestionSolutionModal = () => {
+  updateQuestionSolutionVisible.value = false;
+};
 // 热力图
 const hotMap = ref({
   tooltip: {
@@ -1874,7 +1946,9 @@ const uploadAvatar = async () => {
  */
 const getAcceptedQuestionDetail = async () => {
   const res =
-    await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet(loginUser.id);
+    await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet(
+      loginUser.id
+    );
   if (res.code === 0) {
     acceptedQuestionDetail.value = res.data as {};
   } else {
@@ -1887,7 +1961,9 @@ const getAcceptedQuestionDetail = async () => {
  */
 const getSubmitDetail = async () => {
   const res =
-    await QuestionSubmitControllerService.getPersonSubmitDetailUsingGet(loginUser.id);
+    await QuestionSubmitControllerService.getPersonSubmitDetailUsingGet(
+      loginUser.id
+    );
   if (res.code === 0) {
     console.log(submitDetail.value.submitDetail);
     submitDetail.value = res.data;
@@ -2096,6 +2172,31 @@ const getQuestionSolutionList = async () => {
 };
 
 /**
+ * 修改题解
+ */
+const updateQuestionSolution = async () => {
+  const res =
+    await QuestionSolutionControllerService.updateQuestionSolutionUsingPost(
+      updateQuestionSolutionForm.value
+    );
+  if (res.code == 0) {
+    message.success("修改成功");
+    updateQuestionSolutionVisible.value = false;
+    await getQuestionSolutionList();
+  } else {
+    message.error(res.message);
+  }
+};
+
+/**
+ * 题解内容改变函数
+ * @param value
+ */
+const onContentChange = (value: string) => {
+  updateQuestionSolutionForm.value.content = value;
+};
+
+/**
  * 获取收藏的题解
  */
 const getCollectQuestionSolutionList = async () => {
@@ -2124,11 +2225,11 @@ const deleteQuestionSolution = async (id) => {
     await QuestionSolutionControllerService.deleteQuestionSolutionUsingPost({
       id: id,
     });
-  if(res.code == 0){
+  if (res.code == 0) {
     message.success("删除成功");
     await getQuestionSolutionList();
-  }else{
-    message.success("删除失败，"+res.message);
+  } else {
+    message.success("删除失败，" + res.message);
   }
 };
 
@@ -2200,7 +2301,7 @@ const goToUser = (userId: number) => {
     router.push({
       path: `/_userInfo`,
     });
-  }else{
+  } else {
     router.push({
       path: `/_userInfo/${userId}`,
     });
