@@ -23,7 +23,7 @@
       <template #extra>
         <a-space wrap>
           <a-overflow-list
-            style="width: 480px;margin-top: 0px"
+            style="width: 455px; margin-top: 0px"
             min="4"
             margin="8"
           >
@@ -31,7 +31,7 @@
               v-for="(tag, index) of JSON.parse(questionSolution.tags)"
               :key="index"
               color="green"
-            >{{ tag }}
+              >{{ tag }}
             </a-tag>
           </a-overflow-list>
           <!-- 收藏 -->
@@ -60,6 +60,16 @@
           <!-- 评论 -->
           <IconMessage style="font-size: 23px; color: gray" />
           {{ commentNum }}
+          <!-- 举报图标 -->
+          <a-tooltip :content="'举报'">
+            <icon-exclamation-circle
+              v-if="questionSolution.userId != loginUser.id"
+              @click="
+                reportSolution(questionSolution.id, questionSolution.userId)
+              "
+              style="font-size: 23px; color: gray"
+            />
+          </a-tooltip>
         </a-space>
       </template>
     </a-card>
@@ -301,7 +311,8 @@ import { useStore } from "vuex";
 import {
   CommentReportControllerService,
   QuestionSolutionComment,
-  QuestionSolutionCommentControllerService
+  QuestionSolutionCommentControllerService,
+  QuestionSolutionReportControllerService,
 } from "../../../generated";
 import { Message } from "@arco-design/web-vue";
 
@@ -457,6 +468,26 @@ const likeQuestionSolution = async () => {
 };
 
 /**
+ * 举报题解
+ * @param solutionId
+ * @param reportedUserId
+ */
+const reportSolution = async (solutionId: number, reportedUserId: number) => {
+  const res =
+    await QuestionSolutionReportControllerService.addQuestionSolutionReportUsingPost(
+      {
+        solutionId: solutionId,
+        reportedUserId: reportedUserId,
+      }
+    );
+  if (res.code == 0) {
+    Message.success("举报成功");
+  } else {
+    Message.error("举报失败：" + res.message);
+  }
+};
+
+/**
  * 获取评论列表
  */
 const getComments = async () => {
@@ -491,12 +522,14 @@ const publisOrReply = async (
   respondUserId: number
 ) => {
   const res =
-    await QuestionSolutionCommentControllerService.publishQuestionSolutionCommentUsingPost({
-      solutionId: solutionId,
-      parentId: parentId,
-      respondUserId: respondUserId,
-      content: replyContent.value,
-    });
+    await QuestionSolutionCommentControllerService.publishQuestionSolutionCommentUsingPost(
+      {
+        solutionId: solutionId,
+        parentId: parentId,
+        respondUserId: respondUserId,
+        content: replyContent.value,
+      }
+    );
   if (res.code == 0) {
     await getComments();
     Message.success("评论成功");
@@ -527,9 +560,11 @@ const likeComment = async (commmntId: number) => {
  */
 const deleteComment = async (commentId: number) => {
   const res =
-    await QuestionSolutionCommentControllerService.deleteQuestionSolutionCommentUsingPost({
-      id: commentId,
-    });
+    await QuestionSolutionCommentControllerService.deleteQuestionSolutionCommentUsingPost(
+      {
+        id: commentId,
+      }
+    );
   if (res.code == 0) {
     await getComments();
     Message.success("删除成功");
@@ -570,7 +605,7 @@ const goToUser = (userId: number) => {
     router.push({
       path: `/_userInfo`,
     });
-  }else{
+  } else {
     router.push({
       path: `/_userInfo/${userId}`,
     });
