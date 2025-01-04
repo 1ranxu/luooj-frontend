@@ -23,6 +23,7 @@
           shape="round"
           status="normal"
           @click="openAddContestModal"
+          v-if="loginUser.userRole == 'admin'"
           >创建
         </a-button>
       </a-form-item>
@@ -53,7 +54,15 @@
       </template>
 
       <template #title="{ record }">
-        <a-button :disabled="!moment().isAfter(moment(record.startTime)) || !record.isApply" type="text" @click="goToContest(record.id)"
+        <a-button
+          :disabled="
+            moment().isBefore(moment(record.startTime)) ||
+            (moment().isAfter(moment(record.startTime)) &&
+              moment().isBefore(moment(record.endTime)) &&
+              !record.isApply)
+          "
+          type="text"
+          @click="goToContest(record.id)"
           >{{ record.title }}
         </a-button>
       </template>
@@ -358,7 +367,6 @@ import { onMounted, ref, watchEffect } from "vue";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import moment from "moment";
-import { Question } from "../../../generated/models/Question";
 import {
   Contest,
   ContestApplyControllerService,
@@ -541,7 +549,6 @@ const columns = [
     width: 80,
   },
 ];
-
 
 /**
  * 页面切换
