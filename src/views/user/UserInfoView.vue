@@ -1561,7 +1561,9 @@ const openUpdateQuestionSolutionModal = (
   updateQuestionSolutionForm.value.id = questionSolution.id as any;
   updateQuestionSolutionForm.value.title = questionSolution.title as string;
   updateQuestionSolutionForm.value.content = questionSolution.content as string;
-  updateQuestionSolutionForm.value.tags = JSON.parse(questionSolution.tags ?? "[]");
+  updateQuestionSolutionForm.value.tags = JSON.parse(
+    questionSolution.tags ?? "[]"
+  );
 };
 // 关闭弹窗
 const closeUpdatePersonalInfoModal = () => {
@@ -1607,7 +1609,7 @@ const hotMap = ref({
   },
   visualMap: {
     min: 0,
-    max: 100,
+    max: 20,
     calculable: true,
     splitNumber: "5",
     type: "piecewise",
@@ -1622,7 +1624,7 @@ const hotMap = ref({
     {
       left: 30,
       right: 30,
-      range: "2024",
+      range: "",
       cellSize: ["auto", 16],
     },
   ],
@@ -1631,7 +1633,7 @@ const hotMap = ref({
       type: "heatmap",
       coordinateSystem: "calendar",
       calendarIndex: 0,
-      data: Object.entries(submitDetail.value.submitDetail),
+      data: [],
     },
   ],
 });
@@ -1966,9 +1968,10 @@ const getSubmitDetail = async () => {
     );
   if (res.code === 0) {
     console.log(submitDetail.value.submitDetail);
-    submitDetail.value = res.data;
-    hotMap.value.series[0].data = Object.entries(res.data?.submitDetail);
+    submitDetail.value = res.data as any;
+    hotMap.value.series[0].data = Object.entries(res.data?.submitDetail as any);
     years.value = Object.keys(res.data?.years) as never[];
+    hotMap.value.calendar[0].range = years.value.at(-1);
   } else {
     Message.error("" + res.message);
   }
