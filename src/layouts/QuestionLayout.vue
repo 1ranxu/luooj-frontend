@@ -110,7 +110,7 @@
                       <icon-user />
                     </template>
                     <template #default>
-                      <a-anchor-link href="/_userInfo">个人信息</a-anchor-link>
+                      <a-anchor-link href="/mine">个人信息</a-anchor-link>
                     </template>
                   </a-doption>
                   <a-doption>

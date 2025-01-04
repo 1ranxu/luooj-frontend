@@ -188,7 +188,7 @@
         :style="{ width: '150px' }"
         placeholder="请选择年份"
       >
-        <a-option v-for="year in years" :key="year">{{ year }}</a-option>
+        <a-option v-for="year in years" :value="year">{{ year }}</a-option>
       </a-select>
       <a-typography style="margin-left: 100px; color: #3c3c4399"
         >总提交次数：
@@ -440,15 +440,26 @@
                       </a-avatar>
                     </template>
                     <template #title>
-                      <a-typography-text bold @click="goToSolution(item.questionId, item.id)">
+                      <a-typography-text
+                        bold
+                        @click="goToSolution(item.questionId, item.id)"
+                      >
                         {{ item.title }}
                       </a-typography-text>
                     </template>
                     <template #description>
-                      <a-typography-text ellipsis type="secondary" @click="goToSolution(item.questionId, item.id)"
+                      <a-typography-text
+                        ellipsis
+                        type="secondary"
+                        @click="goToSolution(item.questionId, item.id)"
                         >{{ item.content }}
                       </a-typography-text>
-                      <a-overflow-list style="width: 500px" min="4" margin="8" @click="goToSolution(item.questionId, item.id)">
+                      <a-overflow-list
+                        style="width: 500px"
+                        min="4"
+                        margin="8"
+                        @click="goToSolution(item.questionId, item.id)"
+                      >
                         <a-tag
                           v-for="(tag, index) of JSON.parse(item.tags)"
                           :key="index"
@@ -462,7 +473,10 @@
                         {{ item.likes }}
                       </span>
                       <!-- 回复数图标 -->
-                      <span style="margin-left: 5px" @click="goToSolution(item.questionId, item.id)">
+                      <span
+                        style="margin-left: 5px"
+                        @click="goToSolution(item.questionId, item.id)"
+                      >
                         <IconMessage /> {{ item.comments }}
                       </span>
                     </template>
@@ -917,18 +931,20 @@ const onCollectQuestionSolutionListPageSizeChange = (size: number) => {
  * 获取用户信息
  */
 const getUser = async () => {
-  const res = await UserControllerService.getUserVoByIdUsingGet(props.id);
+  const res = await UserControllerService.getUserVoByIdUsingGet(
+    props.id as any
+  );
   if (res.code == 0) {
-    user.value = res.data;
+    user.value = res.data as any;
   } else {
     message.error("" + res.message);
   }
 };
 
 const getIsFollow = async () => {
-  const res = await FollowControllerService.isFollowUsingGet(props.id);
+  const res = await FollowControllerService.isFollowUsingGet(props.id as any);
   if (res.code == 0) {
-    isFollow.value = res.data;
+    isFollow.value = res.data as any;
   } else {
     message.error("" + res.message);
   }
@@ -940,7 +956,7 @@ const getIsFollow = async () => {
 const getAcceptedQuestionDetail = async () => {
   const res =
     await AcceptedQuestionControllerService.getAcceptedQuestionDetailUsingGet(
-      props.id
+      props.id as any
     );
   if (res.code === 0) {
     acceptedQuestionDetail.value = res.data as {};
@@ -955,14 +971,19 @@ const getAcceptedQuestionDetail = async () => {
 const getSubmitDetail = async () => {
   const res =
     await QuestionSubmitControllerService.getPersonSubmitDetailUsingGet(
-      props.id
+      props.id as any
     );
   if (res.code === 0) {
     console.log(submitDetail.value.submitDetail);
     submitDetail.value = res.data as any;
-    hotMap.value.series[0].data = Object.entries(res.data?.submitDetail as any);
-    years.value = Object.keys(res.data?.years) as never[];
-    hotMap.value.calendar[0].range = years.value.at(-1);
+    hotMap.value.series[0].data = Object.entries(
+      res.data?.submitDetail as any
+    ) as any;
+    years.value = Object.keys(res.data?.years as any) as never[];
+    if (years.value.length == 0) {
+      years.value = [new Date().getFullYear() as never];
+    }
+    hotMap.value.calendar[0].range = years.value.at(-1) as any;
   } else {
     Message.error("" + res.message);
   }
@@ -974,7 +995,7 @@ const getSubmitDetail = async () => {
 const getQuestionList = async () => {
   const res =
     await QuestionListControllerService.listQuestionListByPageUserUsingPost(
-      questionListSearchParams.value
+      questionListSearchParams.value as any
     );
   if (res.code === 0) {
     questionList.value = res.data.records;
@@ -1025,7 +1046,7 @@ const toDoQuestion = (question: Question) => {
 const getCollectQuestionList = async () => {
   const res =
     await QuestionListCollectControllerService.listQuestionListCollectByPageUserUsingPost(
-      collectQuestionListSearchParams.value
+      collectQuestionListSearchParams.value as any
     );
   if (res.code === 0) {
     collectQuestionList.value = (await Promise.all(
@@ -1073,7 +1094,7 @@ const getCollectQuestionsByCollectQuestionListId = async (id: number) => {
 const getQuestionSolutionList = async () => {
   const res =
     await QuestionSolutionControllerService.listQuestionSolutionByPageUserUsingPost(
-      questionSolutionListSearchParams.value
+      questionSolutionListSearchParams.value as any
     );
   if (res.code == 0) {
     questionSolutionList.value = res.data.records;
@@ -1089,7 +1110,7 @@ const getQuestionSolutionList = async () => {
 const getCollectQuestionSolutionList = async () => {
   const res =
     await QuestionSolutionCollectControllerService.listQuestionSolutionCollectByPageUserUsingPost(
-      collectQuestionSolutionListSearchParams.value
+      collectQuestionSolutionListSearchParams.value as any
     );
   if (res.code === 0) {
     collectQuestionSolutionList.value = (await Promise.all(
@@ -1158,11 +1179,11 @@ const goToSolution = (questionId: number, questionSolutionId: number) => {
 const goToUser = (userId: number) => {
   if (userId == loginUser.id) {
     router.push({
-      path: `/_userInfo`,
+      path: `/mine`,
     });
-  }else{
+  } else {
     router.push({
-      path: `/_userInfo/${userId}`,
+      path: `/Ta/${userId}`,
     });
   }
 };

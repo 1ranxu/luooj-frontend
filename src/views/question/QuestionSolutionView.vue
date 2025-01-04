@@ -394,10 +394,10 @@ const onCommentsPageSizeChange = async (size: number) => {
 const getQuestionSolution = async () => {
   const res =
     await QuestionSolutionControllerService.getQuestionSolutionByIdUsingGet(
-      props.questionSolutionId
+      props.questionSolutionId as any
     );
   if (res.code == 0) {
-    questionSolution.value = res.data;
+    questionSolution.value = res.data as any;
   } else {
     message.error("" + res.message);
   }
@@ -603,11 +603,11 @@ const reportComment = async (
 const goToUser = (userId: number) => {
   if (userId == loginUser.id) {
     router.push({
-      path: `/_userInfo`,
+      path: `/mine`,
     });
   } else {
     router.push({
-      path: `/_userInfo/${userId}`,
+      path: `/Ta/${userId}`,
     });
   }
 };

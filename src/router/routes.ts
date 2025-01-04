@@ -13,7 +13,7 @@ import UserManageView from "@/views/manage/UserManageView.vue";
 import QuestionLayout from "@/layouts/QuestionLayout.vue";
 import QuestionListView from "@/views/question/QuestionListView.vue";
 import QuestionSoulutionView from "@/views/question/QuestionSolutionView.vue";
-import UserView from "@/views/user/UserView.vue";
+import TaView from "@/views/user/TaView.vue";
 import ContestsView from "@/views/question/ContestsView.vue";
 import ViewContestView from "@/views/question/ViewContestView.vue";
 import ContestLayout from "@/layouts/ContestLayout.vue";
@@ -52,7 +52,7 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/_userInfo",
+    path: "/mine",
     name: "个人信息",
     component: UserInfoView,
     meta: {
@@ -61,9 +61,9 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/_userInfo/:id",
+    path: "/Ta/:id",
     name: "Ta的主页",
-    component: UserView,
+    component: TaView,
     meta: {
       access: AccessEnum.USER,
       hideInMenu: true,
@@ -96,7 +96,7 @@ const routes: Array<RouteRecordRaw> = [
       access: AccessEnum.USER,
       hideInMenu: true,
     },
-    children:[
+    children: [
       {
         path: "contest/:contestId",
         name: "竞赛详情",
@@ -106,8 +106,8 @@ const routes: Array<RouteRecordRaw> = [
           hideInMenu: true,
         },
         props: true,
-      }
-    ]
+      },
+    ],
   },
   {
     path: "/questionList",

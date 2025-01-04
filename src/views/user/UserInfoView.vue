@@ -640,7 +640,7 @@
         :style="{ width: '150px' }"
         placeholder="请选择年份"
       >
-        <a-option v-for="year in years" :key="year">{{ year }}</a-option>
+        <a-option v-for="year in years" :value="year">{{ year }}</a-option>
       </a-select>
       <a-typography style="margin-left: 100px; color: #3c3c4399"
         >总提交次数：
@@ -1967,11 +1967,15 @@ const getSubmitDetail = async () => {
       loginUser.id
     );
   if (res.code === 0) {
-    console.log(submitDetail.value.submitDetail);
     submitDetail.value = res.data as any;
-    hotMap.value.series[0].data = Object.entries(res.data?.submitDetail as any);
-    years.value = Object.keys(res.data?.years) as never[];
-    hotMap.value.calendar[0].range = years.value.at(-1);
+    hotMap.value.series[0].data = Object.entries(
+      res.data?.submitDetail as any
+    ) as any;
+    years.value = Object.keys(res.data?.years as any) as never[];
+    if (years.value.length == 0) {
+      years.value = [new Date().getFullYear() as never];
+    }
+    hotMap.value.calendar[0].range = years.value.at(-1) as any;
   } else {
     Message.error("" + res.message);
   }
@@ -2164,7 +2168,7 @@ const getCollectQuestionsByCollectQuestionListId = async (id: number) => {
 const getQuestionSolutionList = async () => {
   const res =
     await QuestionSolutionControllerService.listQuestionSolutionByPageUserUsingPost(
-      questionSolutionListSearchParams.value
+      questionSolutionListSearchParams.value as any
     );
   if (res.code == 0) {
     questionSolutionList.value = res.data.records;
@@ -2205,7 +2209,7 @@ const onContentChange = (value: string) => {
 const getCollectQuestionSolutionList = async () => {
   const res =
     await QuestionSolutionCollectControllerService.listQuestionSolutionCollectByPageUserUsingPost(
-      collectQuestionSolutionListSearchParams.value
+      collectQuestionSolutionListSearchParams.value as any
     );
   if (res.code === 0) {
     collectQuestionSolutionList.value = (await Promise.all(
@@ -2223,7 +2227,7 @@ const getCollectQuestionSolutionList = async () => {
   }
 };
 
-const deleteQuestionSolution = async (id) => {
+const deleteQuestionSolution = async (id: number) => {
   const res =
     await QuestionSolutionControllerService.deleteQuestionSolutionUsingPost({
       id: id,
@@ -2302,11 +2306,11 @@ const goToSolution = (questionId: number, questionSolutionId: number) => {
 const goToUser = (userId: number) => {
   if (userId == loginUser.id) {
     router.push({
-      path: `/_userInfo`,
+      path: `/mine`,
     });
   } else {
     router.push({
-      path: `/_userInfo/${userId}`,
+      path: `/Ta/${userId}`,
     });
   }
 };

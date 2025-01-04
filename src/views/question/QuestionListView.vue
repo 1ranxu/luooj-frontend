@@ -375,11 +375,11 @@ const toDoQuestion = (question: Question) => {
 const goToUser = (userId: number) => {
   if (userId == loginUser.id) {
     router.push({
-      path: `/_userInfo`,
+      path: `/mine`,
     });
   }else{
     router.push({
-      path: `/_userInfo/${userId}`,
+      path: `/Ta/${userId}`,
     });
   }
 };
