@@ -1660,7 +1660,7 @@ const updatePersonalInfo = async () => {
  */
 const getAcceptedQuestionRanking = async () => {
   const res =
-    await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet();
+    await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet(loginUser.id);
   if (res.code == 0) {
     acceptedQuestionRanking.value = res.data as number;
   }

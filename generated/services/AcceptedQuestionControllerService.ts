@@ -62,13 +62,17 @@ userId: number,
 
     /**
      * getAcceptedQuestionRanking
+     * @param userId userId
      * @returns BaseResponse_long_ OK
      * @throws ApiError
      */
-    public static getAcceptedQuestionRankingUsingGet(): CancelablePromise<BaseResponse_long_> {
+    public static getAcceptedQuestionRankingUsingGet(userId: number,): CancelablePromise<BaseResponse_long_> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/question/accepted_question/get/user_accepted_question/ranking',
+            query: {
+                'userId': userId,
+            },
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
