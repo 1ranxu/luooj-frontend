@@ -71,6 +71,19 @@
             @click="openModalForm(record.id)"
             >修改
           </a-button>
+          <a-button v-if="record.userRole != 'ban'"
+            shape="round"
+            type="outline"
+            status="danger"
+            @click="banUser(record.id)"
+          >封号
+          </a-button>
+          <a-button v-else
+            shape="round"
+            type="outline"
+            @click="normalUser(record.id)"
+          >解封
+          </a-button>
           <a-popconfirm
             content="确定要删除此题目吗?"
             type="error"
@@ -358,6 +371,33 @@ const onChange = async (_: never, currentFile: FileItem) => {
     ...currentFile,
   };
 };
+
+/**
+ * 封号
+ * @param userId
+ */
+const banUser = async (userId:number)=>{
+  const res = await UserControllerService.banUserUsingPost({id:userId});
+  if(res.code==0){
+    Message.success("封禁成功");
+    loadData();
+  }else{
+    Message.error("封禁失败！", res.msg);
+  }
+}
+/**
+ * 解封
+ * @param userId
+ */
+const normalUser = async (userId:number)=>{
+  const res = await UserControllerService.normalUserUsingPost({id:userId});
+  if(res.code==0){
+    Message.success("解封成功");
+    loadData();
+  }else{
+    Message.error("解封失败！", res.msg);
+  }
+}
 </script>
 
 <style scoped>
