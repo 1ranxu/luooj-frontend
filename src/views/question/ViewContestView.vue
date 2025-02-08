@@ -134,6 +134,7 @@
                 status="success"
                 style="width: 66px; height: 28px; border-radius: 5px"
                 @click="doQuestionSubmit"
+                :loading="submitLoading"
               >
                 提交
               </a-button>
@@ -392,6 +393,8 @@ window.addEventListener("resize", () => {
   codeWidth.value = window.innerWidth - resizeBoxWidth.value;
 });
 
+// 提交代码是否正在等待结果
+const submitLoading = ref(false);
 // 自测运行代码是否正在运行
 const runLoading = ref(false);
 // 控制台是否可见
@@ -687,6 +690,7 @@ const handleRunClick = async () => {
  * @constructor
  */
 const doQuestionSubmit = async () => {
+  submitLoading.value = true;
   if (!question.value?.id) {
     return;
   }
@@ -703,6 +707,7 @@ const doQuestionSubmit = async () => {
   } else {
     message.error("提交失败，" + res.message);
   }
+  submitLoading.value = false;
 };
 
 const getContestRankList = async () => {
