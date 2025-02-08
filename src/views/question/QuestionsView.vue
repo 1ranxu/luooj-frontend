@@ -55,11 +55,17 @@
         </a-button>
       </template>
 
-      <template #tags="{ record }">
+      <template #difficulty="{ record }">
         <a-space wrap>
-          <a-tag v-for="(tag, index) of record.tags" :key="index" color="green"
-            >{{ tag }}
-          </a-tag>
+          <a-typography-text type="success" v-if="record.difficulty == 0">
+            简单
+          </a-typography-text>
+          <a-typography-text type="warning" v-if="record.difficulty == 1">
+            中等
+          </a-typography-text>
+          <a-typography-text type="danger" v-if="record.difficulty == 2">
+            困难
+          </a-typography-text>
         </a-space>
       </template>
 
@@ -88,7 +94,7 @@ import moment from "moment";
 import { QuestionControllerService } from "../../../generated/services/QuestionControllerService";
 import { Question } from "../../../generated/models/Question";
 
-document.title="题库"
+document.title = "题库";
 
 const router = useRouter();
 
@@ -144,8 +150,8 @@ const columns = [
     align: "center",
   },
   {
-    title: "标签",
-    slotName: "tags",
+    title: "难度",
+    slotName: "difficulty",
     align: "center",
   },
   {
