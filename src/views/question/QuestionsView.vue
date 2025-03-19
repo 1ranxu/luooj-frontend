@@ -9,21 +9,21 @@
         <a-input
           v-model="searchParams.title"
           placeholder="请输入题目名称"
-          style="min-width: 280px"
+          style="min-width: 220px"
         />
       </a-form-item>
-      <a-form-item field="difficulty" label="题目难度" tooltip="请输入题目名称">
-        <a-select :style="{width:'220px'}" v-model="searchParams.difficulty" allow-clear>
+      <a-form-item field="difficulty" label="题目难度" tooltip="请选择题目难度">
+        <a-select :style="{width:'220px'}" v-model="searchParams.difficulty" allow-clear placeholder="请选择难度">
           <a-option :value="0">简单</a-option>
           <a-option :value="1">中等</a-option>
           <a-option :value="2">困难</a-option>
         </a-select>
       </a-form-item>
-      <a-form-item field="tags" label="标签" tooltip="请输入题目标签">
+      <a-form-item field="tags" label="题目标签" tooltip="请输入题目标签">
         <a-input-tag
           v-model="searchParams.tags"
           placeholder="请输入标签"
-          style="min-width: 280px"
+          style="min-width: 220px"
         />
       </a-form-item>
 <!--      <a-form-item>

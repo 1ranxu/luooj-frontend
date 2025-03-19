@@ -22,10 +22,10 @@
                         {{ question.judgeConfig.timeLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.memoryLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.stackLimit }}
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>

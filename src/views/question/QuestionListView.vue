@@ -1,5 +1,27 @@
 <template>
   <div id="questionListView">
+    <a-form
+      :model="questionListSearchParams"
+      layout="inline"
+      style="justify-content: center; align-content: center; margin: 25px"
+    >
+      <a-form-item field="title" label="题单标题：" tooltip="请输入题单标题">
+        <a-input
+          v-model="questionListSearchParams.title"
+          placeholder="请输入题单标题"
+          style="min-width: 220px"
+        />
+      </a-form-item>
+      <a-form-item>
+        <a-button
+          type="outline"
+          shape="round"
+          status="normal"
+          @click="getQuestionList"
+        >搜 索
+        </a-button>
+      </a-form-item>
+    </a-form>
     <!-- 题单 -->
     <a-list
       :scrollbar="true"
@@ -16,35 +38,6 @@
       @pageSizeChange="onQuestionListPageSizeChange"
       @pageChange="onQuestionListPageChange"
     >
-      <template #header>
-        <a-form
-          :model="questionListSearchParams"
-          layout="inline"
-          style="
-            position: absolute;
-            top: 0;
-            left: 50px;
-            justify-content: center;
-            align-content: center;
-          "
-        >
-          <a-form-item field="title" label="标题：" tooltip="请输入题单标题">
-            <a-input
-              v-model="questionListSearchParams.title"
-              placeholder="请输入题单标题"
-            />
-          </a-form-item>
-          <a-form-item>
-            <a-button
-              type="outline"
-              shape="round"
-              status="normal"
-              @click="getQuestionList"
-              >搜 索
-            </a-button>
-          </a-form-item>
-        </a-form>
-      </template>
       <template #item="{ item }">
         <a-list-item>
           <a-list-item-meta>
@@ -168,11 +161,11 @@ let loginUser = store.state.user.loginUser;
 const questionList = ref([]);
 const questionListTotal = ref(0);
 const questionListSearchParams = ref({
+  title: "",
   pageSize: 10,
   current: 1,
   sortField: "createTime",
   sortOrder: "ascend",
-  title: "",
 });
 
 // 具体的题单中的题目分页
@@ -257,6 +250,16 @@ const getQuestionList = async () => {
   }
 };
 /**
+ * 监听getQuestionList函数所使用的变量的变化，改变时触发页面的重新加载
+ */
+watchEffect(() => {
+  getQuestionList();
+});
+
+onMounted(() => {
+  getQuestionList();
+});
+/**
  * 收藏题单
  * @param questionListId
  */
@@ -291,17 +294,6 @@ const unCollectQuestion = async (questionListId: number) => {
     message.error("取消收藏失败");
   }
 };
-
-/**
- * 监听getQuestionList函数所使用的变量的变化，改变时触发页面的重新加载
- */
-watchEffect(async () => {
-  await getQuestionList();
-});
-
-onMounted(async () => {
-  await getQuestionList();
-});
 
 /**
  * 获取某个题单的题目
