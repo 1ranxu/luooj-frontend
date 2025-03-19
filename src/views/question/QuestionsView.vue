@@ -12,6 +12,13 @@
           style="min-width: 280px"
         />
       </a-form-item>
+      <a-form-item field="difficulty" label="题目难度" tooltip="请输入题目名称">
+        <a-select :style="{width:'220px'}" v-model="searchParams.difficulty" allow-clear>
+          <a-option :value="0">简单</a-option>
+          <a-option :value="1">中等</a-option>
+          <a-option :value="2">困难</a-option>
+        </a-select>
+      </a-form-item>
       <a-form-item field="tags" label="标签" tooltip="请输入题目标签">
         <a-input-tag
           v-model="searchParams.tags"
@@ -19,11 +26,11 @@
           style="min-width: 280px"
         />
       </a-form-item>
-      <a-form-item>
+<!--      <a-form-item>
         <a-button type="outline" shape="round" status="normal" @click="doSearch"
           >搜索
         </a-button>
-      </a-form-item>
+      </a-form-item>-->
     </a-form>
     <a-divider size="0" />
     <a-table
@@ -101,6 +108,7 @@ const router = useRouter();
 // 搜索参数
 const searchParams = ref({
   title: "",
+  difficulty: undefined,
   tags: [],
   pageSize: 10,
   current: 1,

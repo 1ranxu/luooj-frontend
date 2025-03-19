@@ -10,16 +10,18 @@
           v-model="searchParams.language"
           :style="{ width: '320px' }"
           placeholder="请选择语言"
+          allow-clear
         >
-          <a-option>java</a-option>
-          <a-option>cpp</a-option>
+          <a-option v-for="language in languages" :key="language"
+          >{{ language }}
+          </a-option>
         </a-select>
       </a-form-item>
-      <a-form-item>
+<!--      <a-form-item>
         <a-button type="outline" shape="round" status="normal" @click="doSearch"
           >搜索
         </a-button>
-      </a-form-item>
+      </a-form-item>-->
       <a-form-item>
         <a-button type="outline" shape="round" status="normal" @click="loadData"
           >刷新
@@ -102,6 +104,7 @@ import JudgeInfoMessageEnum from "@/enums/JudgeInfoMessageEnum";
 import { QuestionSubmitQueryRequest } from "../../../generated/models/QuestionSubmitQueryRequest";
 import { QuestionSubmitControllerService } from "../../../generated/services/QuestionSubmitControllerService";
 import { Question } from "../../../generated/models/Question";
+import { QuestionControllerService } from "../../../generated";
 
 document.title="状态"
 
@@ -109,8 +112,7 @@ const router = useRouter();
 
 // 搜索参数
 const searchParams = ref<QuestionSubmitQueryRequest>({
-  language: undefined,
-  questionId: undefined,
+  language: "",
   pageSize: 10,
   current: 1,
   sortField: "createTime",
@@ -122,6 +124,9 @@ const total = ref(0);
 
 // 提交记录
 const dataList = ref([]);
+
+// 支持语言
+const languages = ref<string[]>();
 
 /**
  * 获取提交记录
@@ -148,6 +153,7 @@ watchEffect(() => {
 
 onMounted(() => {
   loadData();
+  getLanguage();
 });
 
 const columns = [
@@ -247,6 +253,17 @@ const doSearch = () => {
     current: 1,
   };
   // loadData();
+};
+
+/**
+ * 从后端获取支持语言
+ */
+const getLanguage = async () => {
+  // 从后端获取支持语言
+  const res = await QuestionControllerService.getCodeLanguageUsingGet();
+  if (res.code === 0) {
+    languages.value = res.data;
+  }
 };
 </script>
 
