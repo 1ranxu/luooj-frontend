@@ -5,32 +5,43 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="题目名称" tooltip="请输入题目名称">
-        <a-input
+      <a-form-item field="title" >
+        <a-input-search
           v-model="searchParams.title"
-          placeholder="请输入题目名称"
-          style="min-width: 220px"
+          placeholder="搜索题目"
+          style="min-width: 220px;border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="difficulty" label="题目难度" tooltip="请选择题目难度">
-        <a-select :style="{width:'220px'}" v-model="searchParams.difficulty" allow-clear placeholder="请选择难度">
-          <a-option :value="0">简单</a-option>
-          <a-option :value="1">中等</a-option>
-          <a-option :value="2">困难</a-option>
+      <a-form-item field="difficulty">
+        <a-select
+          style="width: 220px;border-radius: 10px"
+          v-model="searchParams.difficulty"
+          allow-clear
+          placeholder="选择难度"
+        >
+          <a-option :value="0">
+            <a-typography-text type="success">简单</a-typography-text>
+          </a-option>
+          <a-option :value="1">
+            <a-typography-text type="warning"> 中等</a-typography-text>
+          </a-option>
+          <a-option :value="2">
+            <a-typography-text type="danger"> 困难 </a-typography-text>
+          </a-option>
         </a-select>
       </a-form-item>
-      <a-form-item field="tags" label="题目标签" tooltip="请输入题目标签">
+      <a-form-item field="tags">
         <a-input-tag
           v-model="searchParams.tags"
-          placeholder="请输入标签"
-          style="min-width: 220px"
+          placeholder="输入标签"
+          style="min-width: 220px;border-radius: 10px"
         />
       </a-form-item>
-<!--      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="doSearch"
-          >搜索
-        </a-button>
-      </a-form-item>-->
+      <!--      <a-form-item>
+              <a-button type="outline" shape="round" status="normal" @click="doSearch"
+                >搜索
+              </a-button>
+            </a-form-item>-->
     </a-form>
     <a-divider size="0" />
     <a-table
@@ -73,6 +84,14 @@
           <a-typography-text type="danger" v-if="record.difficulty == 2">
             困难
           </a-typography-text>
+        </a-space>
+      </template>
+
+      <template #tags="{ record }">
+        <a-space wrap>
+          <a-tag v-for="(tag, index) of record.tags" :key="index" color="green"
+            >{{ tag }}
+          </a-tag>
         </a-space>
       </template>
 
@@ -160,6 +179,11 @@ const columns = [
   {
     title: "难度",
     slotName: "difficulty",
+    align: "center",
+  },
+  {
+    title: "标签",
+    slotName: "tags",
     align: "center",
   },
   {

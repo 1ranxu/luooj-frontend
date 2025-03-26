@@ -5,22 +5,22 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="题单标题：" tooltip="请输入题单标题">
-        <a-input
+      <a-form-item field="title">
+        <a-input-search
           v-model="questionListSearchParams.title"
-          placeholder="请输入题单标题"
-          style="min-width: 220px"
+          placeholder="搜索题单"
+          style="min-width: 300px;border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item>
+<!--      <a-form-item>
         <a-button
           type="outline"
           shape="round"
           status="normal"
           @click="getQuestionList"
-        >搜 索
+          >搜 索
         </a-button>
-      </a-form-item>
+      </a-form-item>-->
     </a-form>
     <!-- 题单 -->
     <a-list
@@ -136,7 +136,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref, watch } from "vue";
 import message from "@arco-design/web-vue/es/message";
 import { useRouter } from "vue-router";
 import { Question } from "../../../generated/models/Question";
@@ -252,9 +252,13 @@ const getQuestionList = async () => {
 /**
  * 监听getQuestionList函数所使用的变量的变化，改变时触发页面的重新加载
  */
-watchEffect(() => {
-  getQuestionList();
-});
+watch(
+  questionListSearchParams,
+  () => {
+    getQuestionList();
+  },
+  { deep: true }
+);
 
 onMounted(() => {
   getQuestionList();
@@ -369,7 +373,7 @@ const goToUser = (userId: number) => {
     router.push({
       path: `/mine`,
     });
-  }else{
+  } else {
     router.push({
       path: `/Ta/${userId}`,
     });

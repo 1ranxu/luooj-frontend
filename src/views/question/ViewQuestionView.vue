@@ -76,6 +76,8 @@
                       key="1"
                       type="primary"
                       status="success"
+                      shape="round"
+                      :disabled="replyContent==''"
                       @click="publisOrReply(props.id, 0, 0)"
                     >
                       评论
@@ -162,6 +164,7 @@
                       <a-button
                         key="0"
                         type="secondary"
+                        shape="round"
                         @click="toggleReplyBox(firstComment)"
                       >
                         Cancel
@@ -170,6 +173,8 @@
                         key="1"
                         type="primary"
                         status="success"
+                        shape="round"
+                        :disabled="replyContent==''"
                         @click="publisOrReply(props.id, firstComment.id, 0)"
                       >
                         Reply
@@ -280,6 +285,7 @@
                             <a-button
                               key="0"
                               type="secondary"
+                              shape="round"
                               @click="toggleReplyBox(secondComment)"
                             >
                               Cancel
@@ -288,6 +294,8 @@
                               key="1"
                               type="primary"
                               status="success"
+                              shape="round"
+                              :disabled="replyContent==''"
                               @click="
                                 publisOrReply(
                                   props.id,
@@ -345,24 +353,23 @@
                       layout="inline"
                       style="
                         top: 20px;
-                        left: 80px;
-                        justify-content: center;
-                        align-content: center;
                       "
                     >
-                      <a-form-item field="tags" tooltip="请输入题解标签">
+                      <a-form-item field="tags">
                         <a-input-tag
                           v-model="questionSolutionListSearchParams.tags"
-                          placeholder="请输入标签"
+                          placeholder="输入标签"
+                          style="width: 200px;border-radius: 10px"
                         />
                       </a-form-item>
-                      <a-form-item field="title" tooltip="请输入题解标题">
-                        <a-input
+                      <a-form-item field="title">
+                        <a-input-search
                           v-model="questionSolutionListSearchParams.title"
-                          placeholder="请输入题解标题"
+                          placeholder="搜索题解"
+                          style="width: 200px;border-radius: 10px"
                         />
                       </a-form-item>
-                      <!-- 搜索题解 -->
+<!--                      &lt;!&ndash; 搜索题解 &ndash;&gt;
                       <a-form-item>
                         <a-button
                           type="primary"
@@ -371,7 +378,7 @@
                           @click="getQuestionSolutionList"
                           >搜 索
                         </a-button>
-                      </a-form-item>
+                      </a-form-item>-->
                       <!-- 创建题解 -->
                       <a-form-item>
                         <a-button
@@ -540,6 +547,19 @@
       unmountOnClose
       :closable="false"
     >
+      <a-form
+        :model="questionListSearchParams"
+        layout="inline"
+        style="justify-content: center; align-content: center; margin: 20px"
+      >
+        <a-form-item field="title">
+          <a-input-search
+            v-model="questionListSearchParams.title"
+            placeholder="搜索题单"
+            style="width: 300px;border-radius: 10px"
+          />
+        </a-form-item>
+      </a-form>
       <a-list
         :scrollbar="true"
         :max-height="700"
@@ -555,35 +575,6 @@
         @pageSizeChange="onQuestionListPageSizeChange"
         @pageChange="onQuestionListPageChange"
       >
-        <template #header>
-          <a-form
-            :model="questionListSearchParams"
-            layout="inline"
-            style="
-              position: absolute;
-              top: 0;
-              left: 50px;
-              justify-content: center;
-              align-content: center;
-            "
-          >
-            <a-form-item field="title" label="标题：" tooltip="请输入题单标题">
-              <a-input
-                v-model="questionListSearchParams.title"
-                placeholder="请输入题单标题"
-              />
-            </a-form-item>
-            <a-form-item>
-              <a-button
-                type="outline"
-                shape="round"
-                status="normal"
-                @click="getQuestionCollectByUserAllQuestionListDetail"
-                >搜 索
-              </a-button>
-            </a-form-item>
-          </a-form>
-        </template>
         <template #item="{ item }">
           <a-list-item>
             <a-list-item-meta :title="item.title">
@@ -660,7 +651,7 @@
             <a-space>
               <a-select
                 v-model="form.language"
-                :style="{ width: '150px' }"
+                style="width: 150px;border-radius: 5px"
                 placeholder="请选择语言"
               >
                 <a-option v-for="language in languages" :key="language"
@@ -803,9 +794,9 @@ import {
   defineProps,
   onBeforeMount,
   onMounted,
-  ref,
+  ref, watch,
   watchEffect,
-  withDefaults,
+  withDefaults
 } from "vue";
 import message from "@arco-design/web-vue/es/message";
 import CodeEditor from "@/components/CodeEditor.vue";
@@ -1106,9 +1097,12 @@ watchEffect(async () => {
 watchEffect(async () => {
   await getPersonalQuestionSubmitByQuestionId();
 });
-watchEffect(async () => {
-  await getQuestionSolutionList();
-});
+watch(questionSolutionListSearchParams,() => {
+  getQuestionSolutionList();
+},{deep:true});
+watch(questionListSearchParams,() => {
+  getQuestionCollectByUserAllQuestionListDetail();
+},{deep:true});
 
 /**
  * 在跳转到一个路由之前进行判断
@@ -1342,6 +1336,7 @@ const publisOrReply = async (
   if (res.code == 0) {
     await getComments();
     Message.success("回复成功");
+    replyContent.value="";
   } else {
     Message.error("回复失败：" + res.message);
   }

@@ -14,7 +14,7 @@
         size="medium"
         style="margin: 10px"
         @click="follow(user.id, true)"
-        >关注
+        ><icon-plus />关注
       </a-button>
       <!-- 取消关注 -->
       <a-button
@@ -25,7 +25,7 @@
         size="medium"
         style="margin: 10px"
         @click="follow(user.id, false)"
-        >取消关注
+        ><icon-menu />已关注
       </a-button>
     </a-descriptions-item>
     <!--  通过题目数排名  -->
@@ -834,8 +834,12 @@ const follow = async (userId: number, followOrNot: boolean) => {
     userId
   );
   if (res.code === 0) {
-    isFollow.value = !isFollow;
-    location.reload();
+    if(!followOrNot){
+      message.info("取消关注成功(ง •̀_•́)ง");
+    }else{
+      message.info("关注成功(ง •̀_•́)ง");
+    }
+    await getIsFollow();
   } else {
     message.error(res.message);
   }

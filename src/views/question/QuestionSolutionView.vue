@@ -80,6 +80,8 @@
           key="1"
           type="primary"
           status="success"
+          shape="round"
+          :disabled="replyContent==''"
           @click="publisOrReply(props.questionSolutionId, 0, 0)"
         >
           评论
@@ -149,6 +151,7 @@
           <a-button
             key="0"
             type="secondary"
+            shape="round"
             @click="toggleReplyBox(firstComment)"
           >
             Cancel
@@ -157,6 +160,8 @@
             key="1"
             type="primary"
             status="success"
+            shape="round"
+            :disabled="replyContent==''"
             @click="publisOrReply(props.questionSolutionId, firstComment.id, 0)"
           >
             Reply
@@ -255,6 +260,7 @@
                 <a-button
                   key="0"
                   type="secondary"
+                  shape="round"
                   @click="toggleReplyBox(secondComment)"
                 >
                   Cancel
@@ -263,6 +269,8 @@
                   key="1"
                   type="primary"
                   status="success"
+                  shape="round"
+                  :disabled="replyContent==''"
                   @click="
                     publisOrReply(
                       props.questionSolutionId,
@@ -533,6 +541,7 @@ const publisOrReply = async (
   if (res.code == 0) {
     await getComments();
     Message.success("评论成功");
+    replyContent.value="";
   } else {
     Message.error("评论失败：" + res.message);
   }

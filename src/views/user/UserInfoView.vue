@@ -67,77 +67,67 @@
         layout="inline"
         style="justify-content: center; align-content: center; margin: 25px"
       >
-        <a-form-item
-          field="userAccount"
-          label="账号："
-          tooltip="请输入用户账号"
-        >
+        <a-form-item field="userAccount">
           <a-input
             v-model="followSearchParams.userAccount"
-            placeholder="请输入用户账号"
+            placeholder="搜索账号"
+            style="min-width: 220px; border-radius: 10px"
           />
         </a-form-item>
-        <a-form-item
-          field="userName"
-          label="用户昵称："
-          tooltip="请输入用户昵称"
-        >
-          <a-input
+        <a-form-item field="userName">
+          <a-input-search
             v-model="followSearchParams.userName"
-            placeholder="请输入要搜索的用户名称"
+            placeholder="搜索昵称"
+            style="min-width: 220px; border-radius: 10px"
           />
-        </a-form-item>
-        <a-form-item>
-          <a-button
-            type="outline"
-            shape="round"
-            status="normal"
-            @click="getFollow"
-            >搜 索
-          </a-button>
         </a-form-item>
       </a-form>
-      <a-table
-        :show-header="false"
-        :column-resizable="true"
-        :ref="followTableRef"
-        :columns="followColumns"
+      <a-list
+        :scrollbar="true"
+        :size="'large'"
         :data="followList"
-        :pagination="{
-          showTotal: true,
-          pageSize: followSearchParams.pageSize,
-          current: followSearchParams.current,
+        :pagination-props="{
           total: followListTotal,
-          showJumper: true,
-          showPageSize: true,
+          current: followSearchParams.current,
+          pageSize: followSearchParams.pageSize,
+          showTotal: true,
         }"
-        @page-change="onFollowPageChange"
         @pageSizeChange="onFollowPageSizeChange"
+        @pageChange="onFollowPageChange"
       >
-        <template #userAvatar="{ record }">
-          <a-avatar :size="70" shape="circle" @click="goToUser(record.id)">
-            <img alt="userAvatar" :src="record.userAvatar" />
-          </a-avatar>
+        <template #item="{ item }">
+          <a-list-item>
+            <a-list-item-meta
+              :title="item.userName"
+              :description="item.userAccount"
+            >
+              <template #avatar>
+                <a-avatar :size="70" shape="circle" @click="goToUser(item.id)">
+                  <img alt="userAvatar" :src="item.userAvatar" />
+                </a-avatar>
+              </template>
+            </a-list-item-meta>
+            <template #actions>
+              <a-space>
+                <a-button
+                  shape="round"
+                  type="outline"
+                  @click="follow(item)"
+                  v-if="item.isFollow"
+                  ><icon-menu />已关注
+                </a-button>
+                <a-button
+                  shape="round"
+                  type="outline"
+                  @click="follow(item)"
+                  v-else
+                  ><icon-plus />关注
+                </a-button>
+              </a-space>
+            </template>
+          </a-list-item>
         </template>
-        <template #optional="{ record }">
-          <a-space>
-            <a-button
-              shape="round"
-              type="outline"
-              @click="follow(record)"
-              v-if="record.isFollow"
-              >已关注
-            </a-button>
-            <a-button
-              shape="round"
-              type="outline"
-              @click="follow(record)"
-              v-else
-              >关注
-            </a-button>
-          </a-space>
-        </template>
-      </a-table>
+      </a-list>
     </a-modal>
     <!--  粉丝列表  -->
     <a-modal
@@ -154,73 +144,69 @@
         layout="inline"
         style="justify-content: center; align-content: center; margin: 25px"
       >
-        <a-form-item
-          field="userAccount"
-          label="账号："
-          tooltip="请输入用户账号"
-        >
+        <a-form-item field="userAccount">
           <a-input
             v-model="fanSearchParams.userAccount"
-            placeholder="请输入用户账号"
+            placeholder="搜索账号"
+            style="min-width: 220px; border-radius: 10px"
           />
         </a-form-item>
         <a-form-item
           field="userName"
-          label="用户昵称："
-          tooltip="请输入用户昵称"
         >
-          <a-input
+          <a-input-search
             v-model="fanSearchParams.userName"
-            placeholder="请输入要搜索的用户名称"
+            placeholder="搜索昵称"
+            style="min-width: 220px; border-radius: 10px"
           />
         </a-form-item>
-        <a-form-item>
-          <a-button type="outline" shape="round" status="normal" @click="getFan"
-            >搜 索
-          </a-button>
-        </a-form-item>
       </a-form>
-      <a-table
-        :show-header="false"
-        :column-resizable="true"
-        :ref="fanTableRef"
-        :columns="fanColumns"
+      <a-list
+        :scrollbar="true"
+        :size="'large'"
         :data="fanList"
-        :pagination="{
-          showTotal: true,
-          pageSize: fanSearchParams.pageSize,
-          current: fanSearchParams.current,
+        :pagination-props="{
           total: fanListTotal,
-          showJumper: true,
-          showPageSize: true,
+          current: fanSearchParams.current,
+          pageSize: fanSearchParams.pageSize,
+          showTotal: true,
         }"
-        @page-change="onFanPageChange"
         @pageSizeChange="onFanPageSizeChange"
+        @pageChange="onFanPageChange"
       >
-        <template #userAvatar="{ record }">
-          <a-avatar :size="70" shape="circle" @click="goToUser(record.id)">
-            <img alt="userAvatar" :src="record.userAvatar" />
-          </a-avatar>
+        <template #item="{ item }">
+          <a-list-item>
+            <a-list-item-meta
+              :title="item.userName"
+              :description="item.userAccount"
+            >
+              <template #avatar>
+                <a-avatar :size="70" shape="circle" @click="goToUser(item.id)">
+                  <img alt="userAvatar" :src="item.userAvatar" />
+                </a-avatar>
+              </template>
+            </a-list-item-meta>
+            <template #actions>
+              <a-space>
+                <a-button
+                  shape="round"
+                  type="outline"
+                  @click="follow(item)"
+                  v-if="item.isFollow"
+                ><icon-menu />互相关注
+                </a-button>
+                <a-button
+                  shape="round"
+                  type="outline"
+                  @click="follow(item)"
+                  v-else
+                ><icon-plus />关注
+                </a-button>
+              </a-space>
+            </template>
+          </a-list-item>
         </template>
-        <template #optional="{ record }">
-          <a-space>
-            <a-button
-              shape="round"
-              type="outline"
-              @click="follow(record)"
-              v-if="record.isFollow"
-              >互相关注
-            </a-button>
-            <a-button
-              shape="round"
-              type="outline"
-              @click="follow(record)"
-              v-else
-              >关注
-            </a-button>
-          </a-space>
-        </template>
-      </a-table>
+      </a-list>
     </a-modal>
     <!--  修改个人信息   -->
     <a-modal
@@ -672,7 +658,6 @@
             current: questionListSearchParams.current,
             pageSize: questionListSearchParams.pageSize,
             showTotal: true,
-            showPageSize: true,
           }"
           @pageSizeChange="onQuestionListPageSizeChange"
           @pageChange="onQuestionListPageChange"
@@ -685,7 +670,9 @@
               size="medium"
               @click="openAddQuestionListModal"
               style="position: relative; top: 9px"
-              >创建题单
+            >
+              <icon-plus />
+              创建题单
             </a-button>
             <a-form
               :model="questionListSearchParams"
@@ -693,27 +680,28 @@
               style="
                 position: absolute;
                 top: 0;
-                left: 80px;
+                left: 160px;
                 justify-content: center;
                 align-content: center;
                 margin: 25px;
               "
             >
-              <a-form-item field="title" tooltip="请输入题单标题">
-                <a-input
+              <a-form-item field="title">
+                <a-input-search
                   v-model="questionListSearchParams.title"
-                  placeholder="请输入题单标题"
+                  placeholder="搜索题单"
+                  style="border-radius: 10px"
                 />
               </a-form-item>
-              <a-form-item>
-                <a-button
-                  type="primary"
-                  shape="round"
-                  status="normal"
-                  @click="getQuestionList"
-                  >搜 索
-                </a-button>
-              </a-form-item>
+              <!--              <a-form-item>
+                              <a-button
+                                type="primary"
+                                shape="round"
+                                status="normal"
+                                @click="getQuestionList"
+                                >搜 索
+                              </a-button>
+                            </a-form-item>-->
             </a-form>
           </template>
           <template #item="{ item }">
@@ -772,35 +760,32 @@
             <a-form
               :model="questionSolutionListSearchParams"
               layout="inline"
-              style="
-                top: 20px;
-                left: 80px;
-                justify-content: center;
-                align-content: center;
-              "
+              style="top: 20px"
             >
-              <a-form-item field="tags" tooltip="请输入题解标签">
+              <a-form-item field="tags">
                 <a-input-tag
                   v-model="questionSolutionListSearchParams.tags"
-                  placeholder="请输入标签"
+                  placeholder="输入标签"
+                  style="width: 200px; border-radius: 10px"
                 />
               </a-form-item>
-              <a-form-item field="title" tooltip="请输入题解标题">
-                <a-input
+              <a-form-item field="title">
+                <a-input-search
                   v-model="questionSolutionListSearchParams.title"
-                  placeholder="请输入题解标题"
+                  placeholder="搜索题解"
+                  style="width: 200px; border-radius: 10px"
                 />
               </a-form-item>
-              <!-- 搜索题解 -->
-              <a-form-item>
-                <a-button
-                  type="primary"
-                  shape="round"
-                  status="normal"
-                  @click="getQuestionSolutionList"
-                  >搜 索
-                </a-button>
-              </a-form-item>
+              <!--              &lt;!&ndash; 搜索题解 &ndash;&gt;
+                            <a-form-item>
+                              <a-button
+                                type="primary"
+                                shape="round"
+                                status="normal"
+                                @click="getQuestionSolutionList"
+                                >搜 索
+                              </a-button>
+                            </a-form-item>-->
             </a-form>
           </template>
           <template #item="{ item }">
@@ -898,7 +883,6 @@
                 current: collectQuestionListSearchParams.current,
                 pageSize: collectQuestionListSearchParams.pageSize,
                 showTotal: true,
-                showPageSize: true,
               }"
               @pageSizeChange="onCollectQuestionListPageSizeChange"
               @pageChange="onCollectQuestionListPageChange"
@@ -1204,7 +1188,7 @@
 </template>
 <script setup lang="ts">
 import { useStore } from "vuex";
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { FileItem, Message } from "@arco-design/web-vue";
 import { useRouter } from "vue-router";
 import { UserUpdateMyRequest } from "../../../generated/models/UserUpdateMyRequest";
@@ -1660,7 +1644,9 @@ const updatePersonalInfo = async () => {
  */
 const getAcceptedQuestionRanking = async () => {
   const res =
-    await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet(loginUser.id);
+    await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet(
+      loginUser.id
+    );
   if (res.code == 0) {
     acceptedQuestionRanking.value = res.data as number;
   }
@@ -1720,6 +1706,11 @@ const follow = async (record: any) => {
     record.id
   );
   if (res.code === 0) {
+    if(record.isFollow){
+      message.info("取消关注成功(ง •̀_•́)ง");
+    }else{
+      message.info("关注成功(ง •̀_•́)ง");
+    }
     record.isFollow = !record.isFollow;
   } else {
     message.error(res.message);
@@ -2258,12 +2249,23 @@ watchEffect(() => {
 watchEffect(() => {
   getFan();
 });
-watchEffect(() => {
-  getQuestionList();
-});
+watch(
+  questionListSearchParams,
+  () => {
+    getQuestionList();
+  },
+  { deep: true }
+);
 watchEffect(() => {
   getQuestionsByQuestionListId(questionListId.value);
 });
+watch(
+  questionSolutionListSearchParams.value,
+  () => {
+    getQuestionSolutionList();
+  },
+  { deep: true }
+);
 watchEffect(async () => {
   await getCollectQuestionList();
 });

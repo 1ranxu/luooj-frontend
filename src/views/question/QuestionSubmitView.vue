@@ -5,11 +5,11 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="language" label="编程语言" tooltip="请选择编程语言">
+      <a-form-item field="language">
         <a-select
           v-model="searchParams.language"
-          :style="{ width: '320px' }"
-          placeholder="请选择语言"
+          style="width: 300px;border-radius: 10px"
+          placeholder="选择语言"
           allow-clear
         >
           <a-option v-for="language in languages" :key="language"

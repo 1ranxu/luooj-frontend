@@ -5,11 +5,11 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="竞赛标题" tooltip="请输入竞赛标题">
-        <a-input
+      <a-form-item field="title">
+        <a-input-search
           v-model="searchParams.title"
-          placeholder="请输入竞赛标题"
-          style="min-width: 280px"
+          placeholder="搜索竞赛"
+          style="min-width: 300px;border-radius: 10px"
         />
       </a-form-item>
 <!--      <a-form-item>
@@ -549,6 +549,24 @@ const columns = [
     width: 80,
   },
 ];
+
+/**
+ * 页面刷新
+ */
+function refreshAtDailyTime(hour:number, minute:number, second:number) {
+  function checkTime() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentSecond = now.getSeconds();
+
+    if (currentHour === hour && currentMinute === minute && currentSecond === second) {
+      location.reload(); // 刷新页面
+    }
+  }
+  setInterval(checkTime, 1000);
+}
+refreshAtDailyTime(10, 30, 0);
 
 /**
  * 页面切换

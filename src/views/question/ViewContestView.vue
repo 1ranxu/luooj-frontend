@@ -22,10 +22,10 @@
                         {{ question.judgeConfig.timeLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.memoryLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.stackLimit }}
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
@@ -44,10 +44,10 @@
                         {{ question.judgeConfig.timeLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.memoryLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.stackLimit }}
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
@@ -66,10 +66,10 @@
                         {{ question.judgeConfig.timeLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.memoryLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.stackLimit }}
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
@@ -88,10 +88,10 @@
                         {{ question.judgeConfig.timeLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.memoryLimit }}
                       </a-descriptions-item>
                       <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.stackLimit }}
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
@@ -112,7 +112,7 @@
             <a-space>
               <a-select
                 v-model="form.language"
-                :style="{ width: '150px' }"
+                style="width: 150px;border-radius: 5px"
                 placeholder="请选择语言"
               >
                 <a-option v-for="language in languages" :key="language"
@@ -555,6 +555,24 @@ onMounted(async () => {
   questionId.value = contest.value.questions["1"].questionId;
   await getLanguage();
 });
+
+/**
+ * 页面刷新
+ */
+function refreshAtDailyTime(hour:number, minute:number, second:number) {
+  function checkTime() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentSecond = now.getSeconds();
+
+    if (currentHour === hour && currentMinute === minute && currentSecond === second) {
+      location.reload(); // 刷新页面
+    }
+  }
+  setInterval(checkTime, 1000);
+}
+refreshAtDailyTime(12, 0, 0);
 
 /**
  * 改变页码
