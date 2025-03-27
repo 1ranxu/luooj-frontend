@@ -835,9 +835,9 @@ const follow = async (userId: number, followOrNot: boolean) => {
   );
   if (res.code === 0) {
     if(!followOrNot){
-      message.info("取消关注成功(ง •̀_•́)ง");
+      message.normal("取消关注成功(ง •̀_•́)ง");
     }else{
-      message.info("关注成功(ง •̀_•́)ง");
+      message.normal("关注成功(ง •̀_•́)ง");
     }
     await getIsFollow();
   } else {

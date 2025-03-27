@@ -5,16 +5,16 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" >
+      <a-form-item field="title">
         <a-input-search
           v-model="searchParams.title"
           placeholder="搜索题目"
-          style="min-width: 220px;border-radius: 10px"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
       <a-form-item field="difficulty">
         <a-select
-          style="width: 220px;border-radius: 10px"
+          style="width: 220px; border-radius: 10px"
           v-model="searchParams.difficulty"
           allow-clear
           placeholder="选择难度"
@@ -26,7 +26,7 @@
             <a-typography-text type="warning"> 中等</a-typography-text>
           </a-option>
           <a-option :value="2">
-            <a-typography-text type="danger"> 困难 </a-typography-text>
+            <a-typography-text type="danger"> 困难</a-typography-text>
           </a-option>
         </a-select>
       </a-form-item>
@@ -34,14 +34,10 @@
         <a-input-tag
           v-model="searchParams.tags"
           placeholder="输入标签"
-          style="min-width: 220px;border-radius: 10px"
+          style="min-width: 220px; border-radius: 10px"
+          max-tag-count="3"
         />
       </a-form-item>
-      <!--      <a-form-item>
-              <a-button type="outline" shape="round" status="normal" @click="doSearch"
-                >搜索
-              </a-button>
-            </a-form-item>-->
     </a-form>
     <a-divider size="0" />
     <a-table
@@ -89,7 +85,7 @@
 
       <template #tags="{ record }">
         <a-space wrap>
-          <a-tag v-for="(tag, index) of record.tags" :key="index" color="green"
+          <a-tag v-for="(tag, index) of record.tags" :key="index" color="gray" style="border-radius: 10px"
             >{{ tag }}
           </a-tag>
         </a-space>

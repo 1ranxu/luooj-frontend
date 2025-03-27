@@ -11,7 +11,10 @@
               @tab-click="tabClick"
             >
               <!--题目详情-->
-              <a-tab-pane key="question" title="题目详情">
+              <a-tab-pane key="question" >
+                <template #title>
+                  <icon-file />题目详情
+                </template>
                 <a-card v-if="question" :title="question.title">
                   <a-space direction="vertical" size="large" fill>
                     <a-descriptions
@@ -60,7 +63,7 @@
                       <a-tag
                         v-for="(tag, index) of question.tags"
                         :key="index"
-                        color="green"
+                        color="gray" style="border-radius: 10px"
                         >{{ tag }}
                       </a-tag>
                     </a-space>
@@ -68,7 +71,10 @@
                 </a-card>
               </a-tab-pane>
               <!--评论区-->
-              <a-tab-pane key="comment" title="评论">
+              <a-tab-pane key="comment">
+                <template #title>
+                  <icon-message />评论
+                </template>
                 <!-- 发表评论 -->
                 <a-comment align="right" :avatar="loginUser.userAvatar">
                   <template #actions>
@@ -331,7 +337,10 @@
                 />
               </a-tab-pane>
               <!--题解-->
-              <a-tab-pane key="answers" title="题解">
+              <a-tab-pane key="answers">
+                <template #title>
+                  <icon-code-square />题解
+                </template>
                 <a-list
                   v-if="showQuestionSolutionList"
                   :scrollbar="true"
@@ -369,16 +378,6 @@
                           style="width: 200px;border-radius: 10px"
                         />
                       </a-form-item>
-<!--                      &lt;!&ndash; 搜索题解 &ndash;&gt;
-                      <a-form-item>
-                        <a-button
-                          type="primary"
-                          shape="round"
-                          status="normal"
-                          @click="getQuestionSolutionList"
-                          >搜 索
-                        </a-button>
-                      </a-form-item>-->
                       <!-- 创建题解 -->
                       <a-form-item>
                         <a-button
@@ -439,7 +438,7 @@
                             <a-tag
                               v-for="(tag, index) of JSON.parse(item.tags)"
                               :key="index"
-                              color="green"
+                              color="gray" style="border-radius: 10px"
                               >{{ tag }}
                             </a-tag>
                           </a-overflow-list>
@@ -475,7 +474,10 @@
                 <router-view v-if="!showQuestionSolutionList" />
               </a-tab-pane>
               <!--提交记录-->
-              <a-tab-pane key="history" title="提交记录">
+              <a-tab-pane key="history">
+                <template #title>
+                  <icon-history />提交记录
+                </template>
                 <a-table
                   :columns="columns"
                   :data="dataList"

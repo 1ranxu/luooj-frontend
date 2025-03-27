@@ -30,7 +30,7 @@
             <a-tag
               v-for="(tag, index) of JSON.parse(questionSolution.tags)"
               :key="index"
-              color="green"
+              color="gray" style="border-radius: 10px"
               >{{ tag }}
             </a-tag>
           </a-overflow-list>

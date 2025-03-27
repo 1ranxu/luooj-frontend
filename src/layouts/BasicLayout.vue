@@ -12,6 +12,7 @@
           <a-link
             href="https://github.com/1ranxu/luooj-backend-microservice"
             target="_blank"
+            style="color: black;text-decoration-color: white;background-color: white"
           >
             <icon-github />
           </a-link>
@@ -20,7 +21,11 @@
         <br />
         <icon-copyright />
         {{ new Date().getFullYear() }}落樱工作室出品 |
-        <a-link href="https://beian.miit.gov.cn/" target="_blank">
+        <a-link
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          style="color: black;background-color: white"
+        >
           渝ICP备2024021408号-2
         </a-link>
       </a-layout-footer>
@@ -44,7 +49,6 @@
 }
 
 #basiclayout .footer {
-  position: sticky;
   bottom: 0;
   left: 0;
   right: 0;

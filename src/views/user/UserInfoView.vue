@@ -6,37 +6,33 @@
         <img alt="头像" :src="loginUser.userAvatar" />
       </a-avatar>
       <!--   关注列表展示按钮   -->
-      <a-badge
-        :max-count="9999"
-        :count="loginUser.followers"
-        :dotStyle="{ background: '#7BC616', color: '#fff' }"
+      <a-button
+        type="text"
+        shape="round"
+        status="normal"
+        size="medium"
+        style="margin: 10px; color: gray; background-color: white"
+        @click="openFollowModal"
       >
-        <a-button
-          type="text"
-          shape="round"
-          status="normal"
-          size="medium"
-          style="margin: 10px"
-          @click="openFollowModal"
-          >关注
-        </a-button>
-      </a-badge>
+        <a-space direction="vertical" size="mini">
+          <div>关注</div>
+          <div>{{ loginUser.followers }}</div>
+        </a-space>
+      </a-button>
       <!--   粉丝列表展示按钮   -->
-      <a-badge
-        :max-count="9999"
-        :count="loginUser.fans"
-        :dotStyle="{ background: '#F53F3F', color: '#fff' }"
+      <a-button
+        type="text"
+        shape="round"
+        status="normal"
+        size="medium"
+        style="margin: 10px; color: gray; background-color: white"
+        @click="openFanModal"
       >
-        <a-button
-          type="text"
-          shape="round"
-          status="normal"
-          size="medium"
-          style="margin: 10px"
-          @click="openFanModal"
-          >粉丝
-        </a-button>
-      </a-badge>
+        <a-space direction="vertical" size="mini">
+          <div>粉丝</div>
+          <div>{{ loginUser.fans }}</div>
+        </a-space>
+      </a-button>
     </a-descriptions-item>
     <!--  通过题目数排名  -->
     <a-card title="全站排名">
@@ -84,7 +80,7 @@
       </a-form>
       <a-list
         :scrollbar="true"
-        :size="'large'"
+        :size="'small'"
         :data="followList"
         :pagination-props="{
           total: followListTotal,
@@ -114,14 +110,18 @@
                   type="outline"
                   @click="follow(item)"
                   v-if="item.isFollow"
-                  ><icon-menu />已关注
+                >
+                  <icon-menu />
+                  已关注
                 </a-button>
                 <a-button
                   shape="round"
                   type="outline"
                   @click="follow(item)"
                   v-else
-                  ><icon-plus />关注
+                >
+                  <icon-plus />
+                  关注
                 </a-button>
               </a-space>
             </template>
@@ -151,9 +151,7 @@
             style="min-width: 220px; border-radius: 10px"
           />
         </a-form-item>
-        <a-form-item
-          field="userName"
-        >
+        <a-form-item field="userName">
           <a-input-search
             v-model="fanSearchParams.userName"
             placeholder="搜索昵称"
@@ -163,7 +161,7 @@
       </a-form>
       <a-list
         :scrollbar="true"
-        :size="'large'"
+        :size="'small'"
         :data="fanList"
         :pagination-props="{
           total: fanListTotal,
@@ -193,14 +191,18 @@
                   type="outline"
                   @click="follow(item)"
                   v-if="item.isFollow"
-                ><icon-menu />互相关注
+                >
+                  <icon-menu />
+                  互相关注
                 </a-button>
                 <a-button
                   shape="round"
                   type="outline"
                   @click="follow(item)"
                   v-else
-                ><icon-plus />关注
+                >
+                  <icon-plus />
+                  关注
                 </a-button>
               </a-space>
             </template>
@@ -693,15 +695,6 @@
                   style="border-radius: 10px"
                 />
               </a-form-item>
-              <!--              <a-form-item>
-                              <a-button
-                                type="primary"
-                                shape="round"
-                                status="normal"
-                                @click="getQuestionList"
-                                >搜 索
-                              </a-button>
-                            </a-form-item>-->
             </a-form>
           </template>
           <template #item="{ item }">
@@ -776,16 +769,6 @@
                   style="width: 200px; border-radius: 10px"
                 />
               </a-form-item>
-              <!--              &lt;!&ndash; 搜索题解 &ndash;&gt;
-                            <a-form-item>
-                              <a-button
-                                type="primary"
-                                shape="round"
-                                status="normal"
-                                @click="getQuestionSolutionList"
-                                >搜 索
-                              </a-button>
-                            </a-form-item>-->
             </a-form>
           </template>
           <template #item="{ item }">
@@ -820,7 +803,8 @@
                     <a-tag
                       v-for="(tag, index) of JSON.parse(item.tags)"
                       :key="index"
-                      color="green"
+                      color="gray"
+                      style="border-radius: 10px"
                       >{{ tag }}
                     </a-tag>
                   </a-overflow-list>
@@ -968,7 +952,8 @@
                         <a-tag
                           v-for="(tag, index) of JSON.parse(item.tags)"
                           :key="index"
-                          color="green"
+                          color="gray"
+                          style="border-radius: 10px"
                           >{{ tag }}
                         </a-tag>
                       </a-overflow-list>
@@ -1706,10 +1691,10 @@ const follow = async (record: any) => {
     record.id
   );
   if (res.code === 0) {
-    if(record.isFollow){
-      message.info("取消关注成功(ง •̀_•́)ง");
-    }else{
-      message.info("关注成功(ง •̀_•́)ง");
+    if (record.isFollow) {
+      message.normal("取消关注成功(ง •̀_•́)ง");
+    } else {
+      message.normal("关注成功(ง •̀_•́)ง");
     }
     record.isFollow = !record.isFollow;
   } else {
