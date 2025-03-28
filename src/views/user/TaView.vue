@@ -14,7 +14,9 @@
         size="medium"
         style="margin: 10px"
         @click="follow(user.id, true)"
-        ><icon-plus />关注
+      >
+        <icon-plus />
+        关注
       </a-button>
       <!-- 取消关注 -->
       <a-button
@@ -25,7 +27,9 @@
         size="medium"
         style="margin: 10px"
         @click="follow(user.id, false)"
-        ><icon-menu />已关注
+      >
+        <icon-menu />
+        已关注
       </a-button>
     </a-descriptions-item>
     <!--  通过题目数排名  -->
@@ -210,6 +214,19 @@
     <a-tabs default-active-key="questionList" size="large">
       <!--题单-->
       <a-tab-pane key="questionList" title="题单">
+        <a-form
+          :model="questionListSearchParams"
+          layout="inline"
+          style="justify-content: center"
+        >
+          <a-form-item field="title">
+            <a-input-search
+              v-model="questionListSearchParams.title"
+              placeholder="搜索题单"
+              style="border-radius: 10px"
+            />
+          </a-form-item>
+        </a-form>
         <a-list
           :scrollbar="true"
           :max-height="700"
@@ -220,38 +237,10 @@
             current: questionListSearchParams.current,
             pageSize: questionListSearchParams.pageSize,
             showTotal: true,
-            showPageSize: true,
           }"
           @pageSizeChange="onQuestionListPageSizeChange"
           @pageChange="onQuestionListPageChange"
         >
-          <template #header>
-            <a-form
-              :model="questionListSearchParams"
-              layout="inline"
-              style="justify-content: center; align-content: center"
-            >
-              <a-form-item
-                field="title"
-                label="标题："
-                tooltip="请输入题单标题"
-              >
-                <a-input
-                  v-model="questionListSearchParams.title"
-                  placeholder="请输入题单标题"
-                />
-              </a-form-item>
-              <a-form-item>
-                <a-button
-                  type="primary"
-                  shape="round"
-                  status="normal"
-                  @click="getQuestionList"
-                  >搜 索
-                </a-button>
-              </a-form-item>
-            </a-form>
-          </template>
           <template #item="{ item }">
             <a-list-item>
               <a-button
@@ -270,6 +259,26 @@
       </a-tab-pane>
       <!--题解-->
       <a-tab-pane key="questionSolution" title="题解">
+        <a-form
+          :model="questionSolutionListSearchParams"
+          layout="inline"
+          style="justify-content: center"
+        >
+          <a-form-item field="tags">
+            <a-input-tag
+              v-model="questionSolutionListSearchParams.tags"
+              placeholder="输入标签"
+              style="width: 200px; border-radius: 10px"
+            />
+          </a-form-item>
+          <a-form-item field="title">
+            <a-input-search
+              v-model="questionSolutionListSearchParams.title"
+              placeholder="搜索题解"
+              style="width: 200px; border-radius: 10px"
+            />
+          </a-form-item>
+        </a-form>
         <a-list
           :hoverable="true"
           :scrollbar="true"
@@ -285,41 +294,6 @@
           @pageSizeChange="onQuestionSolutionListPageSizeChange"
           @pageChange="onQuestionSolutionListPageChange"
         >
-          <template #header>
-            <a-form
-              :model="questionSolutionListSearchParams"
-              layout="inline"
-              style="
-                top: 20px;
-                left: 80px;
-                justify-content: center;
-                align-content: center;
-              "
-            >
-              <a-form-item field="tags" tooltip="请输入题解标签">
-                <a-input-tag
-                  v-model="questionSolutionListSearchParams.tags"
-                  placeholder="请输入标签"
-                />
-              </a-form-item>
-              <a-form-item field="title" tooltip="请输入题解标题">
-                <a-input
-                  v-model="questionSolutionListSearchParams.title"
-                  placeholder="请输入题解标题"
-                />
-              </a-form-item>
-              <!-- 搜索题解 -->
-              <a-form-item>
-                <a-button
-                  type="primary"
-                  shape="round"
-                  status="normal"
-                  @click="getQuestionSolutionList"
-                  >搜 索
-                </a-button>
-              </a-form-item>
-            </a-form>
-          </template>
           <template #item="{ item }">
             <a-list-item>
               <a-list-item-meta :title="item.title">
@@ -352,7 +326,8 @@
                     <a-tag
                       v-for="(tag, index) of JSON.parse(item.tags)"
                       :key="index"
-                      color="green"
+                      color="gray"
+                      style="border-radius: 10px"
                       >{{ tag }}
                     </a-tag>
                   </a-overflow-list>
@@ -393,7 +368,6 @@
                 current: collectQuestionListSearchParams.current,
                 pageSize: collectQuestionListSearchParams.pageSize,
                 showTotal: true,
-                showPageSize: true,
               }"
               @pageSizeChange="onCollectQuestionListPageSizeChange"
               @pageChange="onCollectQuestionListPageChange"
@@ -463,7 +437,8 @@
                         <a-tag
                           v-for="(tag, index) of JSON.parse(item.tags)"
                           :key="index"
-                          color="green"
+                          color="gray"
+                          style="border-radius: 10px"
                           >{{ tag }}
                         </a-tag>
                       </a-overflow-list>
@@ -568,7 +543,7 @@
 </template>
 <script setup lang="ts">
 import { useStore } from "vuex";
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref, watch, watchEffect } from "vue";
 import { Message } from "@arco-design/web-vue";
 import { useRouter } from "vue-router";
 import {
@@ -818,7 +793,9 @@ const hotMap = ref({
  */
 const getAcceptedQuestionRanking = async () => {
   const res =
-    await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet(props.id);
+    await AcceptedQuestionControllerService.getAcceptedQuestionRankingUsingGet(
+      props.id
+    );
   if (res.code == 0) {
     acceptedQuestionRanking.value = res.data as number;
   }
@@ -834,9 +811,9 @@ const follow = async (userId: number, followOrNot: boolean) => {
     userId
   );
   if (res.code === 0) {
-    if(!followOrNot){
+    if (!followOrNot) {
       message.normal("取消关注成功(ง •̀_•́)ง");
-    }else{
+    } else {
       message.normal("关注成功(ง •̀_•́)ง");
     }
     await getIsFollow();
@@ -1146,15 +1123,26 @@ onMounted(async () => {
 /**
  * 监听 searchParams 变量，改变时触发页面的重新加载
  */
-watchEffect(() => {
-  getQuestionList();
-});
+watch(
+  questionListSearchParams,
+  () => {
+    getQuestionList();
+  },
+  { deep: true }
+);
 watchEffect(() => {
   getQuestionsByQuestionListId(questionListId.value);
 });
 watchEffect(async () => {
   await getCollectQuestionList();
 });
+watch(
+  questionSolutionListSearchParams.value,
+  () => {
+    getQuestionSolutionList();
+  },
+  { deep: true }
+);
 
 /**
  * 回到首页

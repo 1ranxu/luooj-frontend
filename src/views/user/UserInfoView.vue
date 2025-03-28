@@ -245,19 +245,19 @@
         title="个人信息"
         style="max-width: 480px; margin: 0 auto"
       >
-        <a-form-item field="userName" label="昵称 :">
+        <a-form-item field="userName" label="昵称：">
           <a-input
             v-model="updatePersonalInfoForm.userName"
             placeholder="请输入用户昵称"
           />
         </a-form-item>
-        <a-form-item field="userProfile" label="简介 :">
+        <a-form-item field="userProfile" label="简介：">
           <a-textarea
             v-model="updatePersonalInfoForm.userProfile"
             placeholder="请输入简介"
           />
         </a-form-item>
-        <a-form-item field="gender" label="性别">
+        <a-form-item field="gender" label="性别：">
           <a-select
             v-model="updatePersonalInfoForm.gender"
             :style="{ width: '320px' }"
@@ -650,6 +650,33 @@
     <a-tabs default-active-key="questionList" size="large">
       <!--题单-->
       <a-tab-pane key="questionList" title="题单">
+        <a-form
+          :model="questionListSearchParams"
+          layout="inline"
+          style="justify-content: center"
+        >
+          <a-form-item>
+            <a-button
+              type="text"
+              shape="round"
+              status="normal"
+              size="medium"
+              @click="openAddQuestionListModal"
+              style=""
+            >
+              <icon-plus />
+              创建题单
+            </a-button>
+          </a-form-item>
+          <a-form-item field="title">
+            <a-input-search
+              v-model="questionListSearchParams.title"
+              placeholder="搜索题单"
+              style="border-radius: 10px"
+            />
+          </a-form-item>
+
+        </a-form>
         <a-list
           :scrollbar="true"
           :max-height="700"
@@ -664,39 +691,6 @@
           @pageSizeChange="onQuestionListPageSizeChange"
           @pageChange="onQuestionListPageChange"
         >
-          <template #header>
-            <a-button
-              type="text"
-              shape="round"
-              status="normal"
-              size="medium"
-              @click="openAddQuestionListModal"
-              style="position: relative; top: 9px"
-            >
-              <icon-plus />
-              创建题单
-            </a-button>
-            <a-form
-              :model="questionListSearchParams"
-              layout="inline"
-              style="
-                position: absolute;
-                top: 0;
-                left: 160px;
-                justify-content: center;
-                align-content: center;
-                margin: 25px;
-              "
-            >
-              <a-form-item field="title">
-                <a-input-search
-                  v-model="questionListSearchParams.title"
-                  placeholder="搜索题单"
-                  style="border-radius: 10px"
-                />
-              </a-form-item>
-            </a-form>
-          </template>
           <template #item="{ item }">
             <a-list-item>
               <a-button
@@ -734,6 +728,26 @@
       </a-tab-pane>
       <!--题解-->
       <a-tab-pane key="questionSolution" title="题解">
+        <a-form
+          :model="questionSolutionListSearchParams"
+          layout="inline"
+          style="justify-content: center"
+        >
+          <a-form-item field="tags">
+            <a-input-tag
+              v-model="questionSolutionListSearchParams.tags"
+              placeholder="输入标签"
+              style="width: 200px; border-radius: 10px"
+            />
+          </a-form-item>
+          <a-form-item field="title">
+            <a-input-search
+              v-model="questionSolutionListSearchParams.title"
+              placeholder="搜索题解"
+              style="width: 200px; border-radius: 10px"
+            />
+          </a-form-item>
+        </a-form>
         <a-list
           :hoverable="true"
           :scrollbar="true"
@@ -749,28 +763,6 @@
           @pageSizeChange="onQuestionSolutionListPageSizeChange"
           @pageChange="onQuestionSolutionListPageChange"
         >
-          <template #header>
-            <a-form
-              :model="questionSolutionListSearchParams"
-              layout="inline"
-              style="top: 20px"
-            >
-              <a-form-item field="tags">
-                <a-input-tag
-                  v-model="questionSolutionListSearchParams.tags"
-                  placeholder="输入标签"
-                  style="width: 200px; border-radius: 10px"
-                />
-              </a-form-item>
-              <a-form-item field="title">
-                <a-input-search
-                  v-model="questionSolutionListSearchParams.title"
-                  placeholder="搜索题解"
-                  style="width: 200px; border-radius: 10px"
-                />
-              </a-form-item>
-            </a-form>
-          </template>
           <template #item="{ item }">
             <a-list-item>
               <a-list-item-meta :title="item.title">

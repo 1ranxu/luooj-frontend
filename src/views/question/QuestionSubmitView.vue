@@ -17,11 +17,6 @@
           </a-option>
         </a-select>
       </a-form-item>
-<!--      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="doSearch"
-          >搜索
-        </a-button>
-      </a-form-item>-->
       <a-form-item>
         <a-button type="outline" shape="round" status="normal" @click="loadData"
           >刷新
@@ -37,7 +32,6 @@
         current: searchParams.current,
         pageSize: searchParams.pageSize,
         total,
-        showJumper: true,
         showPageSize: true,
       }"
       @page-change="onPageChange"

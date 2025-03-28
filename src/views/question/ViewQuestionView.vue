@@ -11,9 +11,10 @@
               @tab-click="tabClick"
             >
               <!--题目详情-->
-              <a-tab-pane key="question" >
+              <a-tab-pane key="question">
                 <template #title>
-                  <icon-file />题目详情
+                  <icon-file />
+                  题目详情
                 </template>
                 <a-card v-if="question" :title="question.title">
                   <a-space direction="vertical" size="large" fill>
@@ -63,7 +64,8 @@
                       <a-tag
                         v-for="(tag, index) of question.tags"
                         :key="index"
-                        color="gray" style="border-radius: 10px"
+                        color="gray"
+                        style="border-radius: 10px"
                         >{{ tag }}
                       </a-tag>
                     </a-space>
@@ -73,7 +75,8 @@
               <!--评论区-->
               <a-tab-pane key="comment">
                 <template #title>
-                  <icon-message />评论
+                  <icon-message />
+                  评论
                 </template>
                 <!-- 发表评论 -->
                 <a-comment align="right" :avatar="loginUser.userAvatar">
@@ -83,7 +86,7 @@
                       type="primary"
                       status="success"
                       shape="round"
-                      :disabled="replyContent==''"
+                      :disabled="replyContent == ''"
                       @click="publisOrReply(props.id, 0, 0)"
                     >
                       评论
@@ -180,7 +183,7 @@
                         type="primary"
                         status="success"
                         shape="round"
-                        :disabled="replyContent==''"
+                        :disabled="replyContent == ''"
                         @click="publisOrReply(props.id, firstComment.id, 0)"
                       >
                         Reply
@@ -301,7 +304,7 @@
                               type="primary"
                               status="success"
                               shape="round"
-                              :disabled="replyContent==''"
+                              :disabled="replyContent == ''"
                               @click="
                                 publisOrReply(
                                   props.id,
@@ -339,8 +342,40 @@
               <!--题解-->
               <a-tab-pane key="answers">
                 <template #title>
-                  <icon-code-square />题解
+                  <icon-code-square />
+                  题解
                 </template>
+                <a-form
+                  :model="questionSolutionListSearchParams"
+                  layout="inline"
+                  style="justify-content: center"
+                >
+                  <a-form-item field="tags">
+                    <a-input-tag
+                      v-model="questionSolutionListSearchParams.tags"
+                      placeholder="输入标签"
+                      style="width: 200px; border-radius: 10px"
+                    />
+                  </a-form-item>
+                  <a-form-item field="title">
+                    <a-input-search
+                      v-model="questionSolutionListSearchParams.title"
+                      placeholder="搜索题解"
+                      style="width: 200px; border-radius: 10px"
+                    />
+                  </a-form-item>
+                  <!-- 创建题解 -->
+                  <a-form-item>
+                    <a-button
+                      :disabled="question.isAccepted == 1"
+                      type="primary"
+                      shape="round"
+                      status="success"
+                      @click="openAddQuestionSolutionModal"
+                      >发表题解
+                    </a-button>
+                  </a-form-item>
+                </a-form>
                 <a-list
                   v-if="showQuestionSolutionList"
                   :scrollbar="true"
@@ -356,41 +391,7 @@
                   @pageSizeChange="onQuestionSolutionListPageSizeChange"
                   @pageChange="onQuestionSolutionListPageChange"
                 >
-                  <template #header>
-                    <a-form
-                      :model="questionSolutionListSearchParams"
-                      layout="inline"
-                      style="
-                        top: 20px;
-                      "
-                    >
-                      <a-form-item field="tags">
-                        <a-input-tag
-                          v-model="questionSolutionListSearchParams.tags"
-                          placeholder="输入标签"
-                          style="width: 200px;border-radius: 10px"
-                        />
-                      </a-form-item>
-                      <a-form-item field="title">
-                        <a-input-search
-                          v-model="questionSolutionListSearchParams.title"
-                          placeholder="搜索题解"
-                          style="width: 200px;border-radius: 10px"
-                        />
-                      </a-form-item>
-                      <!-- 创建题解 -->
-                      <a-form-item>
-                        <a-button
-                          :disabled="question.isAccepted == 1"
-                          type="primary"
-                          shape="round"
-                          status="success"
-                          @click="openAddQuestionSolutionModal"
-                          >发表题解
-                        </a-button>
-                      </a-form-item>
-                    </a-form>
-                  </template>
+                  <template #header> </template>
                   <template #item="{ item }">
                     <a-list-item>
                       <a-list-item-meta :title="item.title">
@@ -438,7 +439,8 @@
                             <a-tag
                               v-for="(tag, index) of JSON.parse(item.tags)"
                               :key="index"
-                              color="gray" style="border-radius: 10px"
+                              color="gray"
+                              style="border-radius: 10px"
                               >{{ tag }}
                             </a-tag>
                           </a-overflow-list>
@@ -476,7 +478,8 @@
               <!--提交记录-->
               <a-tab-pane key="history">
                 <template #title>
-                  <icon-history />提交记录
+                  <icon-history />
+                  提交记录
                 </template>
                 <a-table
                   :columns="columns"
@@ -558,7 +561,7 @@
           <a-input-search
             v-model="questionListSearchParams.title"
             placeholder="搜索题单"
-            style="width: 300px;border-radius: 10px"
+            style="width: 300px; border-radius: 10px"
           />
         </a-form-item>
       </a-form>
@@ -653,7 +656,7 @@
             <a-space>
               <a-select
                 v-model="form.language"
-                style="width: 150px;border-radius: 5px"
+                style="width: 150px; border-radius: 5px"
                 placeholder="请选择语言"
               >
                 <a-option v-for="language in languages" :key="language"
@@ -796,9 +799,10 @@ import {
   defineProps,
   onBeforeMount,
   onMounted,
-  ref, watch,
+  ref,
+  watch,
   watchEffect,
-  withDefaults
+  withDefaults,
 } from "vue";
 import message from "@arco-design/web-vue/es/message";
 import CodeEditor from "@/components/CodeEditor.vue";
@@ -1099,12 +1103,20 @@ watchEffect(async () => {
 watchEffect(async () => {
   await getPersonalQuestionSubmitByQuestionId();
 });
-watch(questionSolutionListSearchParams,() => {
-  getQuestionSolutionList();
-},{deep:true});
-watch(questionListSearchParams,() => {
-  getQuestionCollectByUserAllQuestionListDetail();
-},{deep:true});
+watch(
+  questionSolutionListSearchParams,
+  () => {
+    getQuestionSolutionList();
+  },
+  { deep: true }
+);
+watch(
+  questionListSearchParams,
+  () => {
+    getQuestionCollectByUserAllQuestionListDetail();
+  },
+  { deep: true }
+);
 
 /**
  * 在跳转到一个路由之前进行判断
@@ -1338,7 +1350,7 @@ const publisOrReply = async (
   if (res.code == 0) {
     await getComments();
     Message.success("回复成功");
-    replyContent.value="";
+    replyContent.value = "";
   } else {
     Message.error("回复失败：" + res.message);
   }
@@ -1467,7 +1479,7 @@ const goToUser = (userId: number) => {
     router.push({
       path: `/mine`,
     });
-  }else{
+  } else {
     router.push({
       path: `/Ta/${userId}`,
     });

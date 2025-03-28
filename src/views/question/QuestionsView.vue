@@ -48,7 +48,6 @@
         current: searchParams.current,
         pageSize: searchParams.pageSize,
         total,
-        showJumper: true,
         showPageSize: true,
       }"
       @page-change="onPageChange"

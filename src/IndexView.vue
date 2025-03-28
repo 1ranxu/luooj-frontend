@@ -24,12 +24,6 @@
       <a href="https://leetcode.cn/u/ranxu/" class="animate-slide-in-down" target="_blank"
         >LeetCode</a
       >
-      <a href="https://space.bilibili.com/356112995" class="animate-slide-in-down"
-        >Bilibili Inc</a
-      >
-      <a href="https://www.zhihu.com/people/qing-chen-73-56-76" class="animate-slide-in-down"
-        >Zhihu</a
-      >
     </div>
 <!--    <div class="location">
       <span class="location-icon animate-slide-in-up">
