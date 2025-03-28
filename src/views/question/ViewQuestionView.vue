@@ -346,6 +346,7 @@
                   题解
                 </template>
                 <a-form
+                  v-if="showQuestionSolutionList"
                   :model="questionSolutionListSearchParams"
                   layout="inline"
                   style="justify-content: center"
