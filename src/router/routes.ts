@@ -29,6 +29,7 @@ import QuestionSolutionCollectManageView from "@/views/manage/QuestionSolutionCo
 import QuestionSolutionCommentManageView from "@/views/manage/QuestionSolutionCommentManageView.vue";
 import CommentReportManageView from "@/views/manage/CommentReportManageView.vue";
 import QuestionSolutionReportManageView from "@/views/manage/QuestionSolutionReportManageView.vue";
+import IndexView from "@/IndexView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -73,7 +74,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "主页",
-    component: QuestionsView,
+    component: IndexView,
   },
   {
     path: "/questions",
