@@ -215,3 +215,14 @@ const getCaptcha = async (email: string, op: string) => {
   }
 };
 </script>
+<style>
+input[type="password"]::-ms-reveal{
+  display: none;
+}
+input[type="password"]::-ms-clear{
+  display: none;
+}
+input[type="password"]::-o-clear{
+  display: none;
+}
+</style>
