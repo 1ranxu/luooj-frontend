@@ -3,15 +3,15 @@
     <a-resize-box :directions="['right']" v-model:width="resizeBoxWidth">
       <!--左栏-->
       <div id="leftPart">
-        <a-card style="height: 695px">
-          <a-scrollbar style="height: calc(100vh - 110px); overflow: auto">
-            <a-tabs
-              v-model:active-key="activeKey"
-              size="mini"
-              @tab-click="tabClick"
-            >
-              <!--第一题-->
-              <a-tab-pane key="first" title="第一题">
+        <a-card style="height: 93vh">
+          <a-tabs
+            v-model:active-key="activeKey"
+            size="mini"
+            @tab-click="tabClick"
+          >
+            <!--第一题-->
+            <a-tab-pane key="first" title="第一题">
+              <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
                 <a-card v-if="question" :title="question.title">
                   <a-space direction="vertical" size="large" fill>
                     <a-descriptions
@@ -19,21 +19,20 @@
                       :column="{ xs: 1, md: 2, lg: 3 }"
                     >
                       <a-descriptions-item label="时间限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.timeLimit }}ms
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.memoryLimit }}
-                      </a-descriptions-item>
-                      <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.stackLimit }}
+                        {{ question.judgeConfig.memoryLimit }}KB
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
                   <MDViewer :value="question.content || ''" />
                 </a-card>
-              </a-tab-pane>
-              <!--第二题-->
-              <a-tab-pane key="two" title="第二题">
+              </a-scrollbar>
+            </a-tab-pane>
+            <!--第二题-->
+            <a-tab-pane key="two" title="第二题">
+              <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
                 <a-card v-if="question" :title="question.title">
                   <a-space direction="vertical" size="large" fill>
                     <a-descriptions
@@ -41,21 +40,20 @@
                       :column="{ xs: 1, md: 2, lg: 3 }"
                     >
                       <a-descriptions-item label="时间限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.timeLimit }}ms
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.memoryLimit }}
-                      </a-descriptions-item>
-                      <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.stackLimit }}
+                        {{ question.judgeConfig.memoryLimit }}KB
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
                   <MDViewer :value="question.content || ''" />
                 </a-card>
-              </a-tab-pane>
-              <!--第三题-->
-              <a-tab-pane key="three" title="第三题">
+              </a-scrollbar>
+            </a-tab-pane>
+            <!--第三题-->
+            <a-tab-pane key="three" title="第三题">
+              <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
                 <a-card v-if="question" :title="question.title">
                   <a-space direction="vertical" size="large" fill>
                     <a-descriptions
@@ -63,21 +61,20 @@
                       :column="{ xs: 1, md: 2, lg: 3 }"
                     >
                       <a-descriptions-item label="时间限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.timeLimit }}ms
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.memoryLimit }}
-                      </a-descriptions-item>
-                      <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.stackLimit }}
+                        {{ question.judgeConfig.memoryLimit }}KB
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
                   <MDViewer :value="question.content || ''" />
                 </a-card>
-              </a-tab-pane>
-              <!--第四题-->
-              <a-tab-pane key="four" title="第四题">
+              </a-scrollbar>
+            </a-tab-pane>
+            <!--第四题-->
+            <a-tab-pane key="four" title="第四题">
+              <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
                 <a-card v-if="question" :title="question.title">
                   <a-space direction="vertical" size="large" fill>
                     <a-descriptions
@@ -85,34 +82,31 @@
                       :column="{ xs: 1, md: 2, lg: 3 }"
                     >
                       <a-descriptions-item label="时间限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.timeLimit }}ms
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.memoryLimit }}
-                      </a-descriptions-item>
-                      <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.stackLimit }}
+                        {{ question.judgeConfig.memoryLimit }}KB
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
                   <MDViewer :value="question.content || ''" />
                 </a-card>
-              </a-tab-pane>
-            </a-tabs>
-          </a-scrollbar>
+              </a-scrollbar>
+            </a-tab-pane>
+          </a-tabs>
         </a-card>
       </div>
     </a-resize-box>
     <!--右栏-->
     <div id="rightPart" :style="{ width: codeWidth + 'px' }">
-      <a-card>
+      <a-card style="height: 93vh">
         <a-form :model="form" layout="inline" size="mini">
           <!--语言选择-->
           <a-form-item field="language" style="min-width: 240px">
             <a-space>
               <a-select
                 v-model="form.language"
-                style="width: 150px;border-radius: 5px"
+                style="width: 150px; border-radius: 5px"
                 placeholder="请选择语言"
               >
                 <a-option v-for="language in languages" :key="language"
@@ -559,19 +553,25 @@ onMounted(async () => {
 /**
  * 页面刷新
  */
-function refreshAtDailyTime(hour:number, minute:number, second:number) {
+function refreshAtDailyTime(hour: number, minute: number, second: number) {
   function checkTime() {
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
     const currentSecond = now.getSeconds();
 
-    if (currentHour === hour && currentMinute === minute && currentSecond === second) {
+    if (
+      currentHour === hour &&
+      currentMinute === minute &&
+      currentSecond === second
+    ) {
       location.reload(); // 刷新页面
     }
   }
+
   setInterval(checkTime, 1000);
 }
+
 refreshAtDailyTime(12, 0, 0);
 
 /**

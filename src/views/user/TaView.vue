@@ -77,7 +77,7 @@
     <a-tooltip
       position="bottom"
       :content="
-        acceptedQuestionDetail.eachDifficultysubmissionPassRate[0] * 100 + '%'
+        acceptedQuestionDetail.eachDifficultysubmissionPassRate[0].toFixed(2) * 100 + '%'
       "
     >
       <div
@@ -104,7 +104,7 @@
     <a-tooltip
       position="bottom"
       :content="
-        acceptedQuestionDetail.eachDifficultysubmissionPassRate[1] * 100 + '%'
+        acceptedQuestionDetail.eachDifficultysubmissionPassRate[1].toFixed(2) * 100 + '%'
       "
     >
       <div
@@ -132,7 +132,7 @@
     <a-tooltip
       position="bottom"
       :content="
-        acceptedQuestionDetail.eachDifficultysubmissionPassRate[2] * 100 + '%'
+        acceptedQuestionDetail.eachDifficultysubmissionPassRate[2].toFixed(2) * 100 + '%'
       "
     >
       <div
@@ -159,7 +159,7 @@
     </a-tooltip>
     <a-tooltip
       position="bottom"
-      :content="acceptedQuestionDetail.submissionPassRate * 100 + '%'"
+      :content="(acceptedQuestionDetail.submissionPassRate)?.toFixed(2) * 100 + '%'"
     >
       <div
         style="

@@ -3,19 +3,19 @@
     <a-resize-box :directions="['right']" v-model:width="resizeBoxWidth">
       <!--左栏-->
       <div id="leftPart">
-        <a-card style="height: 695px">
-          <a-scrollbar style="height: calc(100vh - 110px); overflow: auto">
-            <a-tabs
-              v-model:active-key="activeKey"
-              size="mini"
-              @tab-click="tabClick"
-            >
-              <!--题目详情-->
-              <a-tab-pane key="question">
-                <template #title>
-                  <icon-file />
-                  题目详情
-                </template>
+        <a-card style="height: 93vh">
+          <a-tabs
+            v-model:active-key="activeKey"
+            size="mini"
+            @tab-click="tabClick"
+          >
+            <!--题目详情-->
+            <a-tab-pane key="question">
+              <template #title>
+                <icon-file />
+                题目详情
+              </template>
+              <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
                 <a-card v-if="question" :title="question.title">
                   <a-space direction="vertical" size="large" fill>
                     <a-descriptions
@@ -23,13 +23,10 @@
                       :column="{ xs: 1, md: 2, lg: 3 }"
                     >
                       <a-descriptions-item label="时间限制">
-                        {{ question.judgeConfig.timeLimit }}
+                        {{ question.judgeConfig.timeLimit }}ms
                       </a-descriptions-item>
                       <a-descriptions-item label="内存限制">
-                        {{ question.judgeConfig.memoryLimit }}
-                      </a-descriptions-item>
-                      <a-descriptions-item label="堆栈限制">
-                        {{ question.judgeConfig.stackLimit }}
+                        {{ question.judgeConfig.memoryLimit }}KB
                       </a-descriptions-item>
                     </a-descriptions>
                   </a-space>
@@ -71,13 +68,15 @@
                     </a-space>
                   </template>
                 </a-card>
-              </a-tab-pane>
-              <!--评论区-->
-              <a-tab-pane key="comment">
-                <template #title>
-                  <icon-message />
-                  评论
-                </template>
+              </a-scrollbar>
+            </a-tab-pane>
+            <!--评论区-->
+            <a-tab-pane key="comment">
+              <template #title>
+                <icon-message />
+                评论
+              </template>
+              <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
                 <!-- 发表评论 -->
                 <a-comment align="right" :avatar="loginUser.userAvatar">
                   <template #actions>
@@ -338,150 +337,154 @@
                   @change="onCommentsPageChange"
                   @page-size-change="onCommentsPageSizeChange"
                 />
-              </a-tab-pane>
-              <!--题解-->
-              <a-tab-pane key="answers">
-                <template #title>
-                  <icon-code-square />
-                  题解
+              </a-scrollbar>
+            </a-tab-pane>
+            <!--题解-->
+            <a-tab-pane key="answers">
+              <template #title>
+                <icon-code-square />
+                题解
+              </template>
+              <a-form
+                v-if="showQuestionSolutionList"
+                :model="questionSolutionListSearchParams"
+                layout="inline"
+                style="justify-content: center"
+              >
+                <a-form-item field="tags">
+                  <a-input-tag
+                    v-model="questionSolutionListSearchParams.tags"
+                    placeholder="输入标签"
+                    style="width: 200px; border-radius: 10px"
+                  />
+                </a-form-item>
+                <a-form-item field="title">
+                  <a-input-search
+                    v-model="questionSolutionListSearchParams.title"
+                    placeholder="搜索题解"
+                    style="width: 200px; border-radius: 10px"
+                  />
+                </a-form-item>
+                <!-- 创建题解 -->
+                <a-form-item>
+                  <a-button
+                    :disabled="question.isAccepted == 1"
+                    type="primary"
+                    shape="round"
+                    status="success"
+                    @click="openAddQuestionSolutionModal"
+                    >发表题解
+                  </a-button>
+                </a-form-item>
+              </a-form>
+              <a-list
+                v-if="showQuestionSolutionList"
+                :scrollbar="true"
+                :max-height="700"
+                :size="'large'"
+                :data="questionSolutionList"
+                :pagination-props="{
+                  total: questionSolutionListTotal,
+                  current: questionSolutionListSearchParams.current,
+                  pageSize: questionSolutionListSearchParams.pageSize,
+                  showTotal: true,
+                }"
+                @pageSizeChange="onQuestionSolutionListPageSizeChange"
+                @pageChange="onQuestionSolutionListPageChange"
+              >
+                <template #header></template>
+                <template #item="{ item }">
+                  <a-list-item>
+                    <a-list-item-meta :title="item.title">
+                      <template #avatar>
+                        <a-avatar @click="goToUser(item.userId)">
+                          <img alt="avatar" :src="item.userAvatar" />
+                        </a-avatar>
+                      </template>
+                      <template #title>
+                        <a-typography-text
+                          bold
+                          @click="
+                            () => {
+                              showQuestionSolutionList = false;
+                              goToSolution(item.id);
+                            }
+                          "
+                        >
+                          {{ item.title }}
+                        </a-typography-text>
+                      </template>
+                      <template #description>
+                        <a-typography-text
+                          ellipsis
+                          type="secondary"
+                          @click="
+                            () => {
+                              showQuestionSolutionList = false;
+                              goToSolution(item.id);
+                            }
+                          "
+                          >{{ item.content }}
+                        </a-typography-text>
+                        <a-overflow-list
+                          @click="
+                            () => {
+                              showQuestionSolutionList = false;
+                              goToSolution(item.id);
+                            }
+                          "
+                          style="width: 500px"
+                          min="8"
+                          margin="8"
+                        >
+                          <a-tag
+                            v-for="(tag, index) of JSON.parse(item.tags)"
+                            :key="index"
+                            color="gray"
+                            style="border-radius: 10px"
+                            >{{ tag }}
+                          </a-tag>
+                        </a-overflow-list>
+                        <!-- 点赞数图标 -->
+                        <span
+                          @click="
+                            () => {
+                              showQuestionSolutionList = false;
+                              goToSolution(item.id);
+                            }
+                          "
+                        >
+                          <IconHeartFill :style="{ color: '#f53f3f' }" />
+                          {{ item.likes }}
+                        </span>
+                        <!-- 回复数图标 -->
+                        <span
+                          style="margin-left: 5px"
+                          @click="
+                            () => {
+                              showQuestionSolutionList = false;
+                              goToSolution(item.id);
+                            }
+                          "
+                        >
+                          <IconMessage /> {{ item.comments }}
+                        </span>
+                      </template>
+                    </a-list-item-meta>
+                  </a-list-item>
                 </template>
-                <a-form
-                  v-if="showQuestionSolutionList"
-                  :model="questionSolutionListSearchParams"
-                  layout="inline"
-                  style="justify-content: center"
-                >
-                  <a-form-item field="tags">
-                    <a-input-tag
-                      v-model="questionSolutionListSearchParams.tags"
-                      placeholder="输入标签"
-                      style="width: 200px; border-radius: 10px"
-                    />
-                  </a-form-item>
-                  <a-form-item field="title">
-                    <a-input-search
-                      v-model="questionSolutionListSearchParams.title"
-                      placeholder="搜索题解"
-                      style="width: 200px; border-radius: 10px"
-                    />
-                  </a-form-item>
-                  <!-- 创建题解 -->
-                  <a-form-item>
-                    <a-button
-                      :disabled="question.isAccepted == 1"
-                      type="primary"
-                      shape="round"
-                      status="success"
-                      @click="openAddQuestionSolutionModal"
-                      >发表题解
-                    </a-button>
-                  </a-form-item>
-                </a-form>
-                <a-list
-                  v-if="showQuestionSolutionList"
-                  :scrollbar="true"
-                  :max-height="700"
-                  :size="'large'"
-                  :data="questionSolutionList"
-                  :pagination-props="{
-                    total: questionSolutionListTotal,
-                    current: questionSolutionListSearchParams.current,
-                    pageSize: questionSolutionListSearchParams.pageSize,
-                    showTotal: true,
-                  }"
-                  @pageSizeChange="onQuestionSolutionListPageSizeChange"
-                  @pageChange="onQuestionSolutionListPageChange"
-                >
-                  <template #header> </template>
-                  <template #item="{ item }">
-                    <a-list-item>
-                      <a-list-item-meta :title="item.title">
-                        <template #avatar>
-                          <a-avatar @click="goToUser(item.userId)">
-                            <img alt="avatar" :src="item.userAvatar" />
-                          </a-avatar>
-                        </template>
-                        <template #title>
-                          <a-typography-text
-                            bold
-                            @click="
-                              () => {
-                                showQuestionSolutionList = false;
-                                goToSolution(item.id);
-                              }
-                            "
-                          >
-                            {{ item.title }}
-                          </a-typography-text>
-                        </template>
-                        <template #description>
-                          <a-typography-text
-                            ellipsis
-                            type="secondary"
-                            @click="
-                              () => {
-                                showQuestionSolutionList = false;
-                                goToSolution(item.id);
-                              }
-                            "
-                            >{{ item.content }}
-                          </a-typography-text>
-                          <a-overflow-list
-                            @click="
-                              () => {
-                                showQuestionSolutionList = false;
-                                goToSolution(item.id);
-                              }
-                            "
-                            style="width: 500px"
-                            min="8"
-                            margin="8"
-                          >
-                            <a-tag
-                              v-for="(tag, index) of JSON.parse(item.tags)"
-                              :key="index"
-                              color="gray"
-                              style="border-radius: 10px"
-                              >{{ tag }}
-                            </a-tag>
-                          </a-overflow-list>
-                          <!-- 点赞数图标 -->
-                          <span
-                            @click="
-                              () => {
-                                showQuestionSolutionList = false;
-                                goToSolution(item.id);
-                              }
-                            "
-                          >
-                            <IconHeartFill :style="{ color: '#f53f3f' }" />
-                            {{ item.likes }}
-                          </span>
-                          <!-- 回复数图标 -->
-                          <span
-                            style="margin-left: 5px"
-                            @click="
-                              () => {
-                                showQuestionSolutionList = false;
-                                goToSolution(item.id);
-                              }
-                            "
-                          >
-                            <IconMessage /> {{ item.comments }}
-                          </span>
-                        </template>
-                      </a-list-item-meta>
-                    </a-list-item>
-                  </template>
-                </a-list>
-                <router-view v-if="!showQuestionSolutionList" />
-              </a-tab-pane>
-              <!--提交记录-->
-              <a-tab-pane key="history">
-                <template #title>
-                  <icon-history />
-                  提交记录
-                </template>
+              </a-list>
+              <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
+              <router-view v-if="!showQuestionSolutionList" />
+              </a-scrollbar>
+            </a-tab-pane>
+            <!--提交记录-->
+            <a-tab-pane key="history">
+              <template #title>
+                <icon-history />
+                提交记录
+              </template>
+              <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
                 <a-table
                   :columns="columns"
                   :data="dataList"
@@ -537,9 +540,9 @@
                     }}
                   </template>
                 </a-table>
-              </a-tab-pane>
-            </a-tabs>
-          </a-scrollbar>
+              </a-scrollbar>
+            </a-tab-pane>
+          </a-tabs>
         </a-card>
       </div>
     </a-resize-box>
@@ -650,7 +653,7 @@
       v-if="!historyVisible"
       :style="{ width: codeWidth + 'px' }"
     >
-      <a-card>
+      <a-card style="height: 93vh">
         <a-form :model="form" layout="inline" size="mini">
           <!--语言选择-->
           <a-form-item field="language" style="min-width: 240px">

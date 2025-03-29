@@ -100,9 +100,9 @@
         }}
       </template>
 
-      <template #createTime="{ record }">
+<!--      <template #createTime="{ record }">
         {{ moment(record.createTime).format("YYYY-MM-DD") }}
-      </template>
+      </template>-->
     </a-table>
   </div>
 </template>
@@ -186,11 +186,11 @@ const columns = [
     slotName: "acceptedRate",
     align: "center",
   },
-  {
+/*  {
     title: "创建时间",
     slotName: "createTime",
     align: "center",
-  },
+  },*/
 ];
 /**
  * 跳转到做题页面
