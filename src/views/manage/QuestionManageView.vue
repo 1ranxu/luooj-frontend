@@ -5,24 +5,38 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="title" label="题目名称：" tooltip="请输入题目名称">
-        <a-input
+      <a-form-item field="title">
+        <a-input-search
           v-model="searchParams.title"
-          placeholder="请输入题目名称"
-          style="min-width: 280px"
+          placeholder="搜索题目"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="tags" label="标签" tooltip="请输入题目标签">
+      <a-form-item field="difficulty">
+        <a-select
+          style="width: 220px; border-radius: 10px"
+          v-model="searchParams.difficulty"
+          allow-clear
+          placeholder="选择难度"
+        >
+          <a-option :value="0">
+            <a-typography-text type="success">简单</a-typography-text>
+          </a-option>
+          <a-option :value="1">
+            <a-typography-text type="warning"> 中等</a-typography-text>
+          </a-option>
+          <a-option :value="2">
+            <a-typography-text type="danger"> 困难</a-typography-text>
+          </a-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item field="tags">
         <a-input-tag
           v-model="searchParams.tags"
-          placeholder="请输入标签"
-          style="min-width: 280px"
+          placeholder="输入标签"
+          style="min-width: 220px; border-radius: 10px"
+          max-tag-count="3"
         />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="doSearch"
-          >搜 索
-        </a-button>
       </a-form-item>
       <a-form-item>
         <a-button
@@ -55,9 +69,17 @@
       </template>
 
       <template #difficulty="{ record }">
-        <div v-if="record.difficulty == 0">简单</div>
-        <div v-else-if="record.difficulty == 1">中等</div>
-        <div v-else>困难</div>
+        <a-space wrap>
+          <a-typography-text type="success" v-if="record.difficulty == 0">
+            简单
+          </a-typography-text>
+          <a-typography-text type="warning" v-if="record.difficulty == 1">
+            中等
+          </a-typography-text>
+          <a-typography-text type="danger" v-if="record.difficulty == 2">
+            困难
+          </a-typography-text>
+        </a-space>
       </template>
 
       <template #tags="{ record }">
@@ -65,7 +87,8 @@
           <a-tag
             v-for="(tag, index) of JSON.parse(record.tags)"
             :key="index"
-            color="green"
+            color="gray"
+            style="border-radius: 10px"
             >{{ tag }}
           </a-tag>
         </a-space>
@@ -73,6 +96,9 @@
 
       <template #createTime="{ record }">
         {{ moment(record.createTime).format("YYYY-MM-DD HH:mm:ss") }}
+      </template>
+      <template #updateTime="{ record }">
+        {{ moment(record.updateTime).format("YYYY-MM-DD HH:mm:ss") }}
       </template>
 
       <template #optional="{ record }">
@@ -272,10 +298,7 @@
             <a-input v-model="addQuestion.title" placeholder="请输入题目标题" />
           </a-form-item>
           <a-form-item field="difficulty" label="题目难度" tooltip="请选择难度">
-            <a-select
-              v-model="addQuestion.difficulty"
-              placeholder="请选择难度"
-            >
+            <a-select v-model="addQuestion.difficulty" placeholder="请选择难度">
               <a-option :value="0" :disabled="addQuestion.difficulty == 0"
                 >简单
               </a-option>
@@ -422,6 +445,7 @@ const router = useRouter();
 // 搜索参数
 const searchParams = ref({
   title: "",
+  difficulty: undefined,
   tags: [],
   pageSize: 10,
   current: 1,
@@ -454,7 +478,7 @@ const updateQuestion = ref({
   title: "",
 } as QuestionUpdateRequest);
 
-// 创建竞赛对象
+// 创建题目对象
 const addQuestion = ref({
   answer: "",
   content: "",
@@ -652,44 +676,31 @@ const columns = [
     title: "id",
     dataIndex: "id",
     align: "center",
-    width: 190,
   },
   {
     title: "题目",
     slotName: "title",
     align: "center",
-    width: 180,
   },
   {
     title: "难度",
     slotName: "difficulty",
     align: "center",
   },
-  /*  {
-      title: "内容",
-      dataIndex: "content",
-    },*/
   {
     title: "标签",
     slotName: "tags",
     align: "center",
-    width: 20,
   },
-  /*  {
-      title: "答案",
-      dataIndex: "answer",
-    },*/
   {
     title: "提交数",
     dataIndex: "submitNum",
     align: "center",
-    width: 90,
   },
   {
     title: "通过数",
     dataIndex: "acceptedNum",
     align: "center",
-    width: 90,
   },
   {
     title: "判题配置",
@@ -699,42 +710,28 @@ const columns = [
         title: "时间限制",
         dataIndex: "timeLimit",
         align: "center",
-        width: 100,
       },
       {
         title: "内存限制",
         dataIndex: "memoryLimit",
         align: "center",
-        width: 100,
-      },
-      {
-        title: "堆栈限制",
-        dataIndex: "stackLimit",
-        align: "center",
-        width: 100,
       },
     ],
-  },
-  /*  {
-      title: "判题用例",
-      dataIndex: "judgeCase",
-    },*/
-  {
-    title: "创建者id",
-    dataIndex: "userId",
-    align: "center",
   },
   {
     title: "创建时间",
     slotName: "createTime",
     align: "center",
-    width: 110,
+  },
+  {
+    title: "更新时间",
+    slotName: "updateTime",
+    align: "center",
   },
   {
     title: "操作",
     slotName: "optional",
     align: "center",
-    width: 80,
   },
 ];
 

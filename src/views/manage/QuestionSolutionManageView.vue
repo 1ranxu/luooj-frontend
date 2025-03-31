@@ -5,49 +5,47 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="id" label="id：" tooltip="请输入题解id">
-        <a-input v-model="searchParams.id" placeholder="请输入要搜索的题解id" />
+      <a-form-item field="id">
+        <a-input
+          v-model="searchParams.id"
+          placeholder="搜索题解id"
+          style="min-width: 220px; border-radius: 10px"
+        />
       </a-form-item>
-      <a-form-item field="questionId" label="题目id：" tooltip="请输入题目id">
+      <a-form-item field="questionId">
         <a-input
           v-model="searchParams.questionId"
-          placeholder="请输入要搜索的题目id"
+          placeholder="搜索题目id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="userId" label="创建人id：" tooltip="请输入创建人id">
+      <a-form-item field="userId">
         <a-input
           v-model="searchParams.userId"
-          placeholder="请输入要搜索的创建人id"
+          placeholder="搜索创建人id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="title" label="题解标题：" tooltip="请输入题解标题">
+      <a-form-item field="title">
         <a-input
           v-model="searchParams.title"
-          placeholder="请输入要搜索的题解标题"
+          placeholder="搜索题解标题"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="content" label="题解内容：" tooltip="请输入题解内容">
-        <a-input
-          v-model="searchParams.content"
-          placeholder="请输入要搜索的题解内容"
-        />
-      </a-form-item>
-      <a-form-item field="tags" label="标签" tooltip="请输入题解标签">
+      <a-form-item field="tags">
         <a-input-tag
           v-model="searchParams.tags"
           placeholder="请输入标签"
-          style="min-width: 280px"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="doSubmit"
-          >搜 索
-        </a-button>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="loadData"
-          >刷 新
-        </a-button>
+      <a-form-item field="content">
+        <a-input-search
+          v-model="searchParams.content"
+          placeholder="搜索题解内容"
+          style="min-width: 220px; border-radius: 10px"
+        />
       </a-form-item>
     </a-form>
     <a-table
@@ -256,17 +254,6 @@ const doDelete = async (questionSolution: QuestionSolution) => {
   } else {
     message.error("删除失败");
   }
-};
-
-/**
- * 确认搜索，重新加载数据
- */
-const doSubmit = () => {
-  // 这里需要重置搜索页号
-  searchParams.value = {
-    ...searchParams.value,
-    current: 1,
-  };
 };
 </script>
 

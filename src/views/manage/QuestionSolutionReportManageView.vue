@@ -5,47 +5,33 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="id" label="id：" tooltip="请输入题解举报记录id">
+      <a-form-item field="id">
         <a-input
           v-model="searchParams.id"
-          placeholder="请输入要搜索的题解举报记录id"
+          placeholder="搜索记录id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="userId" label="检举人id：" tooltip="请输入检举人id">
+      <a-form-item field="userId">
         <a-input
           v-model="searchParams.userId"
-          placeholder="请输入要搜索的检举人id"
+          placeholder="搜索检举人id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item
-        field="solutionId"
-        label="被检举题解的id："
-        tooltip="请输入被检举题解的id"
-      >
+      <a-form-item field="solutionId">
         <a-input
           v-model="searchParams.solutionId"
-          placeholder="请输入要搜索的被检举题解的id"
+          placeholder="搜索被检举题解id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item
-        field="reportedUserId"
-        label="被检举人id："
-        tooltip="请输入被检举人id"
-      >
-        <a-input
+      <a-form-item field="reportedUserId">
+        <a-input-search
           v-model="searchParams.reportedUserId"
-          placeholder="请输入要搜索的被检举人id"
+          placeholder="搜索被检举人id"
+          style="min-width: 220px; border-radius: 10px"
         />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="doSubmit"
-          >搜 索
-        </a-button>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="loadData"
-          >刷 新
-        </a-button>
       </a-form-item>
     </a-form>
     <a-table
@@ -256,17 +242,6 @@ const doDeleteAfterConfirm = async (
   } else {
     message.error("删除失败");
   }
-};
-
-/**
- * 确认搜索，重新加载数据
- */
-const doSubmit = () => {
-  // 这里需要重置搜索页号
-  searchParams.value = {
-    ...searchParams.value,
-    current: 1,
-  };
 };
 </script>
 

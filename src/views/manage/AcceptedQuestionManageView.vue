@@ -5,33 +5,26 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="id" label="id：" tooltip="请输入通过记录id">
+      <a-form-item field="id">
         <a-input
           v-model="searchParams.id"
-          placeholder="请输入要搜索的通过记录id"
+          placeholder="搜索记录id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="questionId" label="题目id：" tooltip="请输入题目id">
+      <a-form-item field="questionId">
         <a-input
           v-model="searchParams.questionId"
-          placeholder="请输入要搜索的题目id"
+          placeholder="搜索题目id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="userId" label="用户id：" tooltip="请输入用户id">
-        <a-input
+      <a-form-item field="userId">
+        <a-input-search
           v-model="searchParams.userId"
-          placeholder="请输入要搜索的用户id"
+          placeholder="搜索用户id"
+          style="min-width: 220px; border-radius: 10px"
         />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="doSubmit"
-          >搜 索
-        </a-button>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="loadData"
-          >刷 新
-        </a-button>
       </a-form-item>
     </a-form>
     <a-table
@@ -199,17 +192,6 @@ const doDelete = async (acceptedQuestion: AcceptedQuestion) => {
   } else {
     message.error("删除失败");
   }
-};
-
-/**
- * 确认搜索，重新加载数据
- */
-const doSubmit = () => {
-  // 这里需要重置搜索页号
-  searchParams.value = {
-    ...searchParams.value,
-    current: 1,
-  };
 };
 </script>
 

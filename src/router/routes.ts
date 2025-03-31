@@ -120,7 +120,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/question_submit",
-    name: "提交记录",
+    name: "状态",
     component: QuestionSubmitView,
     meta: {
       access: AccessEnum.USER,

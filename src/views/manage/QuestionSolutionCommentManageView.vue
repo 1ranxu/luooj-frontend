@@ -5,55 +5,47 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="id" label="id：" tooltip="请输入题解评论记录id">
+      <a-form-item field="id">
         <a-input
           v-model="searchParams.id"
-          placeholder="请输入要搜索的题解评论记录id"
+          placeholder="搜索记录id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="userId" label="用户id：" tooltip="请输入用户id">
+      <a-form-item field="userId">
         <a-input
           v-model="searchParams.userId"
-          placeholder="请输入要搜索的用户id"
+          placeholder="搜索用户id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="solutionId" label="题解id：" tooltip="请输入题解id">
+      <a-form-item field="solutionId">
         <a-input
           v-model="searchParams.solutionId"
-          placeholder="请输入要搜索的题解id"
+          placeholder="搜索题解id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="parentId" label="父评论id：" tooltip="请输入父评论id">
+      <a-form-item field="parentId">
         <a-input
           v-model="searchParams.parentId"
-          placeholder="请输入要搜索的父评论id"
+          placeholder="搜索父评论id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item
-        field="respondUserId"
-        label="被评论人id："
-        tooltip="请输入被评论人id"
-      >
+      <a-form-item field="respondUserId">
         <a-input
           v-model="searchParams.respondUserId"
-          placeholder="请输入要搜索的被评论人id"
+          placeholder="搜索被评论人id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="content" label="评论内容：" tooltip="请输入评论内容">
-        <a-input
+      <a-form-item field="content">
+        <a-input-search
           v-model="searchParams.content"
-          placeholder="请输入要搜索的评论内容"
+          placeholder="搜索评论内容"
+          style="min-width: 220px; border-radius: 10px"
         />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="doSubmit"
-          >搜 索
-        </a-button>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="loadData"
-          >刷 新
-        </a-button>
       </a-form-item>
     </a-form>
     <a-table
@@ -248,17 +240,6 @@ const doDelete = async (questionSolutionComment: QuestionSolutionComment) => {
   } else {
     message.error("删除失败");
   }
-};
-
-/**
- * 确认搜索，重新加载数据
- */
-const doSubmit = () => {
-  // 这里需要重置搜索页号
-  searchParams.value = {
-    ...searchParams.value,
-    current: 1,
-  };
 };
 </script>
 

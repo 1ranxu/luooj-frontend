@@ -5,27 +5,19 @@
       layout="inline"
       style="justify-content: center; align-content: center; margin: 25px"
     >
-      <a-form-item field="contestId" label="竞赛id：" tooltip="请输入竞赛id">
+      <a-form-item field="contestId">
         <a-input
           v-model="searchParams.contestId"
-          placeholder="请输入要搜索的竞赛id"
+          placeholder="搜索竞赛id"
+          style="min-width: 220px; border-radius: 10px"
         />
       </a-form-item>
-      <a-form-item field="applicantId" label="参赛者id：" tooltip="请输入参赛者id">
-        <a-input
+      <a-form-item field="applicantId">
+        <a-input-search
           v-model="searchParams.applicantId"
-          placeholder="请输入要搜索的参赛者id"
+          placeholder="搜索参赛者id"
+          style="min-width: 220px; border-radius: 10px"
         />
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="doSubmit"
-          >搜 索
-        </a-button>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="outline" shape="round" status="normal" @click="loadData"
-          >刷 新
-        </a-button>
       </a-form-item>
     </a-form>
     <a-table
@@ -191,17 +183,6 @@ const doDelete = async (contestAppy: ContestApply) => {
   } else {
     message.error("删除失败");
   }
-};
-
-/**
- * 确认搜索，重新加载数据
- */
-const doSubmit = () => {
-  // 这里需要重置搜索页号
-  searchParams.value = {
-    ...searchParams.value,
-    current: 1,
-  };
 };
 </script>
 
