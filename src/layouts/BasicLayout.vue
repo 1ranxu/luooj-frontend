@@ -12,7 +12,7 @@
           <a-link
             href="https://github.com/1ranxu/luooj-backend-microservice"
             target="_blank"
-            style="color: black;text-decoration-color: white;background-color: white"
+            style="color: black;text-decoration-color: white;background-color: rgb(255,255,255,0)"
           >
             <icon-github />
           </a-link>
@@ -24,7 +24,7 @@
         <a-link
           href="https://beian.miit.gov.cn/"
           target="_blank"
-          style="color: black;background-color: white"
+          style="color: black;background-color: rgb(255,255,255,0)"
         >
           渝ICP备2024021408号-2
         </a-link>

@@ -168,9 +168,14 @@
           :custom-request="uploadAvatar"
         >
           <template #upload-button>
-            <a-avatar :size="70" shape="circle">
-              <img alt="头像" :src="userAvatarImg" />
-            </a-avatar>
+            <div class="arco-upload-list-picture custom-upload-avatar">
+              <a-avatar :size="70" shape="circle">
+                <img alt="头像" :src="userAvatarImg" v-if="userAvatarImg" />
+              </a-avatar>
+              <div class="arco-upload-list-picture-mask">
+                <IconEdit />
+              </div>
+            </div>
           </template>
         </a-upload>
       </div>
@@ -218,6 +223,7 @@ const router = useRouter();
 
 const file = ref();
 
+let userAvatarImg = "";
 const userInfo = ref<User>({
   userName: "",
   userAccount: "",
@@ -225,8 +231,6 @@ const userInfo = ref<User>({
   userAvatar: "",
   userProfile: "",
 });
-// 从表单中获取的用户头像
-const userAvatarImg = ref(userInfo.value.userAvatar);
 
 const user = ref<UserAddRequest>({
   userName: "",
@@ -363,6 +367,8 @@ const addUserVisible = ref(false);
 const openUpdateUserModal = async (userId: any) => {
   const res = await UserControllerService.getUserByIdUsingGet(userId);
   userInfo.value = { ...res.data, userPassword: "" };
+  // 从表单中获取的用户头像
+  userAvatarImg = userInfo.value.userAvatar as string;
   updateUserVisible.value = true;
 };
 const openAddUserModal = () => {
@@ -401,7 +407,7 @@ const uploadAvatar = async () => {
     "user_avatar"
   );
   if (res.code === 0) {
-    userAvatarImg.value = res.data;
+    userAvatarImg = res.data;
     Message.success("上传成功，点击确认即可修改头像");
   } else {
     Message.error("上传失败！" + res.data);
@@ -420,7 +426,7 @@ const onChange = async (_: never, currentFile: FileItem) => {
 const updateUser = async () => {
   const res = await UserControllerService.updateUserUsingPost({
     ...userInfo.value,
-    userAvatar: userAvatarImg.value,
+    userAvatar: userAvatarImg,
   });
   if (res.code === 0) {
     Message.success("更新成功！");
