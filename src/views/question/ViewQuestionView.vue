@@ -182,7 +182,7 @@
                         type="primary"
                         status="success"
                         shape="round"
-                        :disabled="replyContent == ''"
+                        :disabled="firstReplyContent == ''"
                         @click="publisOrReply(props.id, firstComment.id, 0)"
                       >
                         Reply
@@ -190,7 +190,7 @@
                     </template>
                     <template #content>
                       <a-input
-                        v-model="replyContent"
+                        v-model="firstReplyContent"
                         placeholder="Here is you content."
                       />
                     </template>
@@ -303,7 +303,7 @@
                               type="primary"
                               status="success"
                               shape="round"
-                              :disabled="replyContent == ''"
+                              :disabled="secondReplyContent == ''"
                               @click="
                                 publisOrReply(
                                   props.id,
@@ -317,7 +317,7 @@
                           </template>
                           <template #content>
                             <a-input
-                              v-model="replyContent"
+                              v-model="secondReplyContent"
                               placeholder="Here is you content."
                             />
                           </template>
@@ -475,7 +475,7 @@
                 </template>
               </a-list>
               <a-scrollbar style="height: calc(100vh - 120px); overflow: auto">
-              <router-view v-if="!showQuestionSolutionList" />
+                <router-view v-if="!showQuestionSolutionList" />
               </a-scrollbar>
             </a-tab-pane>
             <!--提交记录-->
@@ -1035,6 +1035,8 @@ const commentsSearchParams = ref({
   sortOrder: "ascend",
 });
 const replyContent = ref("");
+const firstReplyContent = ref("");
+const secondReplyContent = ref("");
 
 // 题解
 // 用来控制展示题解列表还是具体的题解
@@ -1349,12 +1351,23 @@ const publisOrReply = async (
       questionId: questionId,
       parentId: parentId,
       respondUserId: respondUserId,
-      content: replyContent.value,
+      content:
+        parentId == 0
+          ? replyContent.value
+          : respondUserId == 0
+          ? firstReplyContent.value
+          : secondReplyContent.value,
     });
   if (res.code == 0) {
     await getComments();
     Message.success("回复成功");
-    replyContent.value = "";
+    if (parentId == 0) {
+      replyContent.value = "";
+    } else if (respondUserId == 0) {
+      firstReplyContent.value = "";
+    } else {
+      secondReplyContent.value = "";
+    }
   } else {
     Message.error("回复失败：" + res.message);
   }

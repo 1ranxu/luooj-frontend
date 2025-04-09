@@ -30,7 +30,8 @@
             <a-tag
               v-for="(tag, index) of JSON.parse(questionSolution.tags)"
               :key="index"
-              color="gray" style="border-radius: 10px"
+              color="gray"
+              style="border-radius: 10px"
               >{{ tag }}
             </a-tag>
           </a-overflow-list>
@@ -58,8 +59,12 @@
           />
           {{ questionSolution.likes }}
           <!-- 评论 -->
-          <IconMessage style="font-size: 23px; color: gray" />
-          {{ commentNum }}
+          <a-link
+            href="#comment"
+            style="color: black; background-color: rgb(255, 255, 255, 0)"
+          >
+            <IconMessage style="font-size: 23px; color: gray" />{{ commentNum }}
+          </a-link>
           <!-- 举报图标 -->
           <a-tooltip :content="'举报'">
             <icon-exclamation-circle
@@ -74,6 +79,7 @@
       </template>
     </a-card>
     <!-- 发表评论 -->
+    <a id="comment"> </a>
     <a-comment id="publish" align="right" :avatar="loginUser.userAvatar">
       <template #actions>
         <a-button
@@ -81,7 +87,7 @@
           type="primary"
           status="success"
           shape="round"
-          :disabled="replyContent==''"
+          :disabled="replyContent == ''"
           @click="publisOrReply(props.questionSolutionId, 0, 0)"
         >
           评论
@@ -161,14 +167,17 @@
             type="primary"
             status="success"
             shape="round"
-            :disabled="replyContent==''"
+            :disabled="firstReplyContent == ''"
             @click="publisOrReply(props.questionSolutionId, firstComment.id, 0)"
           >
             Reply
           </a-button>
         </template>
         <template #content>
-          <a-input v-model="replyContent" placeholder="Here is you content." />
+          <a-input
+            v-model="firstReplyContent"
+            placeholder="Here is you content."
+          />
         </template>
       </a-comment>
       <!-- 二级评论 -->
@@ -270,7 +279,7 @@
                   type="primary"
                   status="success"
                   shape="round"
-                  :disabled="replyContent==''"
+                  :disabled="secondReplyContent == ''"
                   @click="
                     publisOrReply(
                       props.questionSolutionId,
@@ -284,7 +293,7 @@
               </template>
               <template #content>
                 <a-input
-                  v-model="replyContent"
+                  v-model="secondReplyContent"
                   placeholder="Here is you content."
                 />
               </template>
@@ -373,6 +382,8 @@ const commentsSearchParams = ref({
   sortOrder: "ascend",
 });
 const replyContent = ref("");
+const firstReplyContent = ref("");
+const secondReplyContent = ref("");
 
 onMounted(async () => {
   await getQuestionSolution();
@@ -535,13 +546,24 @@ const publisOrReply = async (
         solutionId: solutionId,
         parentId: parentId,
         respondUserId: respondUserId,
-        content: replyContent.value,
+        content:
+          parentId == 0
+            ? replyContent.value
+            : respondUserId == 0
+            ? firstReplyContent.value
+            : secondReplyContent.value,
       }
     );
   if (res.code == 0) {
     await getComments();
     Message.success("评论成功");
-    replyContent.value="";
+    if (parentId == 0) {
+      replyContent.value = "";
+    } else if (respondUserId == 0) {
+      firstReplyContent.value = "";
+    } else {
+      secondReplyContent.value = "";
+    }
   } else {
     Message.error("评论失败：" + res.message);
   }
