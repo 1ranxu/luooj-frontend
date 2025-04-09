@@ -7,16 +7,14 @@
           :selected-keys="selectedKeys"
           @menu-item-click="doMenuClick"
         >
-          <a-menu-item
-            key="0"
-            :style="{ padding: 0, marginRight: '38px' }"
-            disabled
-          >
+          <a-menu-item key="0" style="padding: 0; marginright: 38px;background-color: rgb(255,255,255,0)">
             <div class="title-bar">
               <a-link :hoverable="false" href="/">
                 <img class="logo" src="../assets/oj-logo.png" />
               </a-link>
-              <h3 class="title">落畔题</h3>
+              <a-link :hoverable="false" href="/">
+                <h3 class="title">落畔题</h3>
+              </a-link>
             </div>
           </a-menu-item>
           <a-menu-item v-for="item in visibleRoutes" :key="item.path">
