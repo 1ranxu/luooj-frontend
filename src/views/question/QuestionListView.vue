@@ -12,15 +12,6 @@
           style="min-width: 300px;border-radius: 10px"
         />
       </a-form-item>
-<!--      <a-form-item>
-        <a-button
-          type="outline"
-          shape="round"
-          status="normal"
-          @click="getQuestionList"
-          >搜 索
-        </a-button>
-      </a-form-item>-->
     </a-form>
     <!-- 题单 -->
     <a-list

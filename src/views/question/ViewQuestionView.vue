@@ -151,8 +151,8 @@
                     <!-- 举报图标 -->
                     <span
                       class="action"
-                      key="delete"
-                      v-if="firstComment.userId != loginUser.id"
+                      key="report"
+                      v-else
                       @click="
                         reportComment(1, firstComment.id, firstComment.userId)
                       "
@@ -268,8 +268,8 @@
                           <!-- 举报图标 -->
                           <span
                             class="action"
-                            key="delete"
-                            v-if="secondComment.userId != loginUser.id"
+                            key="report"
+                            v-else
                             @click="
                               reportComment(
                                 1,
